@@ -14,7 +14,7 @@
 	if(!$member["no"]) Error("회원만이 쪽지보내가기 가능합니다","window.close");
 
 // 그룹데이타 읽어오기;;
-	$group_data=mysql_fetch_array(mysql_query("select * from $group_table where no='$data["group_no"]'"));
+	$group_data=mysql_fetch_array(mysql_query("select * from $group_table where no='$data[group_no]'"));
 
 
 // 쪽지 보내기일때;;
@@ -25,10 +25,10 @@
 		$subject=addslashes($subject);
 		$memo=addslashes($memo);
 		$reg_date=time();
-		mysql_query("insert into $get_memo_table (member_no,member_from,subject,memo,readed,reg_date) values ('$data["no"]','$member["no"]','$subject','$memo',1,'$reg_date')") or error(mysql_error());
-		mysql_query("insert into $send_memo_table (member_to,member_no,subject,memo,readed,reg_date) values ('$data["no"]','$member["no"]','$subject','$memo',1,'$reg_date')") or error(mysql_error());
-		mysql_query("update $member_table set new_memo=1 where no='$data["no"]'") or error(mysql_error());
-		echo"<script language=\"javascript\">alert(\"$data["name"] 님께 쪽지를 보냈습니다\");window.close();</script>";
+		mysql_query("insert into $get_memo_table (member_no,member_from,subject,memo,readed,reg_date) values ('$data[no]','$member[no]','$subject','$memo',1,'$reg_date')") or error(mysql_error());
+		mysql_query("insert into $send_memo_table (member_to,member_no,subject,memo,readed,reg_date) values ('$data[no]','$member[no]','$subject','$memo',1,'$reg_date')") or error(mysql_error());
+		mysql_query("update $member_table set new_memo=1 where no='$data[no]'") or error(mysql_error());
+		echo"<script language=\"javascript\">alert(\"$data[name] 님께 쪽지를 보냈습니다\");window.close();</script>";
 	}
 
 	mysql_close($connect);
