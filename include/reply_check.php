@@ -13,7 +13,7 @@
 	$email=$reply_data["email"]=stripslashes($reply_data["email"]);  // 메일
 	$subject=$reply_data["subject"]=stripslashes($reply_data["subject"]); // 제목
 	$subject=cut_str($subject,$setup["cut_length"]); // 제목 자르는 부분
-	if($member["level"]<=$setup["grant_view"]) $subject="<a href=view.php?$href$sort&no=$reply_data["no"]>".$subject."</a>"; // 제목에 링크 거는 부분;
+	if($member["level"]<=$setup["grant_view"]) $subject="<a href=view.php?$href$sort&no=$reply_data[no]>".$subject."</a>"; // 제목에 링크 거는 부분;
 	$homepage=$reply_data["homepage"]=stripslashes($reply_data["homepage"]);
 	if($homepage) $homepage="<a href=$homepage target=_blank>$homepage</a>";
 	$memo=$reply_data["memo"]=nl2br(stripslashes($reply_data["memo"])); // 내용
@@ -33,12 +33,12 @@
 
 	if($file_name1) {
 		$file_size1=@GetFileSize(filesize($reply_data[file_name1]));
-		$a_file_link1="<a href=download.php?$href$sort&no=$reply_data["no"]&filenum=1>";
+		$a_file_link1="<a href=download.php?$href$sort&no=$reply_data[no]&filenum=1>";
 	} else $a_file_link="<Zeroboard";
 
 	if($file_name2) {
 		$file_size2=@GetFileSize(filesize($reply_data[file_name2]));
-		$a_file_link2="<a href=download.php?$href$sort&no=$reply_data["no"]&filenum=2>";
+		$a_file_link2="<a href=download.php?$href$sort&no=$reply_data[no]&filenum=2>";
 	} else $a_file_link="Zeroboard";
 
 	if($comment_num==0) $comment_num="";
@@ -61,7 +61,7 @@
 // 메일주소가 있으면 이름에 메일 링크시킴
 	if(!isBlank($email)||$reply_data["ismember"]) {
 		if(!$setup["use_formmail"]) $name="<a href=mailto:$email>$name</a>";
-		else $name="<a href=javascript:void(window.open('view_info.php?to=$email&id=$id&member_no=$reply_data["ismember"]','mailform','width=400,height=500,statusbar=no,scrollbars=yes,toolbar=no'))>$name</a>";
+		else $name="<a href=javascript:void(window.open('view_info.php?to=$email&id=$id&member_no=$reply_data[ismember]','mailform','width=400,height=500,statusbar=no,scrollbars=yes,toolbar=no'))>$name</a>";
 	}
 
 // Depth에 의한 들임값을 정함
@@ -77,9 +77,9 @@
 	if($no==$reply_data["no"]) $number="<img src=$dir/arrow.gif border=0 align=absmiddle>"; elseif($number!="&nbsp;") $number=$roop_number;
 
 // 답글 버튼
-	if(($is_admin||$member["level"]<=$setup["grant_reply"])&&$reply_data["headnum"]>-2000000000&&$reply_data["headnum"]!=-1) $a_reply="<a href=write.php?$href$sort&no=$reply_data["no"]&mode=reply>"; else $a_reply="<Zeroboard";
+	if(($is_admin||$member["level"]<=$setup["grant_reply"])&&$reply_data["headnum"]>-2000000000&&$reply_data["headnum"]!=-1) $a_reply="<a href=write.php?$href$sort&no=$reply_data[no]&mode=reply>"; else $a_reply="<Zeroboard";
 // 삭제버튼
-	if(($is_admin||$member["level"]<=$setup["grant_delete"]||$reply_data["ismember"]==$member["no"]||!$reply_data["ismember"])&&!$reply_data["child"]) $a_delete="<a href=delete.php?$href$sort&no=$reply_data["no"]>"; else $a_delete="<Zeroboard";
+	if(($is_admin||$member["level"]<=$setup["grant_delete"]||$reply_data["ismember"]==$member["no"]||!$reply_data["ismember"])&&!$reply_data["child"]) $a_delete="<a href=delete.php?$href$sort&no=$reply_data[no]>"; else $a_delete="<Zeroboard";
 // 수정버튼
-	if(($is_admin||$member["level"]<=$setup["grant_delete"]||$reply_data["ismember"]==$member["no"]||!$reply_data["ismember"])) $a_modify="<a href=write.php?$href$sort&no=$reply_data["no"]&mode=modify>"; else $a_modify="<Zeroboard";
+	if(($is_admin||$member["level"]<=$setup["grant_delete"]||$reply_data["ismember"]==$member["no"]||!$reply_data["ismember"])) $a_modify="<a href=write.php?$href$sort&no=$reply_data[no]&mode=modify>"; else $a_modify="<Zeroboard";
 ?>
