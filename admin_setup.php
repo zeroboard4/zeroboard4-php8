@@ -247,7 +247,7 @@
 		<table width=100% border=0 cellspacing=0 cellpadding=0>
 		<tr>
 			<td bgcolor="#3F3F3F" valign="bottom" height="45"><img src="images/t.gif" width="10" height="10"><br>
-				<a href="http://www.zeroboard.com" target="_top"><img src="images/admincopyright.gif" width="159" height="35" border="0"></a>
+				<a href="https://github.com/juckdo/zeroboard4-php8" target="_top"><img src="images/admincopyright.gif" width="159" height="35" border="0"></a>
 			</td>
 		</tr>
 		</table>

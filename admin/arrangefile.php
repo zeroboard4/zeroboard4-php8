@@ -78,8 +78,8 @@
 		while($data=mysql_fetch_array($nfiles1)) {
 
 			// 소스 파일의 정보를 체크
-			$filename = stripslashes($data[s_file_name1]);
-			$source = "../".stripslashes($data[file_name1]);
+			$filename = stripslashes($data["s_file_name1"]);
+			$source = "../".stripslashes($data["file_name1"]);
 			$path = str_replace($filename, "", $source);
 			$no = $data["no"];
 
@@ -116,8 +116,8 @@
 		while($data=mysql_fetch_array($nfiles2)) {
 
 			// 소스 파일의 정보를 체크
-			$filename = stripslashes($data[s_file_name2]);
-			$source = "../".stripslashes($data[file_name2]);
+			$filename = stripslashes($data["s_file_name2"]);
+			$source = "../".stripslashes($data["file_name2"]);
 			$path = str_replace($filename, "", $source);
 			$no = $data["no"];
 

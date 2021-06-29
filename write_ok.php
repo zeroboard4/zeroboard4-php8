@@ -274,12 +274,12 @@
 		}
 
 		// 파일삭제
-		if($del_file1==1) {@z_unlink("./".$s_data[file_name1]);$del_que1=",file_name1='',s_file_name1=''";} 
-		if($del_file2==1) {@z_unlink("./".$s_data[file_name2]);$del_que2=",file_name2='',s_file_name2=''";} 
+		if($del_file1==1) {@z_unlink("./".$s_data["file_name1"]);$del_que1=",file_name1='',s_file_name1=''";} 
+		if($del_file2==1) {@z_unlink("./".$s_data["file_name2"]);$del_que2=",file_name2='',s_file_name2=''";} 
 
 		// 파일등록
-		if($file_name1) {@z_unlink("./".$s_data[file_name1]);$del_que1=",file_name1='$file_name1',s_file_name1='$s_file_name1'";}
-		if($file_name2) {@z_unlink("./".$s_data[file_name2]);$del_que2=",file_name2='$file_name2',s_file_name2='$s_file_name2'";}
+		if($file_name1) {@z_unlink("./".$s_data["file_name1"]);$del_que1=",file_name1='$file_name1',s_file_name1='$s_file_name1'";}
+		if($file_name2) {@z_unlink("./".$s_data["file_name2"]);$del_que2=",file_name2='$file_name2',s_file_name2='$s_file_name2'";}
 
 		// 공지 -> 일반글 
 		if(!$notice&&$s_data["headnum"]<="-2000000000") {

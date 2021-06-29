@@ -22,22 +22,22 @@
 	$vote=$reply_data["vote"];  // 투표수
 	if($setup["use_showip"]||$is_admin)$ip="IP Address : ".$reply_data["ip"]."&nbsp;";  // 아이피
 	$comment_num="[".$reply_data["total_comment"]."]"; // 간단한 답글 수
-	$sitelink1=$reply_data[sitelink1]=stripslashes($reply_data[sitelink1]);
-	$sitelink2=$reply_data[sitelink2]=stripslashes($reply_data[sitelink2]);
+	$sitelink1=$reply_data["sitelink1"]=stripslashes($reply_data["sitelink1"]);
+	$sitelink2=$reply_data["sitelink2"]=stripslashes($reply_data["sitelink2"]);
 	if($sitelink1)$sitelink1="<a href=$sitelink1 target=_blank>$sitelink1</a>";
 	if($sitelink2)$sitelink2="<a href=$sitelink2 target=_blank>$sitelink2</a>";
-	$file_name1=$reply_data[s_file_name1];
-	$file_name2=$reply_data[s_file_name2];
-	$file_download1=$reply_data[download1];
-	$file_download2=$reply_data[download2];
+	$file_name1=$reply_data["s_file_name1"];
+	$file_name2=$reply_data["s_file_name2"];
+	$file_download1=$reply_data["download1"];
+	$file_download2=$reply_data["download2"];
 
 	if($file_name1) {
-		$file_size1=@GetFileSize(filesize($reply_data[file_name1]));
+		$file_size1=@GetFileSize(filesize($reply_data["file_name1"]));
 		$a_file_link1="<a href=download.php?$href$sort&no=$reply_data[no]&filenum=1>";
 	} else $a_file_link="<Zeroboard";
 
 	if($file_name2) {
-		$file_size2=@GetFileSize(filesize($reply_data[file_name2]));
+		$file_size2=@GetFileSize(filesize($reply_data["file_name2"]));
 		$a_file_link2="<a href=download.php?$href$sort&no=$reply_data[no]&filenum=2>";
 	} else $a_file_link="Zeroboard";
 

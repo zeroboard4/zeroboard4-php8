@@ -214,8 +214,8 @@
 			$memo = stripslashes($data["memo"]);
 			if($data["use_html"]<2) $memo = nl2br($memo);
 			else $memo = strip_tags($memo);
-			$filename1 = $data[file_name1];
-			$filename2 = $data[file_name2];
+			$filename1 = $data["file_name1"];
+			$filename2 = $data["file_name2"];
 			if(eregi("\.gif|\.jpg",$filename1))$uploadimage1 = "<img src=".$_zb_url.$filename1." border=0><br>"; else $uploadimage1="";
 			if(eregi("\.gif|\.jpg",$filename2))$uploadimage2 = "<img src=".$_zb_url.$filename1." border=0><br>"; else $uploadimage2="";
 			$memo = autolink($uploadimage1.$uploadimage2.$memo);
@@ -323,8 +323,8 @@
 		$i = 0;
 		while($data=mysql_fetch_array($result)) {
 			
-			if(eregi("\.gif|\.jpg",$data[file_name1])) $filename = $_zb_url.$data[file_name1];
-			elseif(eregi("\.gif|\.jpg",$data[file_name2])) $filename = $_zb_url.$data[file_name2];
+			if(eregi("\.gif|\.jpg",$data["file_name1"])) $filename = $_zb_url.$data["file_name1"];
+			elseif(eregi("\.gif|\.jpg",$data["file_name2"])) $filename = $_zb_url.$data["file_name2"];
 			else $filename="";
 
 			if($filename) $imgList.="<a href='".$_zb_url.$target."&no=$data[no]'><img src='$filename' border=1 style=border-color:black width=$xsize height=$ysize vspacing=10 hspacing=10></a>";

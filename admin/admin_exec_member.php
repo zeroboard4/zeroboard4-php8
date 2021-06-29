@@ -38,7 +38,7 @@ del_member($value);
 
 // 회원 게시판 권한 취소시키는 부분 
 
-	if($_POST['exec2']=="modify_member_board_manager") {
+	if($exec2=="modify_member_board_manager") {
 
 		$_temp=mysql_fetch_array(mysql_query("select * from $member_table where no = '$member_no'",$connect));
 	
@@ -59,7 +59,7 @@ del_member($value);
 
 // 회원 게시판 권한 추가시키는 부분 
 
-	if($_POST['exec2']=="add_member_board_manager") {
+	if($exec2=="add_member_board_manager") {
 
 		$_temp=mysql_fetch_array(mysql_query("select * from $member_table where no = '$member_no'",$connect));
 		$_board_name = $_temp["board_name"].$board_num.",";

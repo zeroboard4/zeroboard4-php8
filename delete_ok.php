@@ -70,8 +70,8 @@
    mysql_query("delete from $t_board"."_$id where no='$no'") or Error(mysql_error()); // 글삭제
 
    // 파일삭제
-   @z_unlink("./".$s_data[file_name1]);
-   @z_unlink("./".$s_data[file_name2]);
+   @z_unlink("./".$s_data["file_name1"]);
+   @z_unlink("./".$s_data["file_name2"]);
 
    minus_division($s_data["division"]);
 
