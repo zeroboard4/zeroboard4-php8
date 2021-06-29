@@ -43,7 +43,9 @@
 		if(isBlank($name)) Error("게시판 이름을 입력하셔야 합니다","");
 		if(!isAlNum($name)) Error("게시판 이름은 영문과 숫자로만 하셔야 합니다","");
 		if(!$admin_passwd) Error("관리자 비밀번호를 입력해주세요.");
-		if($member['password'] != get_password($admin_passwd)) {
+		$isold = false;
+		if(strlen($member["password"])<=16&&strlen(get_password("a"))>=41) $isold = true;
+		if($member['password'] != get_password($admin_passwd, $isold)) {
 				Error("관리자 비밀번호가 틀렸습니다.");
 			}
 
@@ -104,7 +106,9 @@
 	// 게시판 삭제 
 	elseif($_POST['exec2']=="del") {
 		if(!$admin_passwd) Error("관리자 비밀번호를 입력해주세요.");
-		if($member['password'] != get_password($admin_passwd)) {
+		$isold = false;
+		if(strlen($member["password"])<=16&&strlen(get_password("a"))>=41) $isold = true;
+		if($member['password'] != get_password($admin_passwd, $isold)) {
 				Error("관리자 비밀번호가 틀렸습니다.");
 			}
 		$data=mysql_fetch_array(mysql_query("select name from $admin_table where no='$no'"));
@@ -169,7 +173,9 @@
 	// 권한 설정 
 	elseif($_POST['exec2']=="modify_grant_ok") {
 		if(!$admin_passwd) Error("관리자 비밀번호를 입력해주세요.");
-		if($member['password'] != get_password($admin_passwd)) {
+		$isold = false;
+		if(strlen($member["password"])<=16&&strlen(get_password("a"))>=41) $isold = true;
+		if($member['password'] != get_password($admin_passwd, $isold)) {
 				Error("관리자 비밀번호가 틀렸습니다.");
 			}
 		@mysql_query("update $admin_table set grant_html='$grant_html', grant_list='$grant_list',

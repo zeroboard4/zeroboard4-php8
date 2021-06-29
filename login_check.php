@@ -26,6 +26,11 @@
 // 회원 로그인 체크
 	$result = mysql_query("select * from $member_table where user_id='$user_id' and password=password('$password')") or error(mysql_error());
 	$member_data = mysql_fetch_array($result);
+	
+	if(!isset($member_data["no"])&&strlen(get_password("a"))>=41) {
+		$result = mysql_query("select * from $member_table where user_id='$user_id' and password=old_password('$password')") or error(mysql_error());
+		$member_data = mysql_fetch_array($result);
+	}
 
 // 회원로그인이 성공하였을 경우 세션을 생성하고 페이지를 이동함
 	if(isset($member_data["no"])) {

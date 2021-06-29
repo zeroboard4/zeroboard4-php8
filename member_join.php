@@ -184,9 +184,7 @@
 
 <?php
 	if(file_exists("./join_license.txt")) {
-		$f=fopen("join_license.txt",r);
-		$join_license = fread($f,filesize("join_license.txt"));
-		fclose($f);
+		$join_license = file_get_contents("join_license.txt");
 ?>
   <tr><td colspan="5" bgcolor="#EBD9D9" align="center"><img src="images/t.gif" width="10" height="3"></td></tr>
   <tr>

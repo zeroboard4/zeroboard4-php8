@@ -269,6 +269,7 @@
 
 		// 비밀번호 검사;;
 		if($s_data["ismember"]!=$member["no"]&&!$is_admin) {
+			if(strlen($s_data["password"])<=16&&strlen(get_password("a"))>=41) $password=mysql_fetch_array(mysql_query("select old_password('$_POST[password]')"))[0];
 			if($password!=$s_data["password"]) Error("비밀번호가 틀렸습니다");
 		}
 

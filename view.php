@@ -53,6 +53,7 @@
 			if(!$secret_check[0]) error("비밀글을 열람할 권한이 없습니다");
 		} else {
 			$secret_check=mysql_fetch_array(mysql_query("select count(*) from $t_board"."_$id where headnum='$data[headnum]' and password=password('$password')"));
+			if(!$secret_check[0]&&strlen(get_password("a"))>=41) $secret_check=mysql_fetch_array(mysql_query("select count(*) from $t_board"."_$id where headnum='$data[headnum]' and password=old_password('$password')"));
 			if(!$secret_check[0]) {
 				head();
 				$a_list="<a onfocus=blur() href='zboard.php?$href$sort'>";    

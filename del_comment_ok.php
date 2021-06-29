@@ -19,6 +19,7 @@
 
 // 원본글을 가져옴
 	$s_data=mysql_fetch_array(mysql_query("select * from $t_comment"."_$id where no='$c_no'"));
+	if(strlen($s_data["password"])<=16&&strlen(get_password("a"))>=41) $password=mysql_fetch_array(mysql_query("select old_password('$_POST[password]')"))[0];
 
 // 회원일때를 확인;;
 	if(!$is_admin&&$member["level"]>$setup["grant_delete"]) {

@@ -301,15 +301,16 @@
 		return $temp;
 	}
 
-	function get_password($str) {
+	function get_password($str, $isold=false) {
 		global $connect;
-		$rs = mysql_query("SELECT password('$str')");
+		if($isold)
+			$rs = mysql_query("SELECT old_password('$str')");
+		else
+			$rs = mysql_query("SELECT password('$str')");
 		$tmp=mysql_fetch_array($rs);
 		mysql_free_result($rs);
 		return $tmp[0];
 	}
-
-
 
 	/******************************************************************************
  	* 제로보드 전용 함수

@@ -97,7 +97,9 @@ mysql_query("update $member_table set group_no='$movegroup' where no='$value'",$
 
 	if($_POST['exec2']=="del") {
 		if(!$admin_passwd) Error("관리자 비밀번호를 입력해주세요.");
-		if($member['password'] != get_password($admin_passwd)) {
+		$isold = false;
+		if(strlen($member["password"])<=16&&strlen(get_password("a"))>=41) $isold = true;
+		if($member['password'] != get_password($admin_passwd, $isold)) {
 				Error("관리자 비밀번호가 틀렸습니다.");
 			}
 		del_member($no);
@@ -110,7 +112,9 @@ mysql_query("update $member_table set group_no='$movegroup' where no='$value'",$
 	if($_POST['exec2']=="modify_member_ok") {
 
 		if(!$admin_passwd) Error("관리자 비밀번호를 입력해주세요.");
-		if($member['password'] != get_password($admin_passwd)) {
+		$isold = false;
+		if(strlen($member["password"])<=16&&strlen(get_password("a"))>=41) $isold = true;
+		if($member['password'] != get_password($admin_passwd, $isold)) {
 				Error("관리자 비밀번호가 틀렸습니다.");
 			}
 		if(isblank($name)) Error("이름을 입력하셔야 합니다");

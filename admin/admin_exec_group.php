@@ -25,7 +25,9 @@
 	// 그룹추가
 	if($_POST['exec']=="add_group_ok") {
 		if(!$admin_passwd) Error("관리자 비밀번호를 입력해주세요.");
-		if($member['password'] != get_password($admin_passwd)) {
+		$isold = false;
+		if(strlen($member["password"])<=16&&strlen(get_password("a"))>=41) $isold = true;
+		if($member['password'] != get_password($admin_passwd, $isold)) {
 				Error("관리자 비밀번호가 틀렸습니다.");
 			}
 		if($member["is_admin"]>1) Error("그룹생성 권한이 없습니다");
@@ -67,7 +69,9 @@
 	// 그룹수정 완료
 	elseif($_POST['exec']=="modify_group_ok") {
 		if(!$admin_passwd) Error("관리자 비밀번호를 입력해주세요.");
-		if($member['password'] != get_password($admin_passwd)) {
+		$isold = false;
+		if(strlen($member["password"])<=16&&strlen(get_password("a"))>=41) $isold = true;
+		if($member['password'] != get_password($admin_passwd, $isold)) {
 				Error("관리자 비밀번호가 틀렸습니다.");
 			}
 		if($member["is_admin"]>2) Error("그룹수정 권한이 없습니다");
@@ -108,7 +112,9 @@
 	// 그룹삭제 완료
 	elseif($_POST['exec']=="del_group_ok") {
 		if(!$admin_passwd) Error("관리자 비밀번호를 입력해주세요.");
-		if($member['password'] != get_password($admin_passwd)) {
+		$isold = false;
+		if(strlen($member["password"])<=16&&strlen(get_password("a"))>=41) $isold = true;
+		if($member['password'] != get_password($admin_passwd, $isold)) {
 				Error("관리자 비밀번호가 틀렸습니다.");
 			}
 		if($member["is_admin"]>1) Error("그룹삭제 권한이 없습니다");
