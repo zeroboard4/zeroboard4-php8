@@ -98,7 +98,7 @@ if(realpath($_SERVER['SCRIPT_FILENAME']) == realpath(__FILE__)) exit;
 		} else {
 			$category="";
 		}
-		if(!$browser) $a_category="Category";
+		//if(!$browser) $a_category="Category";
 
 		/////////////////////////////////////////////
 		// write.php가 아닐때 검색갯수 및 query 정리
