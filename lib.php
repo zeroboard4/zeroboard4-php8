@@ -904,7 +904,8 @@ exit();
 
 	function Request_Var($str)
 	{
-		return htmlspecialchars(str_replace(array("\r\n", "\r", "\0"), array("\n", "\n", ''), $str));
+		if(is_array($str)) return $str;
+		else return htmlspecialchars(str_replace(array("\r\n", "\r", "\0"), array("\n", "\n", ''), $str));
 	}
 
 	function zb_gpc_extract($array)

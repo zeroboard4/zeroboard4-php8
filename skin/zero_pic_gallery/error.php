@@ -11,7 +11,7 @@
 <tr>
     <td align=center height=30>
       <br>
-      <?echo $message;?><br><br>
+      <?php echo $message;?><br><br>
 <?php
   if(!$url)
   {
@@ -25,7 +25,7 @@
   {
 ?>
 
-  <div align=center><img src=<?=$dir?>/i_back.gif border=0  onclick=location.href="<?echo $url;?>" >
+  <div align=center><img src=<?=$dir?>/i_back.gif border=0  onclick=location.href="<?php echo $url;?>" >
 
 <?php
   }

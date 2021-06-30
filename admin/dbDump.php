@@ -45,7 +45,7 @@
 		$key = zbDB_getKeys($tableName);
 		$schema = $fields."\n".$key;
 		$schema = substr($schema,0,strlen($schema)-2);
-		$schema = "\nCREATE TABLE $tableName ( \n".$schema." \n) TYPE=MyISAM; ";
+		$schema = "\nCREATE TABLE $tableName ( \n".$schema." \n); ";
 		echo $schema;
 		flush();
 	}

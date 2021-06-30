@@ -34,7 +34,6 @@
 
 <script>
 <?php if($href){?>
-	window.open('<?=$href?>');
+	window.location.href='<?=$href?>';
 <?php }?>
-	window.close();
 </script>

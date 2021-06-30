@@ -233,6 +233,7 @@ if(realpath($_SERVER['SCRIPT_FILENAME']) == realpath(__FILE__)) exit;
 			if($member['new_memo']) {
 				$member_memo_icon="<img name=memozzz src=$dir/member_memo_on.gif border=0 align=absmiddle>";
 				$memo_on_sound="<object classid='clsid:D27CDB6E-AE6D-11cf-96B8-444553540000' codebase='http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=5,0,0,0' width='0' height='0'><param name=menu value=false><param name=wmode value=transparent><param name=movie value='$dir/memo_on.swf'><param name=quality value=low><param name='LOOP' value='false'><embed src='$dir/memo_on.swf' quality=low pluginspage='http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash' type='application/x-shockwave-flash' width='0' height='0' loop='false' wmode=transparent menu='false'></embed></object>";
+				$memo_on_sound.="<audio src=\"$dir/memo_on.mp3\" controls autoplay hidden style=\"display:none;\"><embed src=\"$dir/memo_on.mp3\" width=\"0\" height=\"0\" loop=\"false\" hidden=\"false\"></audio>";
 			} else $member_memo_icon="<img src=$dir/member_memo_off.gif border=0 align=absmiddle>";
 		} else $member_memo_icon="";
 

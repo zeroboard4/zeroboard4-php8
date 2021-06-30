@@ -7,8 +7,8 @@
 
  $member=member_info();
 
- $s_keyword = $_POST['keyword'];
- $keykind = $_POST['keykind'];
+ $s_keyword = $keyword;
+ $keykind = $_REQUEST['keykind'];
 
  if(!$member['no']||$member['is_admin']>1||$member['level']>1) Error("최고 관리자만이 사용할수 있습니다");
 

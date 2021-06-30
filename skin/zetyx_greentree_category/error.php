@@ -14,7 +14,7 @@
 <tr height=25 bgcolor=<?=$sC_light1?> style=padding:5px;>
     <td align=center height=30>
       <br>
-      <?echo $message;?><br><br>
+      <?php echo $message;?><br><br>
 </td>
 </tr>
 <tr height=1><td colspan=2 bgcolor=<?=$sC_dark1?>><img src=images/t.gif height=1></td></tr>
@@ -33,7 +33,7 @@
   {
 ?>
 
-  <div align=center><input type=button value='   Move   ' onclick=location.href="<?echo $url;?>" class=submit>
+  <div align=center><input type=button value='   Move   ' onclick=location.href="<?php echo $url;?>" class=submit>
 
 <?php
   }

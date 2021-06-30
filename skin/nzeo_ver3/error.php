@@ -21,7 +21,7 @@
   {
 ?>
 	<br>
-  <div align=center><a href=# onclick=location.href="<?echo $url;?>" onfocus=blur()><img src=<?=$dir?>/btn_move.gif border=0></a>
+  <div align=center><a href=# onclick=location.href="<?php echo $url;?>" onfocus=blur()><img src=<?=$dir?>/btn_move.gif border=0></a>
 
 <?php 
   }
