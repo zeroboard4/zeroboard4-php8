@@ -20,7 +20,7 @@
 	</td>
 	<td width=8 class=line2 style=padding:0px><img src=/images/t.gif border=0 width=8></td>
 	<td style='word-break:break-all;'><font class=list_han><?=str_replace("\n","<br>",$c_memo)?></font></td>
-	<td align=right><font class=list_eng><?=date("Y-m-d",$c_data["reg_date"])?><br><?=date("H:i:s",$c_data["reg_date"])?></font><br><?=$a_del?><img src=<?=$dir?>/del.gif border=0 valign=absmiddle></a></td>
+	<td align=right><font class=list_eng><?=date("Y-m-d",$c_data['reg_date'])?><br><?=date("H:i:s",$c_data['reg_date'])?></font><br><?=$a_del?><img src=<?=$dir?>/del.gif border=0 valign=absmiddle></a></td>
 </tr>
 </table>
 <img src=/images/t.gif border=0 height=8><br>

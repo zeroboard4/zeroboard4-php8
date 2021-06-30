@@ -10,7 +10,7 @@
 	$setup=get_table_attrib($id);
 
 	// 현재 로그인되어 있는 멤버가 전체, 또는 그룹관리자인지 검사
-	if($member["is_admin"]==1||$member["is_admin"]==2&&$member["group_no"]==$setup["group_no"]||$member["board_name"]) $is_admin=1; else $is_admin="";
+	if($member['is_admin']==1||$member['is_admin']==2&&$member['group_no']==$setup['group_no']||$member['board_name']) $is_admin=1; else $is_admin="";
 
 	unset($setup);
 
@@ -80,9 +80,9 @@ function board_move()
 	$select="selected";
 	$s_name = "";
 	while($data=mysql_fetch_array($result)) {
-		if(!$s_name) $s_name = $data["name"];
+		if(!$s_name) $s_name = $data['name'];
 ?>
-			<option value="<?=$data["name"]?>" <?=$select?>><?=$data["name"]?></option>
+			<option value="<?=$data['name']?>" <?=$select?>><?=$data['name']?></option>
 <?php
 		$select="";
 	}

@@ -3,7 +3,7 @@
 		global $group_no, $member_table, $get_memo_table,  $send_memo_table,$admin_table, $t_board, $t_comment, $connect, $group_table, $member;
 
 		$member_data = mysql_fetch_array(mysql_query("select * from $member_table where no = '$no'"));
-		if($member["is_admin"]>1&&$member["no"]!=$member_data["no"]&&$member_data["level"]<=$member["level"]&&$member_data["is_admin"]<=$member["is_admin"]) error("선택하신 회원의 정보를 변경할 권한이 없습니다");
+		if($member['is_admin']>1&&$member['no']!=$member_data['no']&&$member_data['level']<=$member['level']&&$member_data['is_admin']<=$member['is_admin']) error("선택하신 회원의 정보를 변경할 권한이 없습니다");
 
 		// 멤버 정보 삭제
 		@mysql_query("delete from $member_table where no='$no'") or error(mysql_error());
@@ -26,21 +26,21 @@
 	if($_POST['exec']=="add_group_ok") {
 		if(!$admin_passwd) Error("관리자 비밀번호를 입력해주세요.");
 		$isold = false;
-		if(strlen($member["password"])<=16&&strlen(get_password("a"))>=41) $isold = true;
+		if(strlen($member['password'])<=16&&strlen(get_password("a"))>=41) $isold = true;
 		if($member['password'] != get_password($admin_passwd, $isold)) {
 				Error("관리자 비밀번호가 틀렸습니다.");
 			}
-		if($member["is_admin"]>1) Error("그룹생성 권한이 없습니다");
+		if($member['is_admin']>1) Error("그룹생성 권한이 없습니다");
 		if(isblank($name)) Error("그룹이름은 필수로 지정하셔야 합니다");
 		// 중복 이름 검사
 		$check=mysql_fetch_array(mysql_query("select count(*) from $group_table where name='$name'"));
 		if($check[0]) Error("$name 이라는 이름의 그룹이 이미 있습니다");
 
-    	if($_FILES["icon"]) {
-        	$icon = $_FILES["icon"]["tmp_name"];
-        	$icon_name = $_FILES["icon"]["name"];
-        	$icon_type = $_FILES["icon"]["type"];
-        	$icon_size = $_FILES["icon"]["size"];
+    	if($_FILES['icon']) {
+        	$icon = $_FILES['icon']['tmp_name'];
+        	$icon_name = $_FILES['icon']['name'];
+        	$icon_type = $_FILES['icon']['type'];
+        	$icon_size = $_FILES['icon']['size'];
     	}
 
 		// 아이콘 파일 업로드시
@@ -70,20 +70,20 @@
 	elseif($_POST['exec']=="modify_group_ok") {
 		if(!$admin_passwd) Error("관리자 비밀번호를 입력해주세요.");
 		$isold = false;
-		if(strlen($member["password"])<=16&&strlen(get_password("a"))>=41) $isold = true;
+		if(strlen($member['password'])<=16&&strlen(get_password("a"))>=41) $isold = true;
 		if($member['password'] != get_password($admin_passwd, $isold)) {
 				Error("관리자 비밀번호가 틀렸습니다.");
 			}
-		if($member["is_admin"]>2) Error("그룹수정 권한이 없습니다");
-		if($member["is_admin"]==2&&$member["group_no"]!=$group_no) Error("그룹수정 권한이 없습니다");
+		if($member['is_admin']>2) Error("그룹수정 권한이 없습니다");
+		if($member['is_admin']==2&&$member['group_no']!=$group_no) Error("그룹수정 권한이 없습니다");
 		if(isblank($name)) Error("그룹이름은 필수로 지정하셔야 합니다");
 		if($del_icon) $icon_sql=",icon=''";
 		// 아이콘 파일 업로드시
-        if($_FILES["icon"]) {
-            $icon = $_FILES["icon"]["tmp_name"];
-            $icon_name = $_FILES["icon"]["name"];
-            $icon_type = $_FILES["icon"]["type"];
-            $icon_size = $_FILES["icon"]["size"];
+        if($_FILES['icon']) {
+            $icon = $_FILES['icon']['tmp_name'];
+            $icon_name = $_FILES['icon']['name'];
+            $icon_type = $_FILES['icon']['type'];
+            $icon_size = $_FILES['icon']['size'];
         }
 
 		if($icon_name) {
@@ -113,18 +113,18 @@
 	elseif($_POST['exec']=="del_group_ok") {
 		if(!$admin_passwd) Error("관리자 비밀번호를 입력해주세요.");
 		$isold = false;
-		if(strlen($member["password"])<=16&&strlen(get_password("a"))>=41) $isold = true;
+		if(strlen($member['password'])<=16&&strlen(get_password("a"))>=41) $isold = true;
 		if($member['password'] != get_password($admin_passwd, $isold)) {
 				Error("관리자 비밀번호가 틀렸습니다.");
 			}
-		if($member["is_admin"]>1) Error("그룹삭제 권한이 없습니다");
+		if($member['is_admin']>1) Error("그룹삭제 권한이 없습니다");
 		// 삭제할 그룹의 회원수와 게시판 수를 구함
 		$num=mysql_fetch_array(mysql_query("select member_num, board_num from $group_table where no='$group_no'"));
 
 		// 멤버 이동
 		if($member_move) {
 			@mysql_query("update $member_table set group_no='$member_move' where group_no='$group_no'") or Error("회원 이동시에 에러가 발생하였습니다");
-			mysql_query("update $group_table set member_num=member_num+".$num["member_num"]." where no='$member_move'");
+			mysql_query("update $group_table set member_num=member_num+".$num['member_num']." where no='$member_move'");
 		} else {
 			$result = mysql_query("select no from $member_table where group_no='$group_no'") or Error("회원 이동시에 에러가 발생하였습니다");
 			while($data=mysql_fetch_array($result)) {
@@ -136,11 +136,11 @@
 		// 게시판이동
 		if($board_move) {
 			@mysql_query("update $admin_table set group_no='$board_move' where group_no='$group_no'") or Error("게시판 이동시에 에러가 발생하였습니다");
-			mysql_query("update $group_table set board_num=board_num+".$num["board_num"]." where no='$board_move'");
+			mysql_query("update $group_table set board_num=board_num+".$num['board_num']." where no='$board_move'");
 		} else {
 			$temp=mysql_query("select name from $admin_table where group_no='$group_no'");
 			while($data=mysql_fetch_array($temp)) {
-				$table_name=$data["name"];
+				$table_name=$data['name'];
 				$tmpData = mysql_query("select file_name1, file_name2 from $t_board"."_$table_name") or die("첨부파일 삭제 처리중 에러가 발생했습니다");
 				while($data=mysql_fetch_array($tmpData)) {
 					if($data["file_name1"]) @z_unlink("./".$data["file_name1"]);

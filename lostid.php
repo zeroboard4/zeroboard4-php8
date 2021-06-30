@@ -2,13 +2,13 @@
 	include "lib.php";
 
 	// 웹마스터 E-mail
-	$_from = $_zbDefaultSetup["email"];
+	$_from = $_zbDefaultSetup['email'];
 
 	// 사이트 주소
-	$_homepage = $_zbDefaultSetup["url"];
+	$_homepage = $_zbDefaultSetup['url'];
 
 	// 사이트 이름
-	$_sitename = $_zbDefaultSetup["sitename"];
+	$_sitename = $_zbDefaultSetup['sitename'];
 
 	if(!$_from||!$_homepage||!$_sitename) error("관리자 정보가 입력되어 있지 않습니다.<br>setup.php 파일을 관리자가 수정하여야 합니다");
 

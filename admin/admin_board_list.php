@@ -6,8 +6,8 @@
 	$today_date=mktime(0,0,0,date("m"),date("d"),date("Y"));
 
 	// 게시판 관리자일 경우 게시판을 제한
-	if($member["is_admin"]>=3 && $member["board_name"]) {
-		$boardList = explode(",",$member["board_name"]);
+	if($member['is_admin']>=3 && $member['board_name']) {
+		$boardList = explode(",",$member['board_name']);
 		$s_que = "";
 		for($i=0;$i<count($boardList);$i++) {
 			if(trim($boardList[$i])) {

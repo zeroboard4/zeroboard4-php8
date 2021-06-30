@@ -3,7 +3,7 @@
 
   $member_data=mysql_fetch_array(mysql_query("select * from $member_table where no='$no'"));
 
-  if($member["is_admin"]>1&&$member["no"]!=$member_data["no"]&&$member_data["level"]<=$member["level"]&&$member_data["is_admin"]<=$member["is_admin"]) error("선택하신 회원의 정보를 변경할 권한이 없습니다");
+  if($member['is_admin']>1&&$member['no']!=$member_data['no']&&$member_data['level']<=$member['level']&&$member_data['is_admin']<=$member['is_admin']) error("선택하신 회원의 정보를 변경할 권한이 없습니다");
 
   $check[1]="checked";
 ?>
@@ -14,7 +14,7 @@
   if(write.password.value!=write.password1.value) {alert("패스워드가 일치하지 않습니다.");write.password.value="";write.password1.value=""; write.password.focus(); return false;}
   if(!write.name.value) { alert("이름을 입력하세요"); write.name.focus(); return false; }
 
-<?php if($group_data["use_birth"])
+<?php if($group_data['use_birth'])
    { ?>
 
     if ( write.birth_1.value < 1000 || write.birth_1.value <= 0 )  {
@@ -66,11 +66,11 @@
 <input type=hidden name=keyword value=<?=$keyword?>>
 <input type=hidden name=like value=<?=$like?>>
 
-  <tr height=22 align=center><td height=30 colspan=2><b><?=$member_data["name"]?></b> 회원 설정 변경</td></tr>
+  <tr height=22 align=center><td height=30 colspan=2><b><?=$member_data['name']?></b> 회원 설정 변경</td></tr>
 
   <tr height=22 align=center bgcolor=#e0e0e0>
      <td width=25% align=right bgcolor=#a0a0a0 style=font-family:Tahoma;font-size:8pt;font-weight:bold;>아이디&nbsp;&nbsp;</td>
-     <td align=left>&nbsp;<?=$member_data["user_id"]?> &nbsp;(<?=date("Y년 m월 d일 H시 i분",$member_data["reg_date"])?>에 가입)</td>
+     <td align=left>&nbsp;<?=$member_data['user_id']?> &nbsp;(<?=date("Y년 m월 d일 H시 i분",$member_data['reg_date'])?>에 가입)</td>
   </tr>
   <tr height=22 align=center>
      <td bgcolor=#a0a0a0 align=right style=font-family:Tahoma;font-size:8pt;font-weight:bold;>비밀번호&nbsp;&nbsp;</td>
@@ -78,11 +78,11 @@
   </tr>
 
 <?php
-  if($member["no"]==$no) $locking = "disabled";
+  if($member['no']==$no) $locking = "disabled";
 
-  if($member["is_admin"]==1)
+  if($member['is_admin']==1)
   {
-   $select[$member_data["is_admin"]]="selected";
+   $select[$member_data['is_admin']]="selected";
 ?>
   <tr height=22 align=center>  
      <td bgcolor=#a0a0a0 align=right style=font-family:Tahoma;font-size:8pt;font-weight:bold;>관리자 레벨&nbsp;&nbsp;</td>
@@ -100,34 +100,34 @@
      <td bgcolor=#a0a0a0 align=right style=font-family:Tahoma;font-size:8pt;font-weight:bold;>레벨&nbsp;&nbsp;</td>
      <td align=left bgcolor=#e0e0e0>&nbsp;<select name=level <?=$locking?>>
 <?php
-  for($i=$member["level"];$i<=10;$i++) if($i==$member_data["level"]) echo"<option value=$i selected>$i</option>"; else echo "<option value=$i>$i</option>";
+  for($i=$member['level'];$i<=10;$i++) if($i==$member_data['level']) echo"<option value=$i selected>$i</option>"; else echo "<option value=$i>$i</option>";
 ?>
                     </select></td>
   </tr>
 
   <tr height=22 align=center>
      <td bgcolor=#a0a0a0 align=right style=font-family:Tahoma;font-size:8pt;font-weight:bold;>이름&nbsp;&nbsp;</td>
-     <td align=left bgcolor=#e0e0e0>&nbsp;<input type=text name=name size=20 maxlength=20 value="<?=$member_data["name"]?>" class=input style=border-color:#b0b0b0></td>
+     <td align=left bgcolor=#e0e0e0>&nbsp;<input type=text name=name size=20 maxlength=20 value="<?=$member_data['name']?>" class=input style=border-color:#b0b0b0></td>
   </tr>
 
 <?php                                                                                                  
-  if($member_data["is_admin"]>2)                                                                          
+  if($member_data['is_admin']>2)                                                                          
   {                                                                                                 
 
-   if(trim($member_data["board_name"])) {
-	   $manager_board_temp = split(",",$member_data["board_name"]);
+   if(trim($member_data['board_name'])) {
+	   $manager_board_temp = split(",",$member_data['board_name']);
 	   $get_string .= " (no = '$manager_board_temp[0]') ";
 	   for($__k=1;$__k<count($manager_board_temp);$__k++){
 	   	if(trim($manager_board_temp[$__k])) $get_string .= " or (no = '$manager_board_temp[$__k]') ";
 	   }
 	   $manager_board_list = mysql_query("select * from $admin_table where $get_string",$connect) or die(mysql_error());
 	   while($__manager_data = mysql_fetch_array($manager_board_list)) {
-	   $__manager_board_name .= "&nbsp;".stripslashes($__manager_data["name"])." &nbsp; <a href='$PHP_SELF?exec=view_member&exec2=modify_member_board_manager&group_no=$group_no&member_no=$no&page=$page&keyword=$keyword&board_num=$__manager_data[no]' onclick=\"return confirm('권한을 취소시키시겠습니까?')\">[권한취소]</a><br><img src=images/t.gif border=0 height=4><br>";
+	   $__manager_board_name .= "&nbsp;".stripslashes($__manager_data['name'])." &nbsp; <a href='$PHP_SELF?exec=view_member&exec2=modify_member_board_manager&group_no=$group_no&member_no=$no&page=$page&keyword=$keyword&board_num=$__manager_data[no]' onclick=\"return confirm('권한을 취소시키시겠습니까?')\">[권한취소]</a><br><img src=images/t.gif border=0 height=4><br>";
 
 	   }
    }
 
-   $select[$member_data["board_name"]]="selected";                                                      
+   $select[$member_data['board_name']]="selected";                                                      
    $board_list=mysql_query("select no,name from $admin_table where group_no='$group_data[no]'") or error(mysql_error());
 ?>                                                                                                  
   <tr height=22 align=center>                                                                       
@@ -139,7 +139,7 @@
 <?php
 while($board_data_list=mysql_fetch_array($board_list))
 {
- if(!eregi($board_data_list["no"].",",$member_data["board_name"]))echo"<option value='$board_data_list[no]'>$board_data_list[name]</option>";
+ if(!eregi($board_data_list['no'].",",$member_data['board_name']))echo"<option value='$board_data_list[no]'>$board_data_list[name]</option>";
 }
 ?>
      </select> <input type=button value="게시판 관리 권한 추가" onclick="add_board_manager()" style=border-color:#b0b0b0;background-color:#3d3d3d;color:#ffffff;font-size:8pt;font-family:Tahoma;height:20px;>
@@ -149,119 +149,119 @@ while($board_data_list=mysql_fetch_array($board_list))
   }
 ?> 
 
-<?php if($group_data["use_birth"]) { ?>
+<?php if($group_data['use_birth']) { ?>
   <tr height=22 align=center>
      <td bgcolor=#a0a0a0 align=right style=font-family:Tahoma;font-size:8pt;font-weight:bold;>생일&nbsp;&nbsp;</td>
-     <td align=left bgcolor=#e0e0e0>&nbsp;<input type=text name=birth_1 size=4 maxlength=4 value="<?=date("Y",$member_data["birth"])?>" class=input style=border-color:#b0b0b0> 년 
-                    &nbsp;<input type=text name=birth_2 size=2 maxlength=2 value="<?=date("m",$member_data["birth"])?>" class=input style=border-color:#b0b0b0> 월
-                    &nbsp;<input type=text name=birth_3 size=2 maxlength=2 value="<?=date("d",$member_data["birth"])?>" class=input style=border-color:#b0b0b0> 일 
+     <td align=left bgcolor=#e0e0e0>&nbsp;<input type=text name=birth_1 size=4 maxlength=4 value="<?=date("Y",$member_data['birth'])?>" class=input style=border-color:#b0b0b0> 년 
+                    &nbsp;<input type=text name=birth_2 size=2 maxlength=2 value="<?=date("m",$member_data['birth'])?>" class=input style=border-color:#b0b0b0> 월
+                    &nbsp;<input type=text name=birth_3 size=2 maxlength=2 value="<?=date("d",$member_data['birth'])?>" class=input style=border-color:#b0b0b0> 일 
   </tr>
 <?php } ?>
 
   <tr height=22 align=center>
      <td bgcolor=#a0a0a0 align=right style=font-family:Tahoma;font-size:8pt;font-weight:bold;>E-mail&nbsp;&nbsp;</td>
-     <td align=left bgcolor=#e0e0e0>&nbsp;<input type=text name=email size=50 maxlength=255 value="<?=$member_data["email"]?>" class=input style=border-color:#b0b0b0></td>
+     <td align=left bgcolor=#e0e0e0>&nbsp;<input type=text name=email size=50 maxlength=255 value="<?=$member_data['email']?>" class=input style=border-color:#b0b0b0></td>
   </tr>
   <tr height=22 align=center>
      <td bgcolor=#a0a0a0 align=right style=font-family:Tahoma;font-size:8pt;font-weight:bold;>홈페이지&nbsp;&nbsp;</td>
-     <td align=left bgcolor=#e0e0e0>&nbsp;<input type=text name=homepage size=50 maxlength=255 value="<?=$member_data["homepage"]?>" class=input style=border-color:#b0b0b0></td>
+     <td align=left bgcolor=#e0e0e0>&nbsp;<input type=text name=homepage size=50 maxlength=255 value="<?=$member_data['homepage']?>" class=input style=border-color:#b0b0b0></td>
   </tr>
 
-<?php if($group_data["use_icq"]) { ?>
+<?php if($group_data['use_icq']) { ?>
   <tr height=22 align=center>
      <td bgcolor=#a0a0a0 align=right style=font-family:Tahoma;font-size:8pt;font-weight:bold;>ICQ&nbsp;&nbsp;</td>
-     <td align=left bgcolor=#e0e0e0>&nbsp;<input type=text name=icq size=20 maxlength=20 value="<?=$member_data["icq"]?>" class=input style=border-color:#b0b0b0></td>
+     <td align=left bgcolor=#e0e0e0>&nbsp;<input type=text name=icq size=20 maxlength=20 value="<?=$member_data['icq']?>" class=input style=border-color:#b0b0b0></td>
   </tr>
 <?php } ?>
 
-<?php if($group_data["use_aol"]) { ?>
+<?php if($group_data['use_aol']) { ?>
   <tr height=22 align=center>
      <td bgcolor=#a0a0a0 align=right style=font-family:Tahoma;font-size:8pt;font-weight:bold;>AIM(AOL)&nbsp;&nbsp;</td>
-     <td align=left bgcolor=#e0e0e0>&nbsp;<input type=text name=aol size=20 maxlength=20 value="<?=$member_data["aol"]?>" class=input style=border-color:#b0b0b0></td>
+     <td align=left bgcolor=#e0e0e0>&nbsp;<input type=text name=aol size=20 maxlength=20 value="<?=$member_data['aol']?>" class=input style=border-color:#b0b0b0></td>
   </tr>
 <?php } ?>
 
-<?php if($group_data["use_msn"]) { ?>
+<?php if($group_data['use_msn']) { ?>
   <tr height=22 align=center>
      <td bgcolor=#a0a0a0 align=right style=font-family:Tahoma;font-size:8pt;font-weight:bold;>MSN&nbsp;&nbsp;</td>
-     <td align=left bgcolor=#e0e0e0>&nbsp;<input type=text name=msn size=20 maxlength=20 value="<?=$member_data["msn"]?>" class=input style=border-color:#b0b0b0></td>
+     <td align=left bgcolor=#e0e0e0>&nbsp;<input type=text name=msn size=20 maxlength=20 value="<?=$member_data['msn']?>" class=input style=border-color:#b0b0b0></td>
   </tr>
 <?php } ?>
 
-<?php if($group_data["use_hobby"]) { ?>
+<?php if($group_data['use_hobby']) { ?>
   <tr height=22 align=center>
      <td bgcolor=#a0a0a0 align=right style=font-family:Tahoma;font-size:8pt;font-weight:bold;>취미&nbsp;&nbsp;</td>
-     <td align=left bgcolor=#e0e0e0>&nbsp;<input type=text name=hobby size=50 maxlength=50 value="<?=$member_data["hobby"]?>" class=input style=border-color:#b0b0b0></td>
+     <td align=left bgcolor=#e0e0e0>&nbsp;<input type=text name=hobby size=50 maxlength=50 value="<?=$member_data['hobby']?>" class=input style=border-color:#b0b0b0></td>
   </tr>
 <?php } ?>
 
-<?php if($group_data["use_job"]) { ?>
+<?php if($group_data['use_job']) { ?>
   <tr height=22 align=center>
      <td bgcolor=#a0a0a0 align=right style=font-family:Tahoma;font-size:8pt;font-weight:bold;>직업&nbsp;&nbsp;</td>
-     <td align=left bgcolor=#e0e0e0>&nbsp;<input type=text name=job size=20 maxlength=20 value="<?=$member_data["job"]?>" class=input style=border-color:#b0b0b0></td>
+     <td align=left bgcolor=#e0e0e0>&nbsp;<input type=text name=job size=20 maxlength=20 value="<?=$member_data['job']?>" class=input style=border-color:#b0b0b0></td>
   </tr>
 <?php } ?>
 
-<?php if($group_data["use_home_address"]) { ?> 
+<?php if($group_data['use_home_address']) { ?> 
   <tr height=22 align=center>
      <td bgcolor=#a0a0a0 align=right style=font-family:Tahoma;font-size:8pt;font-weight:bold;>집 주소&nbsp;&nbsp;</td>
-     <td align=left bgcolor=#e0e0e0>&nbsp;<input type=text name=home_address size=50 maxlength=255 value="<?=$member_data["home_address"]?>" class=input style=border-color:#b0b0b0></td>
+     <td align=left bgcolor=#e0e0e0>&nbsp;<input type=text name=home_address size=50 maxlength=255 value="<?=$member_data['home_address']?>" class=input style=border-color:#b0b0b0></td>
   </tr>
 <?php } ?>
 
-<?php if($group_data["use_home_tel"]) { ?>
+<?php if($group_data['use_home_tel']) { ?>
   <tr height=22 align=center>
      <td bgcolor=#a0a0a0 align=right style=font-family:Tahoma;font-size:8pt;font-weight:bold;>집 전화번호&nbsp;&nbsp;</td>
-     <td align=left bgcolor=#e0e0e0>&nbsp;<input type=text name=home_tel size=20 maxlength=20 value="<?=$member_data["home_tel"]?>" class=input style=border-color:#b0b0b0></td>
+     <td align=left bgcolor=#e0e0e0>&nbsp;<input type=text name=home_tel size=20 maxlength=20 value="<?=$member_data['home_tel']?>" class=input style=border-color:#b0b0b0></td>
   </tr>
 <?php } ?>
 
-<?php if($group_data["use_office_address"]) { ?>
+<?php if($group_data['use_office_address']) { ?>
   <tr height=22 align=center>
      <td bgcolor=#a0a0a0 align=right style=font-family:Tahoma;font-size:8pt;font-weight:bold;>회사 주소&nbsp;&nbsp;</td>
-     <td align=left bgcolor=#e0e0e0>&nbsp;<input type=text name=office_address size=50 maxlength=255 value="<?=$member_data["office_address"]?>" class=input style=border-color:#b0b0b0></td>
+     <td align=left bgcolor=#e0e0e0>&nbsp;<input type=text name=office_address size=50 maxlength=255 value="<?=$member_data['office_address']?>" class=input style=border-color:#b0b0b0></td>
   </tr>
 <?php } ?>
 
-<?php if($group_data["use_office_tel"]) { ?>
+<?php if($group_data['use_office_tel']) { ?>
   <tr height=22 align=center>
      <td bgcolor=#a0a0a0 align=right style=font-family:Tahoma;font-size:8pt;font-weight:bold;>회사 전화번호&nbsp;&nbsp;</td>
-     <td align=left bgcolor=#e0e0e0>&nbsp;<input type=text name=office_tel size=20 maxlength=20 value="<?=$member_data["office_tel"]?>" class=input style=border-color:#b0b0b0></td>
+     <td align=left bgcolor=#e0e0e0>&nbsp;<input type=text name=office_tel size=20 maxlength=20 value="<?=$member_data['office_tel']?>" class=input style=border-color:#b0b0b0></td>
   </tr>
 <?php } ?>
 
-<?php if($group_data["use_handphone"]) { ?>
+<?php if($group_data['use_handphone']) { ?>
   <tr height=22 align=center>
      <td bgcolor=#a0a0a0 align=right style=font-family:Tahoma;font-size:8pt;font-weight:bold;>핸드폰&nbsp;&nbsp;</td>
-     <td align=left bgcolor=#e0e0e0>&nbsp;<input type=text name=handphone size=20 maxlength=20 value="<?=$member_data["handphone"]?>" class=input style=border-color:#b0b0b0></td>
+     <td align=left bgcolor=#e0e0e0>&nbsp;<input type=text name=handphone size=20 maxlength=20 value="<?=$member_data['handphone']?>" class=input style=border-color:#b0b0b0></td>
   </tr>
 <?php } ?>
 
-<?php if($group_data["use_mailing"]) { ?>
+<?php if($group_data['use_mailing']) { ?>
   <tr height=22 align=center>
      <td bgcolor=#a0a0a0 align=right style=font-family:Tahoma;font-size:8pt;font-weight:bold;>메일링리스트 가입&nbsp;&nbsp;</td>
-     <td align=left bgcolor=#e0e0e0>&nbsp;<input type=checkbox name=mailing value=1 <?=$check[$member_data["mailing"]]?>></td>
+     <td align=left bgcolor=#e0e0e0>&nbsp;<input type=checkbox name=mailing value=1 <?=$check[$member_data['mailing']]?>></td>
   </tr>
 <?php } ?>
 
   <tr height=22 align=center>
      <td bgcolor=#a0a0a0 align=right style=font-family:Tahoma;font-size:8pt;font-weight:bold;>정보 공개 여부&nbsp;&nbsp;</td>
-     <td align=left bgcolor=#e0e0e0>&nbsp;<input type=checkbox name=openinfo value=1 <?=$check[$member_data["openinfo"]]?>></td>
+     <td align=left bgcolor=#e0e0e0>&nbsp;<input type=checkbox name=openinfo value=1 <?=$check[$member_data['openinfo']]?>></td>
   </tr>
 
-<?php if($group_data["use_picture"]) { ?>
+<?php if($group_data['use_picture']) { ?>
   <tr height=22 align=center>
      <td bgcolor=#a0a0a0 align=right style=font-family:Tahoma;font-size:8pt;font-weight:bold;>사진&nbsp;&nbsp;</td>
      <td align=left bgcolor=#e0e0e0>&nbsp;<input type=file name=picture size=37 maxlength=255 class=input style=border-color:#b0b0b0>
-                 <?php if($member_data["picture"]) echo"<br>&nbsp;<img src='$member_data[picture]' border=0>"; ?>
+                 <?php if($member_data['picture']) echo"<br>&nbsp;<img src='$member_data[picture]' border=0>"; ?>
      </td>
   </tr>
 <?php } ?>
 
-<?php if($group_data["use_comment"]) { ?>
+<?php if($group_data['use_comment']) { ?>
   <tr height=22 align=center>
      <td bgcolor=#a0a0a0 align=right style=font-family:Tahoma;font-size:8pt;font-weight:bold;>소갯말&nbsp;&nbsp;</td>
-     <td align=left bgcolor=#e0e0e0>&nbsp;<textarea cols=50 rows=4 name=comment class=textarea style=border-color:#b0b0b0><?=$member_data["comment"]?></textarea></td>
+     <td align=left bgcolor=#e0e0e0>&nbsp;<textarea cols=50 rows=4 name=comment class=textarea style=border-color:#b0b0b0><?=$member_data['comment']?></textarea></td>
   </tr>
 <?php } ?>
 
@@ -290,7 +290,7 @@ while($board_data_list=mysql_fetch_array($board_list))
   <tr height=22 align=center>
      <td bgcolor=#a0a0a0 align=right style=font-family:Tahoma;font-size:8pt;font-weight:bold;>마크 그림&nbsp;&nbsp;</td>
      <td align=left bgcolor=#e0e0e0>&nbsp;<?php 
-	$private_icon = get_private_icon($member_data["no"],1);
+	$private_icon = get_private_icon($member_data['no'],1);
 	if($private_icon) {
 ?>
 		<img src='<?=$private_icon?>' border=1>
@@ -310,7 +310,7 @@ while($board_data_list=mysql_fetch_array($board_list))
   <tr height=22 align=center>
      <td bgcolor=#a0a0a0 align=right style=font-family:Tahoma;font-size:8pt;font-weight:bold;>이름 그림&nbsp;&nbsp;</td>
      <td align=left bgcolor=#e0e0e0>&nbsp;<?php 
-	$private_name = get_private_icon($member_data["no"],2);
+	$private_name = get_private_icon($member_data['no'],2);
 	if($private_name) {
 ?>
 		<img src='<?=$private_name?>' border=1>

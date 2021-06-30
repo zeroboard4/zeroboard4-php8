@@ -11,14 +11,14 @@
 // 멤버정보 구하기
 	$member=member_info();
 
-	if(!$member["no"]) Error("회원만이 쪽지보내가기 가능합니다","window.close");
+	if(!$member['no']) Error("회원만이 쪽지보내가기 가능합니다","window.close");
 
 // 그룹데이타 읽어오기;;
 	$group_data=mysql_fetch_array(mysql_query("select * from $group_table where no='$data[group_no]'"));
 
 
 // 쪽지 보내기일때;;
-	if($kind==1&&$member["no"]&&$data["no"]) {
+	if($kind==1&&$member['no']&&$data['no']) {
 		if(isblank($subject)) Error("제목이 없습니다. 제목을 입력해 주십시오.");
 		if(isblank($memo)) Error("내용이 없습니다. 내용을 입력해 주십시오.");
 

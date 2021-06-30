@@ -6,7 +6,7 @@
 <tr align=center class=list<?=$coloring%2?>>
 	<td class=list_eng><?=$number?></td>
 	<?=$hide_category_start?><td class=list_eng nowrap><nobr><?=$category_name?><nobr></td><?=$hide_category_end?>
-	<td align=left nowrap><?=$hide_cart_start?><input type=checkbox name=cart value="<?=$data["no"]?>"><?=$hide_cart_end?>&nbsp;<?=$insert?><?=$subject?> &nbsp;<font class=list_eng style=font-size:7pt><?=$comment_num?></font></td> 
+	<td align=left nowrap><?=$hide_cart_start?><input type=checkbox name=cart value="<?=$data['no']?>"><?=$hide_cart_end?>&nbsp;<?=$insert?><?=$subject?> &nbsp;<font class=list_eng style=font-size:7pt><?=$comment_num?></font></td> 
 	<td><nobr><?=$face_image?>&nbsp;<?=$name?></nobr></td>
 	<td nowrap class=list_eng><?=$reg_date?></td>
 	<td nowrap class=list_eng><?=$vote?></td>

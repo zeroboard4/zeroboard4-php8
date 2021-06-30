@@ -27,7 +27,7 @@
 <tr>
   <td background=<?=$dir?>/4.gif><img src=<?=$dir?>/4.gif border=0></td>
   <td style='word-break:break-all;'>
-      <b><?=$loop_number?>. <?=$data["subject"]?> (<?=$vote?>)</b>
+      <b><?=$loop_number?>. <?=$data['subject']?> (<?=$vote?>)</b>
   </td>
   <td background=<?=$dir?>/6.gif><img src=<?=$dir?>/6.gif border=0></td>
 </tr>

@@ -5,8 +5,8 @@
 <table border=1 cellspacing=0 cellpadding=2 width=96%>
 <tr>
   <td colspan=3 style='word-break:break-all;'>
-    <?=$hide_cart_start?><input type=checkbox name=cart value="<?=$reply_data["no"]?>"><?=$hide_cart_end?>
-    <?=$reply_data["subject"]?>
+    <?=$hide_cart_start?><input type=checkbox name=cart value="<?=$reply_data['no']?>"><?=$hide_cart_end?>
+    <?=$reply_data['subject']?>
   </td>
   <td align=right nowrap>&nbsp;
      <?=$a_reply?>r</a>

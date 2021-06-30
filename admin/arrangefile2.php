@@ -9,7 +9,7 @@
 
 	$member=member_info();
 
-	if(!$member["no"]||$member["is_admin"]>1||$member["level"]>1) Error("최고 관리자만이 사용할수 있습니다");
+	if(!$member['no']||$member['is_admin']>1||$member['level']>1) Error("최고 관리자만이 사용할수 있습니다");
 
 	head(" bgcolor=white");
 ?>
@@ -40,7 +40,7 @@
 	unset($dblist);
 
 	while($bbs=mysql_fetch_array($result)) {
-		$id = $bbs["name"];
+		$id = $bbs['name'];
 
 		echo ".";
 		flush();

@@ -17,7 +17,7 @@
 		<?=$a_write?><img src=<?=$dir?>/btn_write.gif border=0></a>
 	</td>
 	<td align=right>
-		<font class=zv3_normal><?=$a_prev_page?>[이전 <?=$setup["page_num"]?>개]</a></font> <?=$print_page?> <font class=zv3_normal><?=$a_next_page?>[다음 <?=$setup["page_num"]?>개]</font></a><br>
+		<font class=zv3_normal><?=$a_prev_page?>[이전 <?=$setup['page_num']?>개]</a></font> <?=$print_page?> <font class=zv3_normal><?=$a_next_page?>[다음 <?=$setup['page_num']?>개]</font></a><br>
 		<table border=0 cellspacing=0 cellpadding=0>
 		</form>
 		<form method=post name=search action=<?=$PHP_SELF?>><input type=hidden name=page value=<?=$page?>><input type=hidden name=id value=<?=$id?>><input type=hidden name=select_arrange value=<?=$select_arrange?>><input type=hidden name=desc value=<?=$desc?>><input type=hidden name=page_num value=<?=$page_num?>><input type=hidden name=selected><input type=hidden name=exec><input type=hidden name=sn value="<?=$sn?>"><input type=hidden name=ss value="<?=$ss?>"><input type=hidden name=sc value="<?=$sc?>"><input type=hidden name=category value="<?=$category?>">

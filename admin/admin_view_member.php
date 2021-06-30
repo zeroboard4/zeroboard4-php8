@@ -58,7 +58,7 @@
 <tr height=1><td bgcolor=#000000 style=padding:0px; colspan=10><img src=images/t.gif height=1></td></tr>
 <tr bgcolor=bbbbbb>
 	<td align=right colspan=10 height=25 colspan=2 style=font-family:Tahoma;font-size:8pt;>
-	그룹이름 : <b><?=$group_data["name"]?></b> , 전체 회원수 : <b><?php echo $total_member;?></b> , <b><?php echo $total;?></b> 개 검색&nbsp;&nbsp;&nbsp;</td>
+	그룹이름 : <b><?=$group_data['name']?></b> , 전체 회원수 : <b><?php echo $total_member;?></b> , <b><?php echo $total;?></b> 개 검색&nbsp;&nbsp;&nbsp;</td>
 </tr>
 <!-- 모두삭제하는 거랑, 변한변경, 그룹이동 버튼 표시 -->
 <script>
@@ -140,7 +140,7 @@
    return false;
   }
 
-<?php if($member["is_admin"]==1)
+<?php if($member['is_admin']==1)
   {
 ?>
   function move_group()
@@ -193,9 +193,9 @@
 <?php
   while($data=mysql_fetch_array($result))
   {
-   if($data["level"]==1) $grant_color="<font color=red><b>";
-   elseif($data["level"]==2) $grant_color="<font color=blue><b>";
-   elseif($data["level"]==3) $grant_color="<font color=green><b>";
+   if($data['level']==1) $grant_color="<font color=red><b>";
+   elseif($data['level']==2) $grant_color="<font color=blue><b>";
+   elseif($data['level']==3) $grant_color="<font color=green><b>";
    else $grant_color="";
 
    echo"
@@ -206,10 +206,10 @@
            <td><img src=images/t.gif height=3><br>$data[name]&nbsp;</td>
            <td style=font-family:Tahoma;font-size:8pt;>$grant_color$data[level]</td>
            <td style=font-family:Tahoma;font-size:8pt;>".($data["point1"]*10+$data["point2"])." <font style=font-size:7pt;>(".$data["point1"]."/".$data["point2"].")</font></td>
-           <td style=font-family:Tahoma;font-size:8pt;>".date("Y-m-d",$data["reg_date"])."</td>
+           <td style=font-family:Tahoma;font-size:8pt;>".date("Y-m-d",$data['reg_date'])."</td>
            <td style=font-family:Tahoma;font-size:8pt;><a href=$PHP_SELF?exec=$exec&group_no=$group_no&exec2=modify&page=$page&no=$data[no]&keyword=$keyword&keykind=$keykind&like=$like&page_num=$page_num>Modify</a></td>
            <td style=font-family:Tahoma;font-size:8pt;>";
-   if($data["no"]>1) echo"<a href=$PHP_SELF?exec=$exec&group_no=$group_no&exec2=del_member&keyword=$keyword&page=$page&no=$data[no]$href>Delete</a>"; else echo"&nbsp;";
+   if($data['no']>1) echo"<a href=$PHP_SELF?exec=$exec&group_no=$group_no&exec2=del_member&keyword=$keyword&page=$page&no=$data[no]$href>Delete</a>"; else echo"&nbsp;";
    echo"   </td>
         </tr>
         ";
@@ -229,7 +229,7 @@
   echo "<option value=$i $select[$i]>$i Level</option>";?></select></td><td><input type=button value='레벨변경' style=border-color:#b0b0b0;background-color:#3d3d3d;color:#ffffff;font-size:8pt;font-family:Tahoma;height:20px; onclick=move_all()>
        </td><td><input type=button value='선택된 회원 삭제' style=border-color:#b0b0b0;background-color:#3d3d3d;color:#ffffff;font-size:8pt;font-family:Tahoma;height:20px; onclick=delete_all()></td>
 <?php
-  if($member["is_admin"]==1)
+  if($member['is_admin']==1)
   {
 ?>
        <td width=20>&nbsp;</td>

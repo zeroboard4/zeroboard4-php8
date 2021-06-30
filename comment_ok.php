@@ -11,22 +11,22 @@
  **************************************************************************/
 
 // 대상 파일 이름 정리
-	if(!$setup["use_alllist"]) $view_file_link="view.php"; else $view_file_link="zboard.php";
+	if(!$setup['use_alllist']) $view_file_link="view.php"; else $view_file_link="zboard.php";
 
 // 사용권한 체크
-	if($setup["grant_comment"]<$member["level"]&&!$is_admin) Error("사용권한이 없습니다","login.php?id=$id&page=$page&page_num=$page_num&category=$category&sn=$sn&ss=$ss&sc=$sc&keyword=$keyword&no=$no&file=$view_file_link");
+	if($setup['grant_comment']<$member['level']&&!$is_admin) Error("사용권한이 없습니다","login.php?id=$id&page=$page&page_num=$page_num&category=$category&sn=$sn&ss=$ss&sc=$sc&keyword=$keyword&no=$no&file=$view_file_link");
 
 // 각종 변수 검사;;
 	$memo = str_replace("ㅤ","",$memo);
 	if(isblank($memo)) Error("내용을 입력하셔야 합니다");
-	if(!$member["no"]) {
+	if(!$member['no']) {
 		if(isblank($name)) Error("이름을 입력하셔야 합니다");
 		if(isblank($password)) Error("비밀번호를 입력하셔야 합니다");
 	}
 
 // 필터링;; 관리자가 아닐때;;
-	if(!$is_admin&&$setup["use_filter"]) {
-		$filter=explode(",",$setup["filter"]);
+	if(!$is_admin&&$setup['use_filter']) {
+		$filter=explode(",",$setup['filter']);
 
 		$f_memo=preg_replace("/([\_\-\.\/~@?=%&! ]+)/","",strip_tags($memo));
 		$f_name=preg_replace("/([\_\-\.\/~@?=%&! ]+)/","",strip_tags($name));
@@ -46,16 +46,16 @@
 	}
 
 // 관리자이거나 HTML허용레벨이 낮을때 태그의 금지유무를 체크
-	if(!$is_admin&&$setup["grant_html"]<$member["level"]) {
+	if(!$is_admin&&$setup['grant_html']<$member['level']) {
 		$memo=del_html($memo);// 내용의 HTML 금지;;
 	}
 
 // 회원등록이 되어 있을때 이름등을 가져옴;;
-	if($member["no"]) {
-		if($mode=="modify"&&$member["no"]!=$s_data["ismember"]) {
-			$name=$s_data["name"];
+	if($member['no']) {
+		if($mode=="modify"&&$member['no']!=$s_data['ismember']) {
+			$name=$s_data['name'];
 		} else {
-			$name=$member["name"];
+			$name=$member['name'];
 		}
 	}
 
@@ -76,13 +76,13 @@
 // 쿠키 설정;;
 
 	// 기존 세션 처리 (4.0x용 세션 처리로 인하여 주석 처리)
-	//if($c_name) $HTTP_SESSION_VARS["writer_name"]=$name;
+	//if($c_name) $HTTP_SESSION_VARS['writer_name']=$name;
 
 	// 4.0x 용 세션 처리
 	if($name) {
 		$writer_name=$name;
 		//session_register("writer_name");
-		$_SESSION["writer_name"]=$writer_name;
+		$_SESSION['writer_name']=$writer_name;
 	}
 
 // 각종 변수 설정

@@ -6,19 +6,19 @@
 
 	if(!$id) die("<Script>\nalert('게시판 이름을 입력하셔야 합니다');\nwindow.close();\n</Script>");
 
-	$setup["header"]="";
-	$setup["footer"]="";
-	$setup["header_url"]="";
-	$setup["footer_url"]="";
-	$group["header"]="";
-	$group["footer"]="";
-	$group["header_url"]="";
-	$group["footer_url"]="";
-	$setup["skinname"]="";
+	$setup['header']="";
+	$setup['footer']="";
+	$setup['header_url']="";
+	$setup['footer_url']="";
+	$group['header']="";
+	$group['footer']="";
+	$group['header_url']="";
+	$group['footer_url']="";
+	$setup['skinname']="";
 
-	if(!$member["no"]) error("회원만 <br>사용가능합니다","window.close");
-	if($setup["grant_write"]<$member["level"]&&!$is_admin) Error("사용 권한이 없습니다","window.close");
-	if($setup["grant_imagebox"]<$member["level"]) Error("사용 권한이 없습니다","window.close");
+	if(!$member['no']) error("회원만 <br>사용가능합니다","window.close");
+	if($setup['grant_write']<$member['level']&&!$is_admin) Error("사용 권한이 없습니다","window.close");
+	if($setup['grant_imagebox']<$member['level']) Error("사용 권한이 없습니다","window.close");
 
 // icon 디렉토리에 member_image_box 디렉토리가 없을경우 디렉토리 생성
 	$path = "icon/member_image_box";
@@ -28,7 +28,7 @@
 	}
 
 // 회원의 Path 지정
-	$path .="/".$member["no"];
+	$path .="/".$member['no'];
 
 // 회원의 디렉토리가 생성이 안되어 있으면 생성
 	if(!is_dir($path)) {
@@ -71,12 +71,12 @@
 		if(!eregi("image_box.php",$HTTP_REFERER)) Error("정상적으로 업로드를 하여 주시기 바랍니다.","window.close");
 		if(getenv("REQUEST_METHOD") == 'GET' ) Error("정상적으로 업로드를 하여 주시기 바랍니다","window.close");
 
-		$num = (int)count($_FILES["upload"]["name"]);
+		$num = (int)count($_FILES['upload']['name']);
 		for($i=0;$i<$num;$i++) {
-			$upload[$i] = $_FILES["upload"]["tmp_name"][$i];
-			$upload_name[$i]  = $_FILES["upload"]["name"][$i];
-			$upload_size[$i]  = $_FILES["upload"]["size"][$i];
-			$upload_type[$i]  = $_FILES["upload"]["type"][$i];
+			$upload[$i] = $_FILES['upload']['tmp_name'][$i];
+			$upload_name[$i]  = $_FILES['upload']['name'][$i];
+			$upload_size[$i]  = $_FILES['upload']['size'][$i];
+			$upload_type[$i]  = $_FILES['upload']['type'][$i];
 
 			if($upload_name[$i]) {
 

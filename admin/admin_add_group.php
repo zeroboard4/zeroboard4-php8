@@ -26,28 +26,28 @@ return true;
 <tr height=25 bgcolor=#e0e0e0>
   <td  align=right  style=font-family:Tahoma;font-size:8pt;><b>게시판 상단에 불러올 파일&nbsp;</td>
   <td >&nbsp;&nbsp;
-     <input type=text  name=header_url value='<?php if(isset($data)) echo $data["header_url"];?>' size=40 maxlength=255 class=input style=border-color:#b0b0b0> &nbsp;&nbsp;
+     <input type=text  name=header_url value='<?php if(isset($data)) echo $data['header_url'];?>' size=40 maxlength=255 class=input style=border-color:#b0b0b0> &nbsp;&nbsp;
   </td>
 </tr>
 
 <tr height=25 bgcolor=#e0e0e0>
   <td  align=right  style=font-family:Tahoma;font-size:8pt;><b>게시판 상단에 출력될 내용&nbsp;</td>
   <td >&nbsp;&nbsp;
-     <textarea name=header cols=70 rows=10 class=textarea style=border-color:b0b0b0><?php if(isset($data)) echo stripslashes($data["header"]);?></textarea>
+     <textarea name=header cols=70 rows=10 class=textarea style=border-color:b0b0b0><?php if(isset($data)) echo stripslashes($data['header']);?></textarea>
   </td>
 </tr>
 
 <tr height=25 bgcolor=#e0e0e0>
   <td  align=right style=font-family:Tahoma;font-size:8pt;><b>게시판 하단에 불러올 파일&nbsp;</td>
   <td >&nbsp;&nbsp;
-     <input type=text  name=footer_url value='<?php if(isset($data)) echo stripslashes($data["footer_url"]);?>' size=40 maxlength=255 class=input style=border-color:#b0b0b0> &nbsp;&nbsp;
+     <input type=text  name=footer_url value='<?php if(isset($data)) echo stripslashes($data['footer_url']);?>' size=40 maxlength=255 class=input style=border-color:#b0b0b0> &nbsp;&nbsp;
   </td>
 </tr>
 
 <tr height=25 bgcolor=#e0e0e0>
   <td  align=right style=font-family:Tahoma;font-size:8pt;><b>게시판 하단에 출력될 내용&nbsp;</td>
   <td >&nbsp;&nbsp;
-     <textarea name=footer cols=70 rows=10 class=textarea style=border-color:#b0b0b0><?php if(isset($data)) echo stripslashes($data["footer"]);?></textarea>
+     <textarea name=footer cols=70 rows=10 class=textarea style=border-color:#b0b0b0><?php if(isset($data)) echo stripslashes($data['footer']);?></textarea>
   </td>
 </tr>
 <tr height=25 bgcolor=#e0e0e0>

@@ -30,30 +30,30 @@
 	$size = 0;
 	$num = 1;
 	while($dbData=mysql_fetch_array($result)) {
-		if(strpos($dbData["Name"], $member_table)!==false && intval($dbData["Rows"])<5000000){
+		if(strpos($dbData['Name'], $member_table)!==false && intval($dbData['Rows'])<5000000){
 			$password_type = mysql_fetch_array(mysql_query("show columns from $dbData[Name] like 'password'",$connect))["Type"];
 			if(strpos($password_type, '20')!==false) mysql_query("alter table $dbData[Name] modify password char(41)",$connect);
 		}
-		if(strpos($dbData["Name"], $t_board)!==false && intval($dbData["Rows"])<5000000){
+		if(strpos($dbData['Name'], $t_board)!==false && intval($dbData['Rows'])<5000000){
 			$password_type = mysql_fetch_array(mysql_query("show columns from $dbData[Name] like 'password'",$connect))["Type"];
 			if(strpos($password_type, '20')!==false) mysql_query("alter table $dbData[Name] modify password char(41)",$connect);
 		}
-		if(strpos($dbData["Name"], $t_comment)!==false && intval($dbData["Rows"])<5000000){
+		if(strpos($dbData['Name'], $t_comment)!==false && intval($dbData['Rows'])<5000000){
 			$password_type = mysql_fetch_array(mysql_query("show columns from $dbData[Name] like 'password'",$connect))["Type"];
 			if(strpos($password_type, '20')!==false) mysql_query("alter table $dbData[Name] modify password char(41)",$connect);
 		}
 
-		$size += $dbData["Data_length"]+$dbData["Index_length"];
+		$size += $dbData['Data_length']+$dbData['Index_length'];
 ?>
 	<tr bgcolor=white align=center>
 		<td><?=$num?></td>
-		<td bgcolor=f4f4f4 align=left>&nbsp;<?=$dbData["Name"]?></td>
-		<td><?php if(isset($dbData["Type"])) echo $dbData["Type"]; else echo $dbData["Engine"];?></td>
-		<td align=right><?=number_format($dbData["Rows"])?></td>
-		<td align=right><?=getFileSize($dbData["Data_length"])?></td>
-		<td align=right><?=getFileSize($dbData["Index_length"])?></td>
-		<td bgcolor=#f1f1f1 align=right><?=getFileSize($dbData["Data_length"]+$dbData["Index_length"])?></td>
-		<td><?=$dbData["Create_time"]?></td>
+		<td bgcolor=f4f4f4 align=left>&nbsp;<?=$dbData['Name']?></td>
+		<td><?php if(isset($dbData['Type'])) echo $dbData['Type']; else echo $dbData['Engine'];?></td>
+		<td align=right><?=number_format($dbData['Rows'])?></td>
+		<td align=right><?=getFileSize($dbData['Data_length'])?></td>
+		<td align=right><?=getFileSize($dbData['Index_length'])?></td>
+		<td bgcolor=#f1f1f1 align=right><?=getFileSize($dbData['Data_length']+$dbData['Index_length'])?></td>
+		<td><?=$dbData['Create_time']?></td>
 	</tr>
 <?php
 		$num++;

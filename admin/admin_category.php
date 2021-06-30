@@ -1,7 +1,7 @@
 <?php
   $group_data=mysql_fetch_array(mysql_query("select * from $group_table where no='$group_no'"));
 
-  if($member["is_admin"]>2&&!eregi($no.",",$member["board_name"])) error("사용 권한이 없습니다");
+  if($member['is_admin']>2&&!eregi($no.",",$member['board_name'])) error("사용 권한이 없습니다");
 
   $table_data=mysql_fetch_array(mysql_query("select name from $admin_table where no='$no'"));
 
@@ -11,7 +11,7 @@
 <table border=0 cellspacing=1 cellpadding=3 width=100% bgcolor=#b0b0b0>
   <tr height=30><td bgcolor=#3d3d3d colspan=5><img src=images/admin_webboard.gif></td></tr>
 <Tr height=30><td bgcolor=white colspan=5 align=right style=font-family:Tahoma;font-size:8pt;>
-그룹 이름 : <b><?=$group_data["name"]?></b> , 게시판 이름 : <b><a href=zboard.php?id=<?=$table_data["name"]?> target=_blank><?=$table_data["name"]?></a></b> &nbsp;&nbsp;&nbsp;
+그룹 이름 : <b><?=$group_data['name']?></b> , 게시판 이름 : <b><a href=zboard.php?id=<?=$table_data['name']?> target=_blank><?=$table_data['name']?></a></b> &nbsp;&nbsp;&nbsp;
     <input type=button value='게시판관리' class=input style=width=100px onclick=location.href="<?=$PHP_SELF?>?exec=view_board&group_no=<?=$group_no?>&exec2=modify&no=<?=$no?>&page=<?=$page?>&page_num=<?=$page_num?>">
     <input type=button value='권한설정' class=input style=width=100px onclick=location.href="<?=$PHP_SELF?>?exec=view_board&group_no=<?=$group_no?>&exec2=grant&no=<?=$no?>&page=<?=$page?>&page_num=<?=$page_num?>">
 &nbsp;&nbsp;&nbsp;
@@ -39,8 +39,8 @@
 ?>
 
   <tr height=23 align=center bgcolor=#e0e0e0>
-    <td><input type=checkbox name=c[] value=<?php echo $data["no"];?>></td>
-    <td><img src=images/t.gif height=3><br><?php echo $data["name"];?></td>
+    <td><input type=checkbox name=c[] value=<?php echo $data['no'];?>></td>
+    <td><img src=images/t.gif height=3><br><?php echo $data['name'];?></td>
     <td style=font-family:Tahoma;font-size:8pt><?php echo $total_num;?></td>
     <?="<td style=font-family:Tahoma;font-size:8pt><a href=$PHP_SELF?exec=view_board&no=$no&exec2=modify_category&group_no=$group_no&page=$page&page_num=$page_num&category_no=$data[no]>Modify</a></td>"?>
     <td style=font-family:Tahoma;font-size:8pt>

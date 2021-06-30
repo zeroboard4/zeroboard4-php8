@@ -2,10 +2,10 @@
 	include "lib.php";
 	$connect=dbConn();
 	$member=member_info();
-	if((isset($member["no"])&&$member["is_admin"]<3&&$member["is_admin"]>=1)||(isset($member["no"])&&$member["board_name"])) movepage("admin_setup.php");
+	if((isset($member['no'])&&$member['is_admin']<3&&$member['is_admin']>=1)||(isset($member['no'])&&$member['board_name'])) movepage("admin_setup.php");
 	else {
-		if(isset($member["no"])) {
-			destroyZBSessionID($member["no"]);
+		if(isset($member['no'])) {
+			destroyZBSessionID($member['no']);
 			// 4.0x 용 세션 처리
 			$zb_logged_no='';
 			$zb_logged_time='';
@@ -17,7 +17,7 @@
 			session_register("zb_logged_ip");
 			session_register("zb_secret");
 			session_register("zb_last_connect_check");
-			$_SESSION["zb_hash"]='';
+			$_SESSION['zb_hash']='';
 		}
 	}
 

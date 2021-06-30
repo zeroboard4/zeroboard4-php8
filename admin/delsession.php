@@ -9,17 +9,17 @@
 
 	$member=member_info();
 
-	if(!$member["no"]||$member["is_admin"]>1||$member["level"]>1) Error("최고 관리자만이 사용할수 있습니다");
+	if(!$member['no']||$member['is_admin']>1||$member['level']>1) Error("최고 관리자만이 사용할수 있습니다");
 
 	// 세션 삭제
 	if($exec=="delete") {
 
 		$i=0;
-		$path = "../".$_zbDefaultSetup["session_path"];
+		$path = "../".$_zbDefaultSetup['session_path'];
 		$directory = dir($path);
 		while($entry = $directory->read()) {
 			if ($entry != "." && $entry != "..") {
-				if(!eregi(session_id(), $entry)&&!eregi($_COOKIE["ZBSESSIONID"], $entry)) {
+				if(!eregi(session_id(), $entry)&&!eregi($_COOKIE['ZBSESSIONID'], $entry)) {
 					z_unlink($path."/".$entry);
 					$i++;
 					if($i%100==0) print(".");
@@ -80,7 +80,7 @@
 	
 	// 전체 파일 목록을 구함
 	unset($list);
-	$path = "../".$_zbDefaultSetup["session_path"];
+	$path = "../".$_zbDefaultSetup['session_path'];
 	$directory = dir($path);
 	$i=0;
 	$totalsize = 0;

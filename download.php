@@ -11,7 +11,7 @@
  **************************************************************************/
 
 // 사용권한 체크
-	if($setup["grant_view"]<$member["level"]&&!$is_admin) Error("사용권한이 없습니다","login.php?id=$id&page=$page&page_num=$page_num&category=$category&sn=$sn&ss=$ss&sc=$sc&keyword=$keyword&no=$no&file=zboard.php");
+	if($setup['grant_view']<$member['level']&&!$is_admin) Error("사용권한이 없습니다","login.php?id=$id&page=$page&page_num=$page_num&category=$category&sn=$sn&ss=$ss&sc=$sc&keyword=$keyword&no=$no&file=zboard.php");
 
 // 현재글의 Download 수를 올림;;
     if($filenum==1) {

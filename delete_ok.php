@@ -15,19 +15,19 @@
   $setup=get_table_attrib($id);
 
   // 설정되지 않은 게시판일때 에러 표시
-  if(!$setup["name"]) Error("생성되지 않은 게시판입니다.<br><br>게시판을 생성후 사용하십시요","");
+  if(!$setup['name']) Error("생성되지 않은 게시판입니다.<br><br>게시판을 생성후 사용하십시요","");
 
   // 현재 게시판의 그룹의 설정 읽어 오기
-  $group=group_info($setup["group_no"]);
+  $group=group_info($setup['group_no']);
 
   // 멤버 정보 구해오기;;; 멤버가 있을때
   $member=member_info();
 
   // 현재 로그인되어 있는 멤버가 전체, 또는 그룹관리자인지 검사
-  if($member["is_admin"]==1||$member["is_admin"]==2&&$member["group_no"]==$setup["group_no"]||check_board_master($member, $setup["no"])) $is_admin=1; else $is_admin="";
+  if($member['is_admin']==1||$member['is_admin']==2&&$member['group_no']==$setup['group_no']||check_board_master($member, $setup['no'])) $is_admin=1; else $is_admin="";
 
   // 접근 금지 아이피인 경우 금지하기;;;
-  $avoid_ip=explode(",",$setup["avoid_ip"]);
+  $avoid_ip=explode(",",$setup['avoid_ip']);
   for($i=0;$i<count($avoid_ip);$i++)
   {
    if(!isblank($avoid_ip[$i])&&!$is_admin && strpos($_SERVER['REMOTE_ADDR'],$avoid_ip[$i]) !== false)
@@ -35,7 +35,7 @@
   }
 
   // 현재 그룹이 폐쇄그룹이고 로그인한 멤버가 비멤버일때 에러표시
-  if($group["is_open"]==0&&!$is_admin&&$member["group_no"]!=$setup["group_no"]) Error("공개 되어 있지 않습니다");
+  if($group['is_open']==0&&!$is_admin&&$member['group_no']!=$setup['group_no']) Error("공개 되어 있지 않습니다");
 
   //패스워드를 암호화
   if($password)
@@ -46,18 +46,18 @@
 
   // 원본글을 가져옴
   $s_data=mysql_fetch_array(mysql_query("select * from $t_board"."_$id where no='$no'"));
-  if(strlen($s_data["password"])<=16&&strlen(get_password("a"))>=41) $password=mysql_fetch_array(mysql_query("select old_password('$_POST[password]')"))[0];
+  if(strlen($s_data['password'])<=16&&strlen(get_password("a"))>=41) $password=mysql_fetch_array(mysql_query("select old_password('$_POST[password]')"))[0];
 
   // 회원일때를 확인;;
-  if(!$is_admin&&$member["level"]>$setup["grant_delete"])
+  if(!$is_admin&&$member['level']>$setup['grant_delete'])
   {
-   if(!$s_data["ismember"])
+   if(!$s_data['ismember'])
    {
-    if($s_data["password"]!=$password) Error("비밀번호가 올바르지 않습니다");
+    if($s_data['password']!=$password) Error("비밀번호가 올바르지 않습니다");
    }
    else
    {
-    if($s_data["ismember"]!=$member["no"]) Error("비밀번호를 입력하여 주십시요");
+    if($s_data['ismember']!=$member['no']) Error("비밀번호를 입력하여 주십시요");
    }
   }
 
@@ -65,7 +65,7 @@
   // 글삭제일때 
   ////////////////////////////////////////////////////////////////////////////////////////////
 
-  if(!$s_data["child"]) // 답글이 없을때;;
+  if(!$s_data['child']) // 답글이 없을때;;
   {
    mysql_query("delete from $t_board"."_$id where no='$no'") or Error(mysql_error()); // 글삭제
 
@@ -73,12 +73,12 @@
    @z_unlink("./".$s_data["file_name1"]);
    @z_unlink("./".$s_data["file_name2"]);
 
-   minus_division($s_data["division"]);
+   minus_division($s_data['division']);
 
-   if($s_data["depth"]==0)
+   if($s_data['depth']==0)
    {
-    if($s_data["prev_no"]) mysql_query("update $t_board"."_$id set next_no='$s_data[next_no]' where next_no='$s_data[no]'"); // 이전글이 있으면 빈자리 메꿈;;;
-    if($s_data["next_no"]) mysql_query("update $t_board"."_$id set prev_no='$s_data[prev_no]' where prev_no='$s_data[no]'"); // 다음글이 있으면 빈자리 메꿈;;;
+    if($s_data['prev_no']) mysql_query("update $t_board"."_$id set next_no='$s_data[next_no]' where next_no='$s_data[no]'"); // 이전글이 있으면 빈자리 메꿈;;;
+    if($s_data['next_no']) mysql_query("update $t_board"."_$id set prev_no='$s_data[prev_no]' where prev_no='$s_data[no]'"); // 다음글이 있으면 빈자리 메꿈;;;
    }
    else
    { 
@@ -96,7 +96,7 @@
    mysql_query("update $t_category"."_$id set num=num-1 where no='$s_data[category]'",$connect);
 
    // 회원일 경우 해당 해원의 점수 주기
-   if($member["no"]==$s_data["ismember"]) @mysql_query("update $member_table set point1=point1-1 where no='$member[no]'",$connect) or error(mysql_error());
+   if($member['no']==$s_data['ismember']) @mysql_query("update $member_table set point1=point1-1 where no='$member[no]'",$connect) or error(mysql_error());
   }
 
   //////// MySQL 닫기 ///////////////////////////////////////////////

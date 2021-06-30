@@ -55,43 +55,43 @@ if(realpath($_SERVER['SCRIPT_FILENAME']) == realpath(__FILE__)) exit;
 		// 게시판 설정 읽어 오기
 		$_dbTimeStart = getmicrotime();
 		$setup = get_table_attrib($id); 
-		if(!$setup["name"]) Error("생성되지 않은 게시판입니다.<br><br>게시판을 생성후 사용하십시요",""); // 설정되지 않은 게시판
+		if(!$setup['name']) Error("생성되지 않은 게시판입니다.<br><br>게시판을 생성후 사용하십시요",""); // 설정되지 않은 게시판
 
 		// 현재 게시판의 그룹의 설정 읽어 오기
-		if($_zboardis) $group=group_info($setup["group_no"]);
+		if($_zboardis) $group=group_info($setup['group_no']);
 		$_dbTime += getmicrotime()-$_dbTimeStart;
 
 		// 현재 로그인되어 있는 멤버가 전체, 그룹관리자, 게시판관리자인지 검사
-		if($member["is_admin"]==1||($member["is_admin"]==2&&$member["group_no"]==$setup["group_no"])||check_board_master($member, $setup["no"])) $is_admin=1; else $is_admin="";
+		if($member['is_admin']==1||($member['is_admin']==2&&$member['group_no']==$setup['group_no'])||check_board_master($member, $setup['no'])) $is_admin=1; else $is_admin="";
 
 		// 현재 그룹이 폐쇄그룹이고 로그인한 멤버가 비멤버일때 에러표시
-		if($group["is_open"]==0&&!$is_admin&&$member["group_no"]!=$setup["group_no"]) Error("공개 되어 있지 않습니다");
+		if($group['is_open']==0&&!$is_admin&&$member['group_no']!=$setup['group_no']) Error("공개 되어 있지 않습니다");
 
 		// 접근 금지 아이피인 경우 금지하기;;;
 		if(!$is_admin) check_blockip();
 
 		// 관리자일경우에는 무조건 바구니 기능 활성화 시킴 (게시물 정리를 위해서)
-		if($is_admin) $setup["use_cart"]=1; 
+		if($is_admin) $setup['use_cart']=1; 
 
 		// 스킨 디렉토리 : $dir 이라는 변수는 계속해서 스킨경로 파일로 
-		$dir="skin/".$setup["skinname"];
+		$dir="skin/".$setup['skinname'];
 	
 		// 게시판의 가로크기 설정
-		$width=$setup["table_width"];
+		$width=$setup['table_width'];
 
 		// 카테고리 읽어오기
-		if($setup["use_category"]) {
+		if($setup['use_category']) {
 			$_dbTimeStart = getmicrotime();
 			$result=mysql_query("select * from $t_category"."_$id order by no");
 			$_dbTime += getmicrotime()-$_dbTimeStart;
 			$a_category="<select name=category onchange=category_change(this)><option value=''>Category</option>";
 			while($data=mysql_fetch_array($result)) {
-					$category_num_c[]=$data["no"];
-					$category_name_c[]=$data["name"];
-					$category_n_c[]=$data["num"];
-					$category_data[$data["no"]]=$data["name"];
-					$_category_data[$data["no"]]=$data["num"];
-					if($category==$data["no"]) $a_category.="<option value=$data[no] selected>$data[name]</option>";
+					$category_num_c[]=$data['no'];
+					$category_name_c[]=$data['name'];
+					$category_n_c[]=$data['num'];
+					$category_data[$data['no']]=$data['name'];
+					$_category_data[$data['no']]=$data['num'];
+					if($category==$data['no']) $a_category.="<option value=$data[no] selected>$data[name]</option>";
 					else $a_category.="<option value=$data[no]>$data[name]</option>";
 			}
 			$a_category.="</select>";
@@ -123,7 +123,7 @@ if(realpath($_SERVER['SCRIPT_FILENAME']) == realpath(__FILE__)) exit;
 			if(!$desc) $desc="asc";
 	
 			// 답글 목록에 나타나지 않게 설정하였을때 (게시판 설정시 use_showreply가 체크 되었을때)
-			if(!$setup["use_showreply"]) if(!$s_que) $s_que=" arrangenum=0 "; else $s_que.=" and arrangenum=0 ";
+			if(!$setup['use_showreply']) if(!$s_que) $s_que=" arrangenum=0 "; else $s_que.=" and arrangenum=0 ";
 	
 			// 카테고리 : 카테고리가 있을때 category를 검색 조건에 넣음
 			if($category) if(!$s_que) $s_que=" category='$category' "; else $s_que.=" and category='$category'";
@@ -162,7 +162,7 @@ if(realpath($_SERVER['SCRIPT_FILENAME']) == realpath(__FILE__)) exit;
 			// 전체개수를 구함 : 검색어가 있을때는 따로 전체 갯수를 구함, 아니면 게시판에 있는것으로
 			if($s_que) {
 				// 카테고리만 있을 경우
-				if(!$keyword&&$setup["use_showreply"]) {
+				if(!$keyword&&$setup['use_showreply']) {
 					$total=$_category_data[$category];
 
 				// 검색어나 답글없음이 체크되어 있을경우
@@ -174,10 +174,10 @@ if(realpath($_SERVER['SCRIPT_FILENAME']) == realpath(__FILE__)) exit;
 					$_dbTime += getmicrotime()-$_dbTimeStart;
 					$total=$temp[0];
 				}
-			} else $total=$setup["total_article"];
+			} else $total=$setup['total_article'];
 
 			// 페이지 관련 변수값 정함
-			$page_num=$setup["memo_num"];
+			$page_num=$setup['memo_num'];
 			if(!$page) $page=1; // 만약 $page라는 변수에 값이 없으면 임의로 1 페이지 입력
 		
 			$total_page=(int)(($total-1)/$page_num)+1; // 전체 페이지 구함
@@ -204,13 +204,13 @@ if(realpath($_SERVER['SCRIPT_FILENAME']) == realpath(__FILE__)) exit;
 		if($desc) $sort.="&desc=$desc";
 
 		// 카테고리를 나타나게 하는 변수
-		if(!$setup["use_category"]) {
+		if(!$setup['use_category']) {
 			$hide_category_start="<!--";
 			$hide_category_end="-->";
 		}
 
 		// 바구니를 나타나게 하는 변수
-		if($is_admin||$setup["use_cart"]) {
+		if($is_admin||$setup['use_cart']) {
 			$a_cart="<a onfocus=blur() href='javascript:reverse()'>";
 		} else {
 			$hide_cart_start="<!--";
@@ -222,15 +222,15 @@ if(realpath($_SERVER['SCRIPT_FILENAME']) == realpath(__FILE__)) exit;
 		if($is_admin) $a_delete_all="<a onfocus=blur() href='javascript:delete_all()'>"; else $a_delete_all="<Zeroboard ";
 
 		// 통계버튼
-		if($setup["use_status"]) $a_status="<a onfocus=blur() href=javascript:void(window.open('stat.php?id=$id','status','width=400,height=400,statusbar=no,toolbar=no,resizable=no'))>"; else $a_status="<Zeroboard ";
+		if($setup['use_status']) $a_status="<a onfocus=blur() href=javascript:void(window.open('stat.php?id=$id','status','width=400,height=400,statusbar=no,toolbar=no,resizable=no'))>"; else $a_status="<Zeroboard ";
 		$a_status="<Zeroboard ";
 
 		// Setup 버튼
 		if($is_admin) $a_setup="<a onfocus=blur() href='admin_setup.php?exec=view_board&no=$setup[no]&group_no=$setup[group_no]&exec2=modify' target=_blank>"; else $a_setup="<Zeroboard ";
 
 		// 현재 멤버의 새 쪽지가 있을때 아이콘 변경;;
-		if($member["no"]) {
-			if($member["new_memo"]) {
+		if($member['no']) {
+			if($member['new_memo']) {
 				$member_memo_icon="<img name=memozzz src=$dir/member_memo_on.gif border=0 align=absmiddle>";
 				$memo_on_sound="<object classid='clsid:D27CDB6E-AE6D-11cf-96B8-444553540000' codebase='http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=5,0,0,0' width='0' height='0'><param name=menu value=false><param name=wmode value=transparent><param name=movie value='$dir/memo_on.swf'><param name=quality value=low><param name='LOOP' value='false'><embed src='$dir/memo_on.swf' quality=low pluginspage='http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash' type='application/x-shockwave-flash' width='0' height='0' loop='false' wmode=transparent menu='false'></embed></object>";
 			} else $member_memo_icon="<img src=$dir/member_memo_off.gif border=0 align=absmiddle>";
@@ -252,7 +252,7 @@ if(realpath($_SERVER['SCRIPT_FILENAME']) == realpath(__FILE__)) exit;
 	}
 	$s_url = urlencode($s_url);
 
-	if(!$member["no"]) {
+	if(!$member['no']) {
 		$a_login="<a onfocus=blur() href='".$_zb_url."login.php?$href$sort&s_url=$s_url'>";
 		$a_logout="<Zeroboard ";
 		$a_member_modify="<Zeroboard ";
@@ -266,7 +266,7 @@ if(realpath($_SERVER['SCRIPT_FILENAME']) == realpath(__FILE__)) exit;
 
 
 // 회원가입버튼;;
-	if(!$member["no"]&&$group["use_join"]) $a_member_join="<a onfocus=blur() href=# onclick=\"window.open('".$_zb_url."member_join.php?group_no=$setup[group_no]','zbMemberJoin','width=560,height=590,toolbars=no,resizable=yes,scrollbars=yes')\">"; else $a_member_join="<Zeroboard ";
+	if(!$member['no']&&$group['use_join']) $a_member_join="<a onfocus=blur() href=# onclick=\"window.open('".$_zb_url."member_join.php?group_no=$setup[group_no]','zbMemberJoin','width=560,height=590,toolbars=no,resizable=yes,scrollbars=yes')\">"; else $a_member_join="<Zeroboard ";
 
 
 ?>

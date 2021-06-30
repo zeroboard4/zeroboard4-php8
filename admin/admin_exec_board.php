@@ -10,7 +10,7 @@
 		if(!isAlNum($name)) Error("게시판 이름은 영문과 숫자로만 하셔야 합니다","");
 		if(!$admin_passwd) Error("관리자 비밀번호를 입력해주세요.");
 		$isold = false;
-		if(strlen($member["password"])<=16&&strlen(get_password("a"))>=41) $isold = true;
+		if(strlen($member['password'])<=16&&strlen(get_password("a"))>=41) $isold = true;
 		if($member['password'] != get_password($admin_passwd, $isold)) {
 				Error("관리자 비밀번호가 틀렸습니다.");
 			}
@@ -46,7 +46,7 @@
 		if(!isAlNum($name)) Error("게시판 이름은 영문과 숫자로만 하셔야 합니다","");
 		if(!$admin_passwd) Error("관리자 비밀번호를 입력해주세요.");
 		$isold = false;
-		if(strlen($member["password"])<=16&&strlen(get_password("a"))>=41) $isold = true;
+		if(strlen($member['password'])<=16&&strlen(get_password("a"))>=41) $isold = true;
 		if($member['password'] != get_password($admin_passwd, $isold)) {
 				Error("관리자 비밀번호가 틀렸습니다.");
 			}
@@ -109,13 +109,13 @@
 	elseif($_POST['exec2']=="del") {
 		if(!$admin_passwd) Error("관리자 비밀번호를 입력해주세요.");
 		$isold = false;
-		if(strlen($member["password"])<=16&&strlen(get_password("a"))>=41) $isold = true;
+		if(strlen($member['password'])<=16&&strlen(get_password("a"))>=41) $isold = true;
 		if($member['password'] != get_password($admin_passwd, $isold)) {
 				Error("관리자 비밀번호가 틀렸습니다.");
 			}
 		$data=mysql_fetch_array(mysql_query("select name from $admin_table where no='$no'"));
 		
-		$table_name=$data["name"];
+		$table_name=$data['name'];
 
 		$tmpData = mysql_query("select file_name1, file_name2 from $t_board"."_$table_name") or die("첨부파일 삭제 처리중 에러가 발생했습니다");
 		while($data=mysql_fetch_array($tmpData)) {
@@ -159,7 +159,7 @@
 	// 카테고리 내용 이동 
 	elseif($_POST['exec2']=="category_move") {
 		$table_data=mysql_fetch_array(mysql_query("select name from $admin_table where no='$no'"));
-		foreach ($_POST["c"] as $value) {
+		foreach ($_POST['c'] as $value) {
 			mysql_query("update $t_board"."_$table_data[name] set category='$movename' where category='$value'",$connect);
 		}
 
@@ -176,7 +176,7 @@
 	elseif($_POST['exec2']=="modify_grant_ok") {
 		if(!$admin_passwd) Error("관리자 비밀번호를 입력해주세요.");
 		$isold = false;
-		if(strlen($member["password"])<=16&&strlen(get_password("a"))>=41) $isold = true;
+		if(strlen($member['password'])<=16&&strlen(get_password("a"))>=41) $isold = true;
 		if($member['password'] != get_password($admin_passwd, $isold)) {
 				Error("관리자 비밀번호가 틀렸습니다.");
 			}

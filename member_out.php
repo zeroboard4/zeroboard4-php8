@@ -9,7 +9,7 @@
 
 // 회원 정보를 얻어옴
 	$member=member_info();
-	$group_no = $member["group_no"];
+	$group_no = $member['group_no'];
 
 // 멤버 정보 삭제
 	@mysql_query("delete from $member_table where no='$member[no]'") or error(mysql_error());
@@ -24,9 +24,9 @@
 	$result=mysql_query("select name from $admin_table");
 	while($data=mysql_fetch_array($result)) {
 		// 게시판 테이블에서 삭제
-		@mysql_query("update $t_board"."_$data["name"] set ismember='0', password=password('".time()."') where ismember='$member[no]'") or error(mysql_error());
+		@mysql_query("update $t_board"."_$data['name'] set ismember='0', password=password('".time()."') where ismember='$member[no]'") or error(mysql_error());
 		// 코멘트 테이블에서 삭제
-		@mysql_query("update $t_comment"."_$data["name"] set ismember='0', password=password('".time()."')  where ismember='$member[no]'") or error(mysql_error());
+		@mysql_query("update $t_comment"."_$data['name'] set ismember='0', password=password('".time()."')  where ismember='$member[no]'") or error(mysql_error());
 	}
 	*/
 
@@ -34,15 +34,15 @@
 	@mysql_query("update $group_table set member_num=member_num-1 where no = '$group_no'") or error(mysql_error());
 
 // 로그아웃 시킴
-	destroyZBSessionID($member["no"]);
+	destroyZBSessionID($member['no']);
 
 	// 기존 세션 처리 (4.0x용 세션 처리로 인하여 주석 처리)
-	//$HTTP_SESSION_VARS["zb_logged_no"]='';
-	//$HTTP_SESSION_VARS["zb_logged_id"]='';
-	//$HTTP_SESSION_VARS["zb_logged_time"]='';
-	//$HTTP_SESSION_VARS["zb_logged_ip"]='';
-	//$HTTP_SESSION_VARS["zb_secret"]='';
-	//$HTTP_SESSION_VARS["zb_last_connect_check"] = '0';
+	//$HTTP_SESSION_VARS['zb_logged_no']='';
+	//$HTTP_SESSION_VARS['zb_logged_id']='';
+	//$HTTP_SESSION_VARS['zb_logged_time']='';
+	//$HTTP_SESSION_VARS['zb_logged_ip']='';
+	//$HTTP_SESSION_VARS['zb_secret']='';
+	//$HTTP_SESSION_VARS['zb_last_connect_check'] = '0';
 
 	// 4.0x 용 세션 처리
 	$zb_logged_no='';

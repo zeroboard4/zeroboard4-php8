@@ -2,13 +2,13 @@
 	include "lib.php";
 
 	// 웹마스터 E-mail
-	$_from = $_zbDefaultSetup["email"];
+	$_from = $_zbDefaultSetup['email'];
 
 	// 사이트 주소
-	$_homepage = $_zbDefaultSetup["url"];
+	$_homepage = $_zbDefaultSetup['url'];
 
 	// 사이트 이름
-	$_sitename = $_zbDefaultSetup["sitename"];
+	$_sitename = $_zbDefaultSetup['sitename'];
 
 	$connect = dbconn();
 
@@ -26,8 +26,8 @@
 
 		mysql_query("update $member_table set password=password('$temp') where no='$data[no]'",$connect) or Error(mysql_error());
 
-		$name=stripslashes($data["name"]);
-		$to=$data["email"];
+		$name=stripslashes($data['name']);
+		$to=$data['email'];
 
 
 		$subject="안녕하세요, $_sitename 입니다";

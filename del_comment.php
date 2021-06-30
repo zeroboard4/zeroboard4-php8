@@ -13,8 +13,8 @@
 // 원본글을 가져옴
 	$s_data=mysql_fetch_array(mysql_query("select * from $t_comment"."_$id where no='$c_no'"));
 
-	if($s_data["ismember"]||$is_admin||$member["level"]<=$setup["grant_delete"]) {
-		if(!$is_admin&&$s_data["ismember"]!=$member["no"]) Error("삭제할 권한이 없습니다");
+	if($s_data['ismember']||$is_admin||$member['level']<=$setup['grant_delete']) {
+		if(!$is_admin&&$s_data['ismember']!=$member['no']) Error("삭제할 권한이 없습니다");
 		$title="글을 삭제하시겠습니까?";
 	} else {
 		$title="글을 삭제합니다.<br>비밀번호를 입력하여 주십시요";

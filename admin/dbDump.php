@@ -4,12 +4,12 @@
 		$result = mysql_query("show fields from $tableName",$connect) or die(mysql_error());
 		unset($query);
 		while($data=mysql_fetch_array($result)) {
-			$field = $data["Field"];
-			$type = " ".$data["Type"];
-			if($data["Null"]=="YES") $null = " null"; else $null = " not null";
-			if($data["Default"]) $default = " default '".$data["Default"]."'"; else $default="";
-			$extra = " ".$data["Extra"];
-			if($data["Key"]=="PRI") $key = " primary key"; else $key="";
+			$field = $data['Field'];
+			$type = " ".$data['Type'];
+			if($data['Null']=="YES") $null = " null"; else $null = " not null";
+			if($data['Default']) $default = " default '".$data['Default']."'"; else $default="";
+			$extra = " ".$data['Extra'];
+			if($data['Key']=="PRI") $key = " primary key"; else $key="";
 			$query .= "    ".$field.$type.$null.$default.$extra.$key.",\n";
 		}
 		return $query;
@@ -22,9 +22,9 @@
 		$i=0;
 		$toggle_name = "";
 		while($data=mysql_fetch_array($result)) {
-			if($data["Key_name"]!="PRIMARY") {
-				$key_name = $data["Key_name"];
-				$column_name = $data["Column_name"];
+			if($data['Key_name']!="PRIMARY") {
+				$key_name = $data['Key_name'];
+				$column_name = $data['Column_name'];
 				if($toggle_name!=$key_name) {
 					if($toggle_name) $query .="),\n";
 					$query .= "    KEY $key_name ($column_name";
@@ -54,7 +54,7 @@
 		global $connect;
 		$result = mysql_query("show fields from $tableName", $connect) or die(mysql_error());
 		while($data=mysql_fetch_array($result)) {
-			$field .= $data["Field"].",";
+			$field .= $data['Field'].",";
 		}
 		$field = substr($field,0,strlen($field)-1);
 		$field_array = explode(",",$field);
@@ -88,7 +88,7 @@
 		$result = mysql_query("show table status from $dbname like 'zetyx%'",$connect) or die(mysql_error());
 		$i=0;
 		while($dbData=mysql_fetch_array($result)) {
-			$tableName = $dbData["Name"];
+			$tableName = $dbData['Name'];
 			echo "\n\n";
 			zbDB_down($tableName);
 		}

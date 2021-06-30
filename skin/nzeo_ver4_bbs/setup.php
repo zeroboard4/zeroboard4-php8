@@ -20,7 +20,7 @@ if(!preg_match("/Zeroboard/i",$a_member_memo)) $a_member_memo= str_replace(">","
 
 <tr>
 
-	<td <?php if(!$setup["use_category"]) echo"align=right";?>>
+	<td <?php if(!$setup['use_category']) echo"align=right";?>>
 
 		<?=$a_login?>로그인</a>
 

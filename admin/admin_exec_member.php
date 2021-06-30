@@ -7,7 +7,7 @@
 		global $group_no, $member_table, $get_memo_table,  $send_memo_table,$admin_table, $t_board, $t_comment, $connect, $group_table, $member;
 
 		$member_data = mysql_fetch_array(mysql_query("select * from $member_table where no = '$no'"));
-		if($member["is_admin"]>1&&$member["no"]!=$member_data["no"]&&$member_data["level"]<=$member["level"]&&$member_data["is_admin"]<=$member["is_admin"]) error("선택하신 회원의 정보를 변경할 권한이 없습니다");
+		if($member['is_admin']>1&&$member['no']!=$member_data['no']&&$member_data['level']<=$member['level']&&$member_data['is_admin']<=$member['is_admin']) error("선택하신 회원의 정보를 변경할 권한이 없습니다");
 
 		// 멤버 정보 삭제
 		@mysql_query("delete from $member_table where no='$no'") or error(mysql_error());
@@ -29,7 +29,7 @@
 // 회원전체 삭제하는 부분 
 	if($_POST['exec2']=="deleteall") {
 		//exit(count($_POST));
-		foreach ($_POST["cart"] as $value) {
+		foreach ($_POST['cart'] as $value) {
 del_member($value);
 		}
 		movepage("$PHP_SELF?exec=view_member&group_no=$group_no&page=$page&keyword=$keyword&keykind=$keykind&like=$like&level_search=$level_search&page_num=$page_num");
@@ -42,7 +42,7 @@ del_member($value);
 
 		$_temp=mysql_fetch_array(mysql_query("select * from $member_table where no = '$member_no'",$connect));
 	
-		$__temp = split(",",$_temp["board_name"]);
+		$__temp = split(",",$_temp['board_name']);
 
 		$_st = "";
 
@@ -62,7 +62,7 @@ del_member($value);
 	if($exec2=="add_member_board_manager") {
 
 		$_temp=mysql_fetch_array(mysql_query("select * from $member_table where no = '$member_no'",$connect));
-		$_board_name = $_temp["board_name"].$board_num.",";
+		$_board_name = $_temp['board_name'].$board_num.",";
 
 		mysql_query("update $member_table set board_name = '$_board_name' where no='$member_no'",$connect) or error(mysql_Error());
 
@@ -73,7 +73,7 @@ del_member($value);
 // 회원 권한 변경하는 부분 
 
 	if($_POST['exec2']=="moveall") {
-		foreach ($_POST["cart"] as $value) {
+		foreach ($_POST['cart'] as $value) {
 mysql_query("update $member_table set level='$movelevel' where no='$value'",$connect);
 		}
 		
@@ -83,8 +83,8 @@ mysql_query("update $member_table set level='$movelevel' where no='$value'",$con
 
 // 회원 그룹 변경하는 부분 
 
-	if($_POST['exec2']=="move_group"&&$member["is_admin"]==1) {
-		foreach ($_POST["cart"] as $value) {
+	if($_POST['exec2']=="move_group"&&$member['is_admin']==1) {
+		foreach ($_POST['cart'] as $value) {
 mysql_query("update $member_table set group_no='$movegroup' where no='$value'",$connect);
 			mysql_query("update $group_table set member_num=member_num-1 where no='$group_no'");
 			mysql_query("update $group_table set member_num=member_num+1 where no='$movegroup'");
@@ -98,7 +98,7 @@ mysql_query("update $member_table set group_no='$movegroup' where no='$value'",$
 	if($_POST['exec2']=="del") {
 		if(!$admin_passwd) Error("관리자 비밀번호를 입력해주세요.");
 		$isold = false;
-		if(strlen($member["password"])<=16&&strlen(get_password("a"))>=41) $isold = true;
+		if(strlen($member['password'])<=16&&strlen(get_password("a"))>=41) $isold = true;
 		if($member['password'] != get_password($admin_passwd, $isold)) {
 				Error("관리자 비밀번호가 틀렸습니다.");
 			}
@@ -113,7 +113,7 @@ mysql_query("update $member_table set group_no='$movegroup' where no='$value'",$
 
 		if(!$admin_passwd) Error("관리자 비밀번호를 입력해주세요.");
 		$isold = false;
-		if(strlen($member["password"])<=16&&strlen(get_password("a"))>=41) $isold = true;
+		if(strlen($member['password'])<=16&&strlen(get_password("a"))>=41) $isold = true;
 		if($member['password'] != get_password($admin_passwd, $isold)) {
 				Error("관리자 비밀번호가 틀렸습니다.");
 			}
@@ -123,16 +123,16 @@ mysql_query("update $member_table set group_no='$movegroup' where no='$value'",$
 
 		$birth=mktime(0,0,0,$birth_2,$birth_3,$birth_1);
 
-		if($member["no"]==$member_no) {
-			$is_admin = $member["is_admin"];	
-			$level = $member["level"];
+		if($member['no']==$member_no) {
+			$is_admin = $member['is_admin'];	
+			$level = $member['level'];
 		}
 
 		$que="update $member_table set name='$name'";
 
 		if($level) $que.=",level='$level'";
 		if($password&&$password1&&$password==$password) $que.=" ,password=password('$password') ";
-		if($member["is_admin"]==1) $que.=",is_admin='$is_admin'";
+		if($member['is_admin']==1) $que.=",is_admin='$is_admin'";
 		if($birth_1&&$birth_2&&birth_3) $que.=",birth='$birth'";
 		$que.=",email='$email'";
 		$que.=",homepage='$homepage'";
@@ -154,11 +154,11 @@ mysql_query("update $member_table set group_no='$movegroup' where no='$value'",$
 		@mysql_query($que) or Error("회원정보 수정시에 에러가 발생하였습니다 ".mysql_error());
 
 		// 회원의 소개 사진 
-		if($_FILES["picture"]) {
-			$picture = $_FILES["picture"]["tmp_name"];
-			$picture_name = $_FILES["picture"]["name"];
-			$picture_type = $_FILES["picture"]["type"];
-			$picture_size = $_FILES["picture"]["size"];
+		if($_FILES['picture']) {
+			$picture = $_FILES['picture']['tmp_name'];
+			$picture_name = $_FILES['picture']['name'];
+			$picture_type = $_FILES['picture']['type'];
+			$picture_size = $_FILES['picture']['size'];
 		}
 		if($picture_name) {
 			if(!is_uploaded_file($picture)) Error("정상적인 방법으로 업로드하여 주십시요");
@@ -189,11 +189,11 @@ mysql_query("update $member_table set group_no='$movegroup' where no='$value'",$
 		// 이름앞에 붙는 아이콘 삭제시
 		if($delete_private_icon) @z_unlink("icon/private_icon/".$member_no.".gif");
 
-		if($_FILES["private_icon"]) {
-			$private_icon = $_FILES["private_icon"]["tmp_name"];
-			$private_icon_name = $_FILES["private_icon"]["name"];
-			$private_icon_type = $_FILES["private_icon"]["type"];
-			$private_icon_size = $_FILES["private_icon"]["size"];
+		if($_FILES['private_icon']) {
+			$private_icon = $_FILES['private_icon']['tmp_name'];
+			$private_icon_name = $_FILES['private_icon']['name'];
+			$private_icon_type = $_FILES['private_icon']['type'];
+			$private_icon_size = $_FILES['private_icon']['size'];
 		}
 		// 이름앞에 붙는 아이콘 업로드시 처리
 		if(@filesize($private_icon)) {
@@ -213,11 +213,11 @@ mysql_query("update $member_table set group_no='$movegroup' where no='$value'",$
 		if($delete_private_name) @z_unlink("icon/private_name/".$member_no.".gif");
 
 		// 이름을 대신하는 아이콘 업로드시 처리
-		if($_FILES["private_name"]) {
-			$private_name = $_FILES["private_name"]["tmp_name"];
-			$private_name_name = $_FILES["private_name"]["name"];
-			$private_name_type = $_FILES["private_name"]["type"];
-			$private_name_size = $_FILES["private_name"]["size"];
+		if($_FILES['private_name']) {
+			$private_name = $_FILES['private_name']['tmp_name'];
+			$private_name_name = $_FILES['private_name']['name'];
+			$private_name_type = $_FILES['private_name']['type'];
+			$private_name_size = $_FILES['private_name']['size'];
 		}
 		if(@filesize($private_name)) {
 			if(!is_dir("icon/private_name")) {
@@ -232,9 +232,9 @@ mysql_query("update $member_table set group_no='$movegroup' where no='$value'",$
 			@chmod("icon/private_name",0707);
 		}
 		// 관리자 자신의 비밀번호 변경시 새로이 쿠키를 설정하여 줌
-		//if($member_no==$member["no"]&&$password&&$password1&&$password==$password1) {
+		//if($member_no==$member['no']&&$password&&$password1&&$password==$password1) {
 			//$password=mysql_fetch_array(mysql_query("select password('$password')"));
-			//setcookie("zetyxboard_userid",$member["user_id"],'',"/");
+			//setcookie("zetyxboard_userid",$member['user_id'],'',"/");
 			//setcookie("zetyxboard_password",$password[0],'',"/");
 		//}
 

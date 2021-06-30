@@ -9,7 +9,7 @@
 
 	$member=member_info();
 
-	if(!$member["no"]||$member["is_admin"]>1||$member["level"]>1) Error("최고 관리자만이 사용할수 있습니다");
+	if(!$member['no']||$member['is_admin']>1||$member['level']>1) Error("최고 관리자만이 사용할수 있습니다");
 
 	head(" bgcolor=white");
 ?>
@@ -44,7 +44,7 @@
 
 	while($bbs = mysql_fetch_array($result)) {
 		
-		$id = $bbs["name"];		
+		$id = $bbs['name'];		
 
 		$files1 = mysql_fetch_array(mysql_query("select count(*) from $t_board"."_$id where file_name1 != ''"));
 		$files2 = mysql_fetch_array(mysql_query("select count(*) from $t_board"."_$id where file_name2 != ''"));
@@ -70,7 +70,7 @@
 
 ?>
 	<b><?=$id?></b> 게시판</b>
-	 - 총 게시물 수  : <?=$bbs["total_article"]?>개
+	 - 총 게시물 수  : <?=$bbs['total_article']?>개
 	 - 총 업로드 갯수 : <?=number_format($filesnum1+$filesnum2)?> 개
 	 - 경로가 잘못된 첨부파일 수 : <?=number_format($nfilesnum1+$nfilesnum2)?> 개
 
@@ -81,7 +81,7 @@
 			$filename = stripslashes($data["s_file_name1"]);
 			$source = "../".stripslashes($data["file_name1"]);
 			$path = str_replace($filename, "", $source);
-			$no = $data["no"];
+			$no = $data['no'];
 
 			// 소스 파일이 있을 경우에만 체크
 			if(file_exists($source)) {
@@ -119,7 +119,7 @@
 			$filename = stripslashes($data["s_file_name2"]);
 			$source = "../".stripslashes($data["file_name2"]);
 			$path = str_replace($filename, "", $source);
-			$no = $data["no"];
+			$no = $data['no'];
 
 			// 소스 파일이 있을 경우에만 체크
 			if(file_exists($source)) {

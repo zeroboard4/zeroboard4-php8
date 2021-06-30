@@ -8,17 +8,17 @@
 // 멤버정보 구하기
 	$member=member_info();
 
-	if(!$member["no"]) Error("로그인된 회원만이 사용할수 있습니다","window.close");
+	if(!$member['no']) Error("로그인된 회원만이 사용할수 있습니다","window.close");
 
 // 그룹데이타 읽어오기;;
 	$group_data=mysql_fetch_array(mysql_query("select * from $group_table where no='$member[group_no]'"));
 
 // 지정 시간이 넘은 글 삭제;;
-	mysql_query("delete from $send_memo_table where member_no='$member[no]' and (".time()." - reg_date) >= ".$_zbDefaultSetup["memo_limit_time"]) or error(mysql_error());
+	mysql_query("delete from $send_memo_table where member_no='$member[no]' and (".time()." - reg_date) >= ".$_zbDefaultSetup['memo_limit_time']) or error(mysql_error());
 
 // 선택된 메모 삭제;;;
 	if($exec=="del_all") {
-		foreach ($_POST["del"] as $value) {
+		foreach ($_POST['del'] as $value) {
 			mysql_query("delete from $send_memo_table where no='$value' and member_no='$member[no]'");
 		}
 		movepage("$PHP_SELF?page=$page");
@@ -122,11 +122,11 @@
 
 <!-- 선택된 메모가 있을때;; -->
 <?php
- if($now_data["no"]) {
-	$temp_name = get_private_icon($now_data["member_to"], "2");
-	if($temp_name) $now_data["name"]="<img src='$temp_name' border=0 align=absmiddle>";
-	$temp_name = get_private_icon($now_data["member_to"], "1");
-	if($temp_name) $now_data["name"]="<img src='$temp_name' border=0 align=absmiddle>&nbsp;".$now_data["name"];
+ if($now_data['no']) {
+	$temp_name = get_private_icon($now_data['member_to'], "2");
+	if($temp_name) $now_data['name']="<img src='$temp_name' border=0 align=absmiddle>";
+	$temp_name = get_private_icon($now_data['member_to'], "1");
+	if($temp_name) $now_data['name']="<img src='$temp_name' border=0 align=absmiddle>&nbsp;".$now_data['name'];
  
 ?>
 
@@ -145,7 +145,7 @@
         <tr>
           <td width="50" align="right"><img src="images/sm_to.gif"></td>
           <td><img src="images/t.gif" width="10" height="3"><br>
-            <a href=javascript:void(window.open('view_info.php?member_no=<?=$now_data["member_to"]?>','view_info','width=400,height=510,toolbar=no,scrollbars=yes'))><?=stripslashes($now_data["name"])?></a> <font style=font-size:8pt;>(<b>ID</b> : <?=$now_data['user_id']?>)</td>
+            <a href=javascript:void(window.open('view_info.php?member_no=<?=$now_data['member_to']?>','view_info','width=400,height=510,toolbar=no,scrollbars=yes'))><?=stripslashes($now_data['name'])?></a> <font style=font-size:8pt;>(<b>ID</b> : <?=$now_data['user_id']?>)</td>
         </tr>
         <tr>
           <td colspan="2" bgcolor="#EBD9D9" align="center" style=padding:0px;><img src="images/t.gif" width="10" height="1"></td>
@@ -153,7 +153,7 @@
         <tr>
           <td width="50" align="right"><img src="images/memo_subject.gif" width="35" height="15"></td>
           <td><img src="images/t.gif" width="10" height="3"><br>
-            <?=stripslashes(del_html($now_data["subject"]))?></td>
+            <?=stripslashes(del_html($now_data['subject']))?></td>
         </tr>
         <tr>
           <td colspan="2" bgcolor="#EBD9D9" align="center" style=padding:0px;><img src="images/t.gif" width="10" height="1"></td>
@@ -161,7 +161,7 @@
         <tr>
           <td width="50" align="right"><img src="images/memo_date.gif" width="23" height="15"></td>
           <td><img src="images/t.gif" width="10" height="3"><br>
-            <?=date("Y년 m월 d일 H시 i분",$now_data["reg_date"])?></td>
+            <?=date("Y년 m월 d일 H시 i분",$now_data['reg_date'])?></td>
         </tr>
         <tr>
           <td colspan="2" bgcolor="#EBD9D9" align="center" style=padding:0px;><img src="images/t.gif" width="10" height="1"></td>
@@ -169,7 +169,7 @@
         <tr>
           <td align="right" valign="top"><img src="images/memo_memo.gif" width="31" height="15"></td>
           <td style='word-break:break-all;'><img src="images/t.gif" width="10" height="3"><br>
-            <?=autolink(nl2br(stripslashes(del_html($now_data["memo"]))))?><br>
+            <?=autolink(nl2br(stripslashes(del_html($now_data['memo']))))?><br>
             <br>
           </td>
         </tr>
@@ -224,30 +224,30 @@
 // 출력
 	$loop_number=$total-($page-1)*$page_num;
 	while($data=mysql_fetch_array($result)) {
-		$data["name"]=stripslashes($data["name"]);
+		$data['name']=stripslashes($data['name']);
 
-		$temp_name = get_private_icon($data["member_to"], "2");
-		if($temp_name) $data["name"]="<img src='$temp_name' border=0 align=absmiddle>";
-		$temp_name = get_private_icon($data["member_to"], "1");
-		if($temp_name) $data["name"]="<img src='$temp_name' border=0 align=absmiddle>&nbsp;".$data["name"];
+		$temp_name = get_private_icon($data['member_to'], "2");
+		if($temp_name) $data['name']="<img src='$temp_name' border=0 align=absmiddle>";
+		$temp_name = get_private_icon($data['member_to'], "1");
+		if($temp_name) $data['name']="<img src='$temp_name' border=0 align=absmiddle>&nbsp;".$data['name'];
 		
-		$data["subject"]=stripslashes(del_html($data["subject"]));
-		$reg_date=date("Y/m/d H:i",$data["reg_date"]);
-		if($data["readed"]==0) $readed="<img src=images/memo_readed.gif>"; else $readed="<img src=images/memo_unread.gif>"
+		$data['subject']=stripslashes(del_html($data['subject']));
+		$reg_date=date("Y/m/d H:i",$data['reg_date']);
+		if($data['readed']==0) $readed="<img src=images/memo_readed.gif>"; else $readed="<img src=images/memo_unread.gif>"
 ?>
         <tr>
           <td colspan="5" bgcolor="#EBD9D9" align="center"><img src="images/t.gif" width="10" height="1"></td>
         </tr>
         <tr onMouseOver=this.style.backgroundColor="#FFF5F5" onMouseOut=this.style.backgroundColor="">
           <td width="20" align="center" height="23">
-            <input type=checkbox name=del[] value=<?=$data["no"]?>>
+            <input type=checkbox name=del[] value=<?=$data['no']?>>
           </td>
           <td width="20" align="center"><?=$readed?></td>
           <td style='word-break:break-all;' style=cursor:hand; onclick=location.href="<?="$PHP_SELF?exec=view&no=$data[no]&page=$page"?>"><img src="images/t.gif" width="10" height="3"><br>
-            <a href=<?="$PHP_SELF?exec=view&no=$data[no]&page=$page"?>><?=$data["subject"]?></a></td>
+            <a href=<?="$PHP_SELF?exec=view&no=$data[no]&page=$page"?>><?=$data['subject']?></a></td>
           <td width="80" align="center"><img src="images/t.gif" width="10" height="3"><br>
-            <a href=javascript:void(window.open('view_info.php?member_no=<?=$data["member_to"]?>','view_info','width=400,height=510,toolbar=no,scrollbars=yes'))><?=$data["name"]?></a><br><font style=font-size:8pt;color:999999>(<?=$data['user_id']?>)</td>
-          <td width="60" align="center"><font style=font-family:Tahoma;font-size:8pt;><span title='<?=$reg_date?>'><?php echo"".date("m/d",$data["reg_date"])."" ?></span></font></td>
+            <a href=javascript:void(window.open('view_info.php?member_no=<?=$data['member_to']?>','view_info','width=400,height=510,toolbar=no,scrollbars=yes'))><?=$data['name']?></a><br><font style=font-size:8pt;color:999999>(<?=$data['user_id']?>)</td>
+          <td width="60" align="center"><font style=font-family:Tahoma;font-size:8pt;><span title='<?=$reg_date?>'><?php echo"".date("m/d",$data['reg_date'])."" ?></span></font></td>
         </tr>
 
 <?php

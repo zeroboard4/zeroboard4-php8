@@ -10,9 +10,9 @@
 	}
 
 	$member=member_info();
-	if(!$member["no"]) thisError("로그인후 사용하여주십시요");
+	if(!$member['no']) thisError("로그인후 사용하여주십시요");
 
-	if($member["is_admin"]>3||$member["is_admin"]<1) thisError("관리자페이지를 사용할수 있는 권한이 없습니다");
+	if($member['is_admin']>3||$member['is_admin']<1) thisError("관리자페이지를 사용할수 있는 권한이 없습니다");
 
 	if($s_comment) $comment = $s_comment;
 	else $s_comment = $comment;
@@ -81,9 +81,9 @@
 	$fault=0;
 	$i=1;
 	while($data=mysql_fetch_array($result)) {
-		if($data["mailing"]) {
+		if($data['mailing']) {
 
-			$temp=zb_sendmail($html, $data["email"], $data["name"], $from, $name, $subject, $comment);
+			$temp=zb_sendmail($html, $data['email'], $data['name'], $from, $name, $subject, $comment);
 
 			if(!$temp) $fault++;
 			else $true ++;

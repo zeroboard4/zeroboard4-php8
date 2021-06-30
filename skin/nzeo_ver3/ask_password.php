@@ -18,7 +18,7 @@
    <td align=center bgcolor=aaaaaa style=padding:2px><b><?=$title?></b></td>
 </tr>
 <?php 
-	if(!$member["no"]) {
+	if(!$member['no']) {
 ?>
 <tr height=40>
    <td align=center>

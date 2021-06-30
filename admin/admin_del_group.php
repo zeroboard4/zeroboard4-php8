@@ -1,7 +1,7 @@
 <?php
   $data=mysql_fetch_array(mysql_query("select * from $group_table where no='$group_no'"));
-  $check_open[$data["is_open"]]="checked";
-  $check_join[$data["use_join"]]="checked";
+  $check_open[$data['is_open']]="checked";
+  $check_join[$data['use_join']]="checked";
 
   // 현재 그룹데이타 뽑아옴;;;
   $temp=mysql_query("select no,name from $group_table where no!='$group_no'");
@@ -18,7 +18,7 @@
 <input type=hidden name=exec value=del_group_ok>
 <input type=hidden name=group_no value=<?=$group_no?>>
 
-  <tr align=center><td bgcolor=bbbbbb colspan=2 height=25 style=font-family:Tahoma;font-size:8pt;>Group Name : <b><?=$data["name"]?></b></td></tr>
+  <tr align=center><td bgcolor=bbbbbb colspan=2 height=25 style=font-family:Tahoma;font-size:8pt;>Group Name : <b><?=$data['name']?></b></td></tr>
   <tr align=center><td colspan=2 style=line-height:180%; bgcolor=#e0e0e0><br>
   그룹을 삭제할때는 해당 그룹에 속해있는 회원들과 <br>
   그룹에서 생성한 게시판들에 대해서 이동을 해주어야 합니다.<br>

@@ -1,10 +1,10 @@
 <?php 
 	$colspanNum = 8;
-	if($setup["use_cart"]) $colspanNum--;
-	if(!$setup["use_alllist"]) {
+	if($setup['use_cart']) $colspanNum--;
+	if(!$setup['use_alllist']) {
 		$hide_category_start="<!--";
 		$hide_category_end="-->";
-		$setup["use_category"]=false;
+		$setup['use_category']=false;
 	}
 ?>
 
@@ -19,7 +19,7 @@
 
 <table border=0 cellspacing=0 cellpadding=0 width=<?=$width?>>
 <tr>
-	<td <?php if(!$setup["use_category"]) echo"align=right";?>>
+	<td <?php if(!$setup['use_category']) echo"align=right";?>>
 		<?=$a_login?><img src=<?=$dir?>/btn_s_login.gif border=0></a>
 		<?=$a_member_join?><img src=<?=$dir?>/btn_join.gif border=0></a>
 		<?=$a_member_modify?><img src=<?=$dir?>/btn_info.gif border=0></a>

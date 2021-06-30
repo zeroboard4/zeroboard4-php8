@@ -10,13 +10,13 @@
  $s_keyword = $_POST['keyword'];
  $keykind = $_POST['keykind'];
 
- if(!$member["no"]||$member["is_admin"]>1||$member["level"]>1) Error("최고 관리자만이 사용할수 있습니다");
+ if(!$member['no']||$member['is_admin']>1||$member['level']>1) Error("최고 관리자만이 사용할수 있습니다");
 
  $zb_hash_chk = md5($member['reg_m_date'].$member['user_id'].$member['no'].$_SERVER['REMOTE_ADDR'].$_SERVER['HTTP_USER_AGENT']);
-	if($_SESSION["zb_hash"] != $zb_hash_chk) {
+	if($_SESSION['zb_hash'] != $zb_hash_chk) {
 		session_destroy();
-		unset($member,$_SESSION["zb_logged_no"],$_SESSION["zb_logged_ip"],$_SESSION["zb_logged_time"],$_SESSION["zb_hash"]);
-		$member["level"] = 10;
+		unset($member,$_SESSION['zb_logged_no'],$_SESSION['zb_logged_ip'],$_SESSION['zb_logged_time'],$_SESSION['zb_hash']);
+		$member['level'] = 10;
 	}
 
  if($keykind[5]) {
@@ -96,8 +96,8 @@ if($keyword&&$s_que)
   while($table_data=mysql_fetch_array($table_name_result))
   {
    
-   $table_name=$table_data["name"];
-   if($table_data["use_alllist"]) $file="zboard.php"; else $file="view.php";
+   $table_name=$table_data['name'];
+   if($table_data['use_alllist']) $file="zboard.php"; else $file="view.php";
 
    // 본문
    $result=mysql_query("select * from $t_board"."_$table_name $s_que", $connect) or error(mysql_error());
@@ -110,13 +110,13 @@ if($keyword&&$s_que)
    while($data=mysql_fetch_array($result))
    {
     flush();
-		$data["subject"] = eregi_replace($keyword,"<font color=red>$keyword</font>",del_html(stripslashes($data["subject"])));
+		$data['subject'] = eregi_replace($keyword,"<font color=red>$keyword</font>",del_html(stripslashes($data['subject'])));
 ?>
 
-&nbsp;&nbsp; [<?=stripslashes($data["name"])?>] &nbsp;
-<a href=../<?=$file?>?id=<?=$table_name?>&no=<?=$data["no"]?> target=_blank><?=$data["subject"]?></a></b> 
+&nbsp;&nbsp; [<?=stripslashes($data['name'])?>] &nbsp;
+<a href=../<?=$file?>?id=<?=$table_name?>&no=<?=$data['no']?> target=_blank><?=$data['subject']?></a></b> 
 &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
-<font color=666666>(<font color=blue><?=date("Y-m-d H:i:s",$data["reg_date"])?></font> / <font color=green><?=$data["ip"]?></font>)</font>
+<font color=666666>(<font color=blue><?=date("Y-m-d H:i:s",$data['reg_date'])?></font> / <font color=green><?=$data['ip']?></font>)</font>
 
 <img src=../images/t.gif border=0 height=20><Br>
 
@@ -138,11 +138,11 @@ if($keyword&&$s_que)
     while($data=mysql_fetch_array($result))
     {
      flush();
-		 $data["memo"] = eregi_replace($keyword,"<font color=red>$keyword</font>",del_html(stripslashes($data["memo"])));
+		 $data['memo'] = eregi_replace($keyword,"<font color=red>$keyword</font>",del_html(stripslashes($data['memo'])));
 ?>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ <?=stripslashes($data["name"])?> ]
-&nbsp;<a href=../<?=$file?>?id=<?=$table_name?>&no=<?=$data["parent"]?> target=_blank><?=$data["memo"]?></a> &nbsp;&nbsp;
-<font color=666666>(<font color=blue><?=date("Y-m-d H:i:s",$data["reg_date"])?></font> / <font color=green><?=$data["ip"]?></font>)</font>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ <?=stripslashes($data['name'])?> ]
+&nbsp;<a href=../<?=$file?>?id=<?=$table_name?>&no=<?=$data['parent']?> target=_blank><?=$data['memo']?></a> &nbsp;&nbsp;
+<font color=666666>(<font color=blue><?=date("Y-m-d H:i:s",$data['reg_date'])?></font> / <font color=green><?=$data['ip']?></font>)</font>
 <img src=../images/t.gif border=0 height=20><Br>
 
 <?php

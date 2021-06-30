@@ -10,17 +10,17 @@
 		$setup=get_table_attrib($id);
 
 // 설정되지 않은 게시판일때 에러 표시
-  		if(!$setup["name"]) Error("생성되지 않은 게시판입니다.<br><br>게시판을 생성후 사용하십시요","");
+  		if(!$setup['name']) Error("생성되지 않은 게시판입니다.<br><br>게시판을 생성후 사용하십시요","");
 
 // 현재 게시판의 그룹의 설정 읽어 오기
-  		$group=group_info($setup["group_no"]);
-  		$dir="skin/".$setup["skinname"];
-  		$file="skin/".$setup["skinname"]."/login.php";
+  		$group=group_info($setup['group_no']);
+  		$dir="skin/".$setup['skinname'];
+  		$file="skin/".$setup['skinname']."/login.php";
 
 	} else {
 
 		if($group_no) $group=mysql_fetch_array(mysql_query("select * from $group_table where no='$group_no'"));
-		if(!$group["no"]) Error("지정된 그룹이 존재하지 않습니다");
+		if(!$group['no']) Error("지정된 그룹이 존재하지 않습니다");
 	}
 
 	head();
@@ -48,7 +48,7 @@
 </script>
 
 <form method=post action=login_check.php onsubmit="return check_submit();" name=login>
-<input type=hidden name=auto_login value=<?php if(!$autologin["ok"])echo"0";else echo"1"?>>
+<input type=hidden name=auto_login value=<?php if(!$autologin['ok'])echo"0";else echo"1"?>>
 <input type=hidden name=page value=<?=$page?>>
 <input type=hidden name=id value=<?=$id?>>
 <input type=hidden name=no value=<?=$no?>>

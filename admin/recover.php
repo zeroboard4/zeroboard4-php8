@@ -7,11 +7,11 @@
 
  $member=member_info();
 
- if(!$member["no"]||$member["is_admin"]>1||$member["level"]>1) Error("최고 관리자만이 사용할수 있습니다");
+ if(!$member['no']||$member['is_admin']>1||$member['level']>1) Error("최고 관리자만이 사용할수 있습니다");
 
  $board_info=mysql_fetch_array(mysql_query("select * from $admin_table where no='$no'",$connect));
 
- $id=$board_info["name"];
+ $id=$board_info['name'];
  
  head("bgcolor=black")
 ?>
@@ -25,7 +25,7 @@
   $temp=mysql_query("select * from $t_category"."_$id order by no asc");
   while($no=mysql_fetch_array($temp))
   {
-   if(!$f_cn)$f_cn=$no["no"];
+   if(!$f_cn)$f_cn=$no['no'];
    $s_que.=" category!='$no[no]' and ";
   }
   $s_que.=" category!=0";

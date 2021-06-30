@@ -10,7 +10,7 @@
  **************************************************************************/
 
 // 사용권한 체크
-	if($setup["grant_list"]<$member["level"] && !$is_admin) Error("사용권한이 없습니다","login.php?id=$id&page=$page&category=$category&sn=$sn&ss=$ss&sc=$sc&keyword=$keyword&no=$no&s_url=".urlencode($REQUEST_URI));
+	if($setup['grant_list']<$member['level'] && !$is_admin) Error("사용권한이 없습니다","login.php?id=$id&page=$page&category=$category&sn=$sn&ss=$ss&sc=$sc&keyword=$keyword&no=$no&s_url=".urlencode($REQUEST_URI));
 
 // 검색조건이 있을때 : 상황 -> 카테고리 선택, Use_Showreply 사용, 또는 검색어로 검색을 할때
 	if($s_que) {
@@ -26,11 +26,11 @@
 		// 검색조건이 없고 정렬이 headnum에 의한 것일때;; 즉 일반 정렬일때;; 
 		if ($select_arrange=="headnum"&&$desc=="asc") {
 			while($division_data=mysql_fetch_array($division_result)) {
-				$sum=$sum+$division_data["num"];
-				$division=$division_data["division"];
+				$sum=$sum+$division_data['num'];
+				$division=$division_data['division'];
 	
 				if($sum>=$start_num) {
-					$start_num=$start_num-($sum-$division_data["num"]);
+					$start_num=$start_num-($sum-$division_data['num']);
 					$_dbTimeStart = getmicrotime();
 					$que="select * from $t_board"."_$id where division='$division' and headnum<0 order by headnum,arrangenum limit $start_num, $page_num";
 					$result=mysql_query($que) or error(mysql_error());
@@ -79,7 +79,7 @@
  **************************************************************************/
 
 	$print_page="";
-	$show_page_num=$setup["page_num"]; // 한번에 보일 페이지 갯수
+	$show_page_num=$setup['page_num']; // 한번에 보일 페이지 갯수
 	$start_page=(int)(($page-1)/$show_page_num)*$show_page_num;
 	$i=1;
 
@@ -127,10 +127,10 @@
  **************************************************************************/
 
 // 글쓰기버튼
-	if($is_admin||$member["level"]<=$setup["grant_write"]) $a_write="<a onfocus=blur() href='write.php?$href$sort&no=$no&mode=write&sn1=$sn1&divpage=$divpage'>"; else $a_write="<Zeroboard ";
+	if($is_admin||$member['level']<=$setup['grant_write']) $a_write="<a onfocus=blur() href='write.php?$href$sort&no=$no&mode=write&sn1=$sn1&divpage=$divpage'>"; else $a_write="<Zeroboard ";
 
 // 목록 버튼
-	if($is_admin||$member["level"]<=$setup["grant_list"]) $a_list="<a onfocus=blur() href='$PHP_SELF?id=$id&page=$page&category=$category&sn=$sn&ss=$ss&sc=$sc&keyword=$keyword&prev_no=$no&sn1=$sn1&divpage=$divpage'>"; else $a_list="<Zeroboard ";
+	if($is_admin||$member['level']<=$setup['grant_list']) $a_list="<a onfocus=blur() href='$PHP_SELF?id=$id&page=$page&category=$category&sn=$sn&ss=$ss&sc=$sc&keyword=$keyword&prev_no=$no&sn1=$sn1&divpage=$divpage'>"; else $a_list="<Zeroboard ";
 
 // 취소버튼
 	$a_cancel="<a onfocus=blur() href='$PHP_SELF?id=$id'>";
@@ -177,7 +177,7 @@
 	$_skinTime += getmicrotime()-$_skinTimeStart;
 
 // 현재 선택된 데이타가 있을때, 즉 $no 가 있을때 데이타 가져옴
-	if($no&&$setup["use_alllist"]) {
+	if($no&&$setup['use_alllist']) {
 		$_view_included = true;
 		include "view.php";
 	}
@@ -189,14 +189,14 @@
 
 //가상번호를 정함
 	$loop_number=$total-($page-1)*$page_num;
-	if($setup["use_alllist"]&&!$prev_no) $prev_no=$no;
+	if($setup['use_alllist']&&!$prev_no) $prev_no=$no;
 
 // 뽑혀진 데이타만큼 출력함
 	if(isset($result)) {
 		while($data=@mysql_fetch_array($result)) {
 			list_check($data);
 			$_skinTimeStart = getmicrotime();
-			if($data["headnum"]>-2000000000) {include $dir."/list_main.php";}
+			if($data['headnum']>-2000000000) {include $dir."/list_main.php";}
 			else {include $dir."/list_notice.php"; }
 			$_skinTime += getmicrotime()-$_skinTimeStart;
 			$loop_number--;
@@ -207,7 +207,7 @@
 		while($data=@mysql_fetch_array($result2)) {
 			list_check($data);
 			$_skinTimeStart = getmicrotime();
-			if($data["headnum"]>-2000000000) {include $dir."/list_main.php";}
+			if($data['headnum']>-2000000000) {include $dir."/list_main.php";}
 			else {include $dir."/list_notice.php"; }
 			$_skinTime += getmicrotime()-$_skinTimeStart;
 			$loop_number--;

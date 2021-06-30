@@ -9,17 +9,17 @@ require "lib.php";
 // 멤버정보 구하기
 	$member=member_info();
 
-	if(!$member["no"]) Error("가입되어 있는 회원만 쪽지 보내기가 가능합니다","window.close");
+	if(!$member['no']) Error("가입되어 있는 회원만 쪽지 보내기가 가능합니다","window.close");
 
 	$data=mysql_fetch_array(mysql_query("select * from $member_table where no='$member_no'"));
 
-	$data["name"]=del_html($data["name"]);
+	$data['name']=del_html($data['name']);
 
-	$temp_name = get_private_icon($data["no"], "2");
-	if($temp_name) $data["name"]="<img src='$temp_name' border=0 align=absmiddle>";
-	$temp_name = get_private_icon($data["no"], "1");
-	if($temp_name) $data["name"]="<img src='$temp_name' border=0 align=absmiddle>&nbsp;".$data[name];
-	$data["name"]="&nbsp;".$data["name"]."&nbsp;";
+	$temp_name = get_private_icon($data['no'], "2");
+	if($temp_name) $data['name']="<img src='$temp_name' border=0 align=absmiddle>";
+	$temp_name = get_private_icon($data['no'], "1");
+	if($temp_name) $data['name']="<img src='$temp_name' border=0 align=absmiddle>&nbsp;".$data[name];
+	$data['name']="&nbsp;".$data['name']."&nbsp;";
 
 // 그룹데이타 읽어오기;;
 	$group_data=mysql_fetch_array(mysql_query("select * from $group_table where no='$data[group_no]'"));
@@ -39,13 +39,13 @@ require "lib.php";
   </tr>
 </table>
 <?php
-	if($member_no>0&&$member["no"]>0) {
+	if($member_no>0&&$member['no']>0) {
 ?>
 <table width="100%" border="0" cellspacing="0" cellpadding="5">
   <tr>
  <td>&nbsp;&nbsp;&nbsp;
 <?php
-	if($data["openinfo"]||$member["is_admin"]==1) {
+	if($data['openinfo']||$member['is_admin']==1) {
 ?>
 	<a href=view_info2.php?member_no=<?=$member_no?>><img src=images/vi_B_userinfo.gif border=0></a>
 <?php
@@ -80,11 +80,11 @@ require "lib.php";
 <input type=hidden name=member_no value="<?=$member_no?>">
 <input type=hidden name=kind value=1>
 <?php
-	if($member["no"]&&$data["no"]) {
+	if($member['no']&&$data['no']) {
 ?>
 <tr>
   <td align=right><img src=images/memo_id.gif></td>
-  <td valign=bottom>&nbsp;<font color=brown><b><?=del_html($data["user_id"])?> (<?=$data["name"]?>)</td>
+  <td valign=bottom>&nbsp;<font color=brown><b><?=del_html($data['user_id'])?> (<?=$data['name']?>)</td>
 </tr>
 <?php
  } else {
@@ -93,12 +93,12 @@ require "lib.php";
 <input type=hidden name=kind value=0>
 
 <?php
-	if($data["no"]) {
+	if($data['no']) {
 ?>
 
 <tr>
   <td align=right><img src=images/memo_id.gif></td>
-  <td valign=bottom>&nbsp;<font color=brown><b><?=$data["user_id"]?> (<?=$data["name"]?>)</td>
+  <td valign=bottom>&nbsp;<font color=brown><b><?=$data['user_id']?> (<?=$data['name']?>)</td>
 </tr>
 <?php } ?>
 

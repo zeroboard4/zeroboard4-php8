@@ -82,18 +82,18 @@
 	if(strpos(strtolower($PHP_SELF),"install") === false &&file_exists($_zb_path."config.php")) {
 
  	 	//세션 처리 (세션은 3일동안 유효하게 설정)
-		if(!is_dir($_zb_path.$_zbDefaultSetup["session_path"])) {
-			mkdir($_zb_path.$_zbDefaultSetup["session_path"], 0777);
-			chmod($_zb_path.$_zbDefaultSetup["session_path"], 0777);
+		if(!is_dir($_zb_path.$_zbDefaultSetup['session_path'])) {
+			mkdir($_zb_path.$_zbDefaultSetup['session_path'], 0777);
+			chmod($_zb_path.$_zbDefaultSetup['session_path'], 0777);
 		}
 
 		// Data, Icon, 세션디렉토리의 쓰기 권한이 없다면 에러 처리
 		if(!is_writable($_zb_path."data")) error("Data 디렉토리의 쓰기 권한이 없습니다<br>제로보드를 사용하기 위해서는 Data 디렉토리의 쓰기 권한이 있어야 합니다");
 		if(!is_writable($_zb_path."icon")) error("icon 디렉토리의 쓰기 권한이 없습니다<br>제로보드를 사용하기 위해서는 icon 디렉토리의 쓰기 권한이 있어야 합니다");
-		if(!is_writable($_zb_path.$_zbDefaultSetup["session_path"])) error("세션 디렉토리(".$_zb_path.$_zbDefaultSetup["session_path"].")의 쓰기 권한이 없습니다<br>제로보드를 사용하기 위해서는 세션디렉토리의 쓰기 권한이 있어야 합니다");
+		if(!is_writable($_zb_path.$_zbDefaultSetup['session_path'])) error("세션 디렉토리(".$_zb_path.$_zbDefaultSetup['session_path'].")의 쓰기 권한이 없습니다<br>제로보드를 사용하기 위해서는 세션디렉토리의 쓰기 권한이 있어야 합니다");
 
 		$_sessionStart = getmicrotime();
-		@session_save_path($_zb_path.$_zbDefaultSetup["session_path"]);
+		@session_save_path($_zb_path.$_zbDefaultSetup['session_path']);
 		@session_cache_limiter('nocache, must_revalidate');
 		@ini_set("session.gc_maxlifetime", "18000");
 
@@ -103,63 +103,63 @@
 		@session_start();
 
 		// 조회수 가 512byte를, 투표 세션변수가 256byte를 넘을시 리셋 (개인서버를 이용시에는 조금 더 늘려도 됨)
-		if(isset($_SESSION["zb_hit"]) || isset($_SESSION["zb_vote"])) {
-			if(strlen($_SESSION["zb_hit"])>$_zbDefaultSetup["session_view_size"]) {
+		if(isset($_SESSION['zb_hit']) || isset($_SESSION['zb_vote'])) {
+			if(strlen($_SESSION['zb_hit'])>$_zbDefaultSetup['session_view_size']) {
 				///$zb_hit='';
 				//session_register("zb_hit");
-				$_SESSION["zb_hit"] = '';
+				$_SESSION['zb_hit'] = '';
 			}
-			if(strlen($_SESSION["zb_vote"])>$_zbDefaultSetup["session_vote_size"]) {
+			if(strlen($_SESSION['zb_vote'])>$_zbDefaultSetup['session_vote_size']) {
 				//$zb_vote='';
 				//session_register("zb_vote");
-				$_SESSION["zb_vote"] = '';
+				$_SESSION['zb_vote'] = '';
 			}
 		}
 		// 자동 로그인일때 제대로 된 자동 로그인인지 체크하는 부분
 		unset($autoLoginData);
 		$autoLoginData = getZBSessionID();
-		if(isset($autoLoginData["no"])) {
-			$zb_logged_no=$autoLoginData["no"];
+		if(isset($autoLoginData['no'])) {
+			$zb_logged_no=$autoLoginData['no'];
 			$zb_logged_ip=$_SERVER['REMOTE_ADDR'];
 			$zb_logged_time=time();
-			$_SESSION["zb_logged_no"] = $zb_logged_no;
-			$_SESSION["zb_logged_ip"] = $zb_logged_ip;
-			$_SESSION["zb_logged_time"] = $zb_logged_time;
+			$_SESSION['zb_logged_no'] = $zb_logged_no;
+			$_SESSION['zb_logged_ip'] = $zb_logged_ip;
+			$_SESSION['zb_logged_time'] = $zb_logged_time;
 
 		// 세션 값을 체크하여 로그인을 처리
-		} elseif(isset($_SESSION["zb_logged_no"])) {
+		} elseif(isset($_SESSION['zb_logged_no'])) {
 
 			// 로그인 시간이 지정된 시간을 넘었거나 로그인 아이피가 현재 사용자의 아이피와 다를 경우 로그아웃 시킴
-			if(time()-intval($_SESSION["zb_logged_time"])>$_zbDefaultSetup["login_time"]||$_SESSION["zb_logged_ip"]!=$_SERVER['REMOTE_ADDR']) {
+			if(time()-intval($_SESSION['zb_logged_time'])>$_zbDefaultSetup['login_time']||$_SESSION['zb_logged_ip']!=$_SERVER['REMOTE_ADDR']) {
 
-				$_SESSION["zb_logged_no"] = '';
-			$_SESSION["zb_logged_ip"] = '';
-			$_SESSION["zb_logged_time"] = '';
-				unset($_SESSION["zb_logged_no"],$_SESSION["zb_logged_ip"],$_SESSION["zb_logged_time"]);
+				$_SESSION['zb_logged_no'] = '';
+			$_SESSION['zb_logged_ip'] = '';
+			$_SESSION['zb_logged_time'] = '';
+				unset($_SESSION['zb_logged_no'],$_SESSION['zb_logged_ip'],$_SESSION['zb_logged_time']);
 				session_destroy();
 
 			// 유효할 경우 로그인 시간을 다시 설정
 			} else {
 				// 4.0x 용 세션 처리
 				$zb_logged_time=time();
-				$_SESSION["zb_logged_time"] = $zb_logged_time;
+				$_SESSION['zb_logged_time'] = $zb_logged_time;
 			}
 
 		}
 
 		// 현재 접속자의 데이타를 체크하여 파일로 저장 (회원, 비회원으로 구분해서 저장)
 		$_nowConnectStart = getmicrotime();
-		if($_zbDefaultSetup["nowconnect_enable"]=="true") {
-			$_zb_now_check_intervalTime = isset($_SESSION["zb_last_connect_check"]) ? time()-$_SESSION["zb_last_connect_check"] : time();
+		if($_zbDefaultSetup['nowconnect_enable']=="true") {
+			$_zb_now_check_intervalTime = isset($_SESSION['zb_last_connect_check']) ? time()-$_SESSION['zb_last_connect_check'] : time();
 
-			if(!isset($_SESSION["zb_last_connect_check"])||$_zb_now_check_intervalTime>$_zbDefaultSetup["nowconnect_refresh_time"]) {
+			if(!isset($_SESSION['zb_last_connect_check'])||$_zb_now_check_intervalTime>$_zbDefaultSetup['nowconnect_refresh_time']) {
 
 				// 4.0x 용 세션 처리
 				$zb_last_connect_check = time();
-				$_SESSION["zb_last_connect_check"] = $zb_last_connect_check;
+				$_SESSION['zb_last_connect_check'] = $zb_last_connect_check;
 
-				if(isset($_SESSION["zb_logged_no"])) {
-					$total_member_connect = $total_connect = getNowConnector($_zb_path."data/now_member_connect.php",$_SESSION["zb_logged_no"]);
+				if(isset($_SESSION['zb_logged_no'])) {
+					$total_member_connect = $total_connect = getNowConnector($_zb_path."data/now_member_connect.php",$_SESSION['zb_logged_no']);
 					$total_guest_connect = getNowConnector_num($_zb_path."data/now_connect.php", TRUE);
 				} else {
 					$total_member_connect = $total_connect = getNowConnector_num($_zb_path."data/now_member_connect.php", TRUE);
@@ -268,29 +268,29 @@
 	function member_info() {
 
 		global $member_table, $member, $connect;
-		if(defined("_member_info_included")&&$member["no"]) return $member;
+		if(defined("_member_info_included")&&$member['no']) return $member;
 		define("_member_info_included", true);
 
-		if(isset($member["no"])) return $member;
+		if(isset($member['no'])) return $member;
 		
-		if(isset($_SESSION["zb_logged_no"])) {
-			$query=mysql_query("select * from $member_table where no ='".$_SESSION["zb_logged_no"]."'");
+		if(isset($_SESSION['zb_logged_no'])) {
+			$query=mysql_query("select * from $member_table where no ='".$_SESSION['zb_logged_no']."'");
 			$member=mysql_fetch_array($query);
 			if(mysql_num_rows($query) < 1) {
 			session_destroy();
-			unset($member,$_SESSION["zb_logged_no"],$_SESSION["zb_logged_ip"],$_SESSION["zb_logged_time"],$_SESSION["zb_hash"]);
-			$member["level"] = 10;
+			unset($member,$_SESSION['zb_logged_no'],$_SESSION['zb_logged_ip'],$_SESSION['zb_logged_time'],$_SESSION['zb_hash']);
+			$member['level'] = 10;
 			} else {
 			$zb_hash_chk = md5($member['reg_m_date'].$member['user_id'].$member['no'].$_SERVER['REMOTE_ADDR'].$_SERVER['HTTP_USER_AGENT']);
 			
-			if($_SESSION["zb_hash"] != $zb_hash_chk)
+			if($_SESSION['zb_hash'] != $zb_hash_chk)
 			{
 				session_destroy();
-				unset($member,$_SESSION["zb_logged_no"],$_SESSION["zb_logged_ip"],$_SESSION["zb_logged_time"],$_SESSION["zb_hash"]);
-				$member["level"] = 10;
+				unset($member,$_SESSION['zb_logged_no'],$_SESSION['zb_logged_ip'],$_SESSION['zb_logged_time'],$_SESSION['zb_hash']);
+				$member['level'] = 10;
 			}
 		} 
-	} else $member["level"] = 10;
+	} else $member['level'] = 10;
 	return $member;
 }
 
@@ -341,18 +341,18 @@
 		global $dir;
 
 		// 글쓴 시간 구함
-		$check_time=(time()-$data["reg_date"])/60/60;
+		$check_time=(time()-$data['reg_date'])/60/60;
 
 		// 앞에 붙는 아이콘 정의
-		if($data["depth"]) {
+		if($data['depth']) {
 			if($check_time<=12) $icon="<img src=$dir/reply_new_head.gif border=0 align=absmiddle>&nbsp;"; // 최근 글일경우
 			else $icon="<img src=$dir/reply_head.gif border=0 align=absmiddle>&nbsp;"; // 답글일때
 		} else {
 			if($check_time<=12) $icon="<img src=$dir/new_head.gif border=0 align=absmiddle>&nbsp;"; // 최근 글일경우
 			else $icon="<img src=$dir/old_head.gif border=0 align=absmiddle>&nbsp;";          // 답글이 아닐때
 		}
-		if($data["headnum"]<=-2000000000) $icon="<img src=$dir/notice_head.gif border=0 align=absmiddle>&nbsp;"; // 공지사항일때
-		else if($data["is_secret"]==1) $icon="<img src=$dir/secret_head.gif border=0 align=absmiddle alt='비밀글입니다'>&nbsp;";
+		if($data['headnum']<=-2000000000) $icon="<img src=$dir/notice_head.gif border=0 align=absmiddle>&nbsp;"; // 공지사항일때
+		else if($data['is_secret']==1) $icon="<img src=$dir/secret_head.gif border=0 align=absmiddle alt='비밀글입니다'>&nbsp;";
 		return $icon;
 	}
 
@@ -373,25 +373,25 @@
 		global $group;
 
 		// 이름앞에 붙는 아이콘 정의;;
-		if($group["use_icon"]==0) {
-			if($data["ismember"]) { 
-				if($data["islevel"]==2) $face_image="<img src=images/admin2_face.gif border=0 align=absmiddle>";
-				elseif($data["islevel"]==1) $face_image="<img src=images/admin1_face.gif border=0 align=absmiddle>";
+		if($group['use_icon']==0) {
+			if($data['ismember']) { 
+				if($data['islevel']==2) $face_image="<img src=images/admin2_face.gif border=0 align=absmiddle>";
+				elseif($data['islevel']==1) $face_image="<img src=images/admin1_face.gif border=0 align=absmiddle>";
 				else {
-					if($group["icon"]) $face_image="<img src=icon/$group[icon] border=0 align=absmiddle>";
+					if($group['icon']) $face_image="<img src=icon/$group[icon] border=0 align=absmiddle>";
 					else $face_image="<img src=images/member_face.gif border=0 align=absmiddle>";
 				}
 			} 
 			else $face_image="<img src=images/blank_face.gif border=0 align=absmiddle> ";
 		}
 
-		$temp_name = get_private_icon($data["ismember"], "1");
+		$temp_name = get_private_icon($data['ismember'], "1");
 		if($temp_name) $face_image="<img src='$temp_name' border=0 align=absmiddle>";
 	
-		if($group["use_icon"]<2&&$data["ismember"]) $face_image .= "<b>";
+		if($group['use_icon']<2&&$data['ismember']) $face_image .= "<b>";
 
-		//if($data["ismember"]&&$data["parent"]) $face_image="<b>";
-		//elseif($data["parent"]) $face_image="";
+		//if($data['ismember']&&$data['parent']) $face_image="<b>";
+		//elseif($data['parent']) $face_image="";
 	
 		return $face_image;
 	}
@@ -399,7 +399,7 @@
 
 	// 게시판 관리자인지 체크하는 부분
 	function check_board_master($member, $board_num) {
-		$temp = explode(",",$member["board_name"]);
+		$temp = explode(",",$member['board_name']);
 		for($i=0;$i<count($temp);$i++) {
 			$t = trim($temp[$i]);
 			if($t&&$t==$board_num) return 1;
@@ -421,34 +421,34 @@
 	
 		if(strpos(strtolower($PHP_SELF),"member_") === false && isset($setup)) $stylefile="skin/$setup[skinname]/style.css"; else $stylefile="style.css";
 
-		if(isset($setup) && $setup["use_formmail"]) {
+		if(isset($setup) && $setup['use_formmail']) {
 			$f = fopen("script/script_zbLayer.php","r");
 			$zbLayerScript = fread($f, filesize("script/script_zbLayer.php"));
 			fclose($f);
 		}
 		
 		// html 시작부분 출력
-		if(isset($setup) && $setup["skinname"]) {
+		if(isset($setup) && $setup['skinname']) {
 			?>
 <html> 
 <head>
-	<title><?=$setup["title"]?></title>
+	<title><?=$setup['title']?></title>
 	<meta http-equiv=Content-Type content=text/html; charset=utf-8>
 	<link rel=StyleSheet HREF=<?=$stylefile?> type=text/css title=style>
-	<?php if($setup["use_formmail"]) echo $zbLayerScript;?>
+	<?php if($setup['use_formmail']) echo $zbLayerScript;?>
 	<?php if($scriptfile) include "script/".$scriptfile;?>
 </head>
 <body topmargin='0'  leftmargin='0' marginwidth='0' marginheight='0' <?=$body?><?php
 
-			if($setup["bg_color"]) echo " bgcolor=".$setup["bg_color"]." ";
-			if($setup["bg_image"]) echo " background=".$setup["bg_image"]." ";
+			if($setup['bg_color']) echo " bgcolor=".$setup['bg_color']." ";
+			if($setup['bg_image']) echo " background=".$setup['bg_image']." ";
 
 			?>>
 			<?php
-			if($group["header_url"]) { @include $group["header_url"]; }
-			if($setup["header_url"]) { @include $setup["header_url"]; }
-			if($group["header"]) echo stripslashes($group["header"]);
-			if($setup["header"]) echo stripslashes($setup["header"]);
+			if($group['header_url']) { @include $group['header_url']; }
+			if($setup['header_url']) { @include $setup['header_url']; }
+			if($group['header']) echo stripslashes($group['header']);
+			if($setup['header']) echo stripslashes($setup['header']);
 			?>
 			<table border=0 cellspacing=0 cellpadding=0 width=<?=$width?> height=1 style="table-layout:fixed;"><col width=100%></col><tr><td><img src=images/t.gif border=0 width=98% height=1 name=zb_get_table_width><br><img src=images/t.gif border=0 name=zb_target_resize width=1 height=1></td></tr></table>
 			<?php
@@ -463,8 +463,8 @@
 </head>
 <body topmargin='0'  leftmargin='0' marginwidth='0' marginheight='0' <?=$body?>>
 			<?php
-				if(isset($group) && $group["header_url"]) { @include $group["header_url"]; }
-				if(isset($group) && $group["header"]) echo stripslashes($group["header"]);
+				if(isset($group) && $group['header_url']) { @include $group['header_url']; }
+				if(isset($group) && $group['header']) echo stripslashes($group['header']);
 		}
 
 	}
@@ -483,7 +483,7 @@
 		if(is_array($maker_file) && $maker_file[0]) $maker="/ skin by $maker_file[0]";
 		else $maker = "";
 
-		if(isset($setup) && $setup["skinname"]) {
+		if(isset($setup) && $setup['skinname']) {
 			?>
 
 			<table border=0 cellpadding=0 cellspacing=0 height=20 width=<?=$width?>>
@@ -514,10 +514,10 @@
 			<?php
 			}
 
-			if($setup["footer"]) echo stripslashes($setup["footer"]);
-			if($group["footer"]) echo stripslashes($group["footer"]);
-			if($setup["footer_url"]) { @include $setup["footer_url"]; }
-			if($group["footer_url"]) { @include $group["footer_url"]; }
+			if($setup['footer']) echo stripslashes($setup['footer']);
+			if($group['footer']) echo stripslashes($group['footer']);
+			if($setup['footer_url']) { @include $setup['footer_url']; }
+			if($group['footer_url']) { @include $group['footer_url']; }
 			?>
 
 </body>
@@ -526,8 +526,8 @@
 			
 		} else {
 
-			if(isset($group) && $group["footer"]) echo stripslashes($group["footer"]);
-			if(isset($group) && $group["footer_url"]) { @include $group["footer_url"]; }
+			if(isset($group) && $group['footer']) echo stripslashes($group['footer']);
+			if(isset($group) && $group['footer_url']) { @include $group['footer_url']; }
 
 			?>
 			</body>
@@ -552,41 +552,41 @@
 	// zbLayer 출력
 	function check_zbLayer($data) {
 		global $zbLayer, $setup, $member, $is_admin, $id, $_zbCheckNum;
-		if($setup["use_formmail"]) {
+		if($setup['use_formmail']) {
 			if(!$_zbCheckNum) $_zbCheckNum=0;
-			$data["name"]=stripslashes($data["name"]);
-			$data["name"]=urlencode($data["name"]);
-			//$data["name"]=str_replace("\"","",$data["name"]);
-			//$data["name"]=str_replace("'","\'",$data["name"]);
-			//$data["name"]=str_replace(" ","",$data["name"]);
+			$data['name']=stripslashes($data['name']);
+			$data['name']=urlencode($data['name']);
+			//$data['name']=str_replace("\"","",$data['name']);
+			//$data['name']=str_replace("'","\'",$data['name']);
+			//$data['name']=str_replace(" ","",$data['name']);
 
-			if($data["homepage"]){
-				$data["homepage"]=str_replace("http://","",stripslashes($data["homepage"]));
-				//$data["homepage"]=str_replace("\"","",$data["homepage"]);
-				//$data["homepage"]=str_replace("'","",$data["homepage"]);
-				//$data["homepage"]=str_replace(" ","",$data["homepage"]);
-				$data["homepage"]=urlencode($data["homepage"]);
-				$data["homepage"]="http://".$data["homepage"];
+			if($data['homepage']){
+				$data['homepage']=str_replace("http://","",stripslashes($data['homepage']));
+				//$data['homepage']=str_replace("\"","",$data['homepage']);
+				//$data['homepage']=str_replace("'","",$data['homepage']);
+				//$data['homepage']=str_replace(" ","",$data['homepage']);
+				$data['homepage']=urlencode($data['homepage']);
+				$data['homepage']="http://".$data['homepage'];
 			}
 
-			$data["email"]=base64_encode($data["email"]);
+			$data['email']=base64_encode($data['email']);
 
 			$_zbCheckNum++;
 			$_zbCount=1;
 
-			if(($member["is_admin"]==1||$member["is_admin"]==2)&&$data["ismember"]) {
-				$traceID = $data["ismember"];
+			if(($member['is_admin']==1||$member['is_admin']==2)&&$data['ismember']) {
+				$traceID = $data['ismember'];
 				$traceType="t";
 				$isAdmin=1;
-			} elseif(($member["is_admin"]==1||$member["is_admin"]==2)&&!$data["ismember"]) {
-				$traceID = $data["name"];
+			} elseif(($member['is_admin']==1||$member['is_admin']==2)&&!$data['ismember']) {
+				$traceID = $data['name'];
 				$traceType="tn";
 				$isAdmin=1;
 			}
 
-			if($member["no"]) $isMember = 1;
+			if($member['no']) $isMember = 1;
 
-			if($data["ismember"]<1) $data["ismember"]="";
+			if($data['ismember']<1) $data['ismember']="";
 
 			$zbLayer = $zbLayer."\nprint_ZBlayer('zbLayer$_zbCheckNum', '$data[homepage]', '$data[email]', '$data[ismember]', '$id', '$data[name]', '$traceID', '$traceType', '$isAdmin', '$isMember');";
 		}   
@@ -598,7 +598,7 @@
 	function error($message, $url="") {
 		global $setup, $connect, $dir, $config_dir;
 
-		if(isset($setup["skinname"])) $dir="skin/".$setup["skinname"]; else $dir="skin/";
+		if(isset($setup['skinname'])) $dir="skin/".$setup['skinname']; else $dir="skin/";
 
 		if($url=="window.close") {
 			$message=str_replace("<br>","\\n",$message);
@@ -613,7 +613,7 @@
 
 			head();
 
-			if(isset($setup["skinname"])) {
+			if(isset($setup['skinname'])) {
 				include "skin/$setup[skinname]/error.php";
 			} else {
 				include $config_dir."error.php";
@@ -636,11 +636,11 @@
 
 		$data=mysql_fetch_array(mysql_query("select * from $admin_table where name='$id'",$connect));
 
-		if($data["table_width"]<=100) $data["table_width"]=$data["table_width"]."%"; 
+		if($data['table_width']<=100) $data['table_width']=$data['table_width']."%"; 
 
 		// 원래는 IP를 보여주는 기능인데, DB 변경을 피하기 위해서 이미지 박스 사용 권한으로 변경하여 사용
-		if(!$data["use_showip"]) $data["use_showip"] = 1;
-		$data["grant_imagebox"] = $data["use_showip"];
+		if(!$data['use_showip']) $data['use_showip'] = 1;
+		$data['grant_imagebox'] = $data['use_showip'];
 
 		return $data;
 	}
@@ -670,7 +670,7 @@
 	// 현재 아이피와 주어진 아이피 리스트를 비교하여 아이피 블럭 대상자인지 검사
 	function check_blockip() {
 		global $setup;
-		$avoid_ip=explode(",",$setup["avoid_ip"]);
+		$avoid_ip=explode(",",$setup['avoid_ip']);
 		$count = count($avoid_ip);
 		for($i=0;$i<$count;$i++) {
 			if(!isblank($avoid_ip[$i])&&strpos($_SERVER['REMOTE_ADDR'],$avoid_ip[$i]) !== false) Error("차단당한 IP 주소입니다.");
@@ -694,7 +694,7 @@
 				for($i=0;$i<$_sizeConnector;$i++) {
 					$_time = (int)substr($_connector[$i],0,12);
 					$_div = substr($_connector[$i],12);
-					if($_time+$_zbDefaultSetup["nowconnect_time"]>=$_nowtime&&$_div!=$div) {
+					if($_time+$_zbDefaultSetup['nowconnect_time']>=$_nowtime&&$_div!=$div) {
 						$_realNowConnector.=$_time.$_div.":";
 						$num++;
 					}
@@ -723,7 +723,7 @@
 				for($i=0;$i<$_sizeConnector;$i++) {
 					$_time = (int)substr($_connector[$i],0,12);
 					$_div = substr($_connector[$i],12);
-					if($_time+$_zbDefaultSetup["nowconnect_time"]>=$_nowtime) {
+					if($_time+$_zbDefaultSetup['nowconnect_time']>=$_nowtime) {
 						$_realNowConnector.=$_time.$_div.":";
 						$num++;
 					}
@@ -742,10 +742,10 @@
 	function getZBSessionID() {
 		global $_zb_path, $_zbDefaultSetup;
 
-		if(isset($_COOKIE["ZBSESSIONID"])) $zbSessionID = $_COOKIE["ZBSESSIONID"];
+		if(isset($_COOKIE['ZBSESSIONID'])) $zbSessionID = $_COOKIE['ZBSESSIONID'];
 
 		if(!isset($zbSessionID)) return array();
-		$str = zReadFile($_zb_path.$_zbDefaultSetup["session_path"]."/zbSessionID_".$zbSessionID.".php");
+		$str = zReadFile($_zb_path.$_zbDefaultSetup['session_path']."/zbSessionID_".$zbSessionID.".php");
 
 		if(!$str) {
 			@setcookie("ZBSESSIONID", "", time()+60*60*24*365, "/");
@@ -754,10 +754,10 @@
 
 		$str = explode("\n",$str);
 
-		$data["no"] = trim($str[1]);
-		$data["time"] = trim($str[2]);
+		$data['no'] = trim($str[1]);
+		$data['time'] = trim($str[2]);
 
-		$newZBSessionID = md5($data["no"]."-^A-".$data["time"]);
+		$newZBSessionID = md5($data['no']."-^A-".$data['time']);
 
 		if($newZBSessionID != $zbSessionID) {
 			@setcookie("ZBSESSIONID", "", time()+60*60*24*365, "/");
@@ -765,8 +765,8 @@
 		}
 
 		if(!$_zb_path) {
-			z_unlink($_zb_path.$_zbDefaultSetup["session_path"]."/zbSessionID_".$zbSessionID.".php");
-			makeZBSessionID($data["no"]);
+			z_unlink($_zb_path.$_zbDefaultSetup['session_path']."/zbSessionID_".$zbSessionID.".php");
+			makeZBSessionID($data['no']);
 		}
 
 		return $data;
@@ -782,7 +782,7 @@
 
 		$newStr = "<?php /*\n$no\n".time()."\n*/?>";
 
-		zWriteFile($_zb_path.$_zbDefaultSetup["session_path"]."/zbSessionID_".$zbSessionID.".php", $newStr);
+		zWriteFile($_zb_path.$_zbDefaultSetup['session_path']."/zbSessionID_".$zbSessionID.".php", $newStr);
 
 		@setcookie("ZBSESSIONID", $zbSessionID, time()+60*60*24*365, "/");
 	}
@@ -791,8 +791,8 @@
 	// 제로보드 자동 로그인 세션값 파기시키는 함수
 	function destroyZBSessionID($no) {
 		global $_zb_path, $_zbDefaultSetup;
-		$zbSessionID = $_COOKIE["ZBSESSIONID"];
-		z_unlink($_zb_path.$_zbDefaultSetup["session_path"]."/zbSessionID_".$zbSessionID.".php");
+		$zbSessionID = $_COOKIE['ZBSESSIONID'];
+		z_unlink($_zb_path.$_zbDefaultSetup['session_path']."/zbSessionID_".$zbSessionID.".php");
 		@setcookie("ZBSESSIONID", "", time()+60*60*24*365, "/");
 	}
 
@@ -813,19 +813,19 @@
 				$defaultSetup[$name]=$value;
 			}
 		}
-		if(!$defaultSetup["url"]) $defaultSetup["url"] = $HTTP_HOST;
-		if(!$defaultSetup["sitename"]) $defaultSetup["sitename"] = $HTTP_HOST;
-		if(!$defaultSetup["session_path"]) $defaultSetup["session_path"] = "data/__zbSessionTMP";
-		if(!$defaultSetup["session_view_size"]) $defaultSetup["session_view_size"] = 512;
-		if(!$defaultSetup["session_vote_size"]) $defaultSetup["session_vote_size"] = 256;
-		if(!$defaultSetup["login_time"]) $defaultSetup["login_time"] = 60*30;
-		if(!$defaultSetup["nowconnect_enable"]) $defaultSetup["nowconnect_enable"] = "true";
-		if(!$defaultSetup["nowconnect_refresh_time"]) $defaultSetup["nowconnect_refresh_time"] = 60*3;
-		if(!$defaultSetup["nowconnect_time"]) $defaultSetup["nowconnect_tim"] = 60*5;
-		if(!$defaultSetup["enable_hangul_id"]) $defaultSetup["enable_hangul_id"] = "false";
-		if(!$defaultSetup["check_email"]) $defaultSetup["check_email"] = "true";
-		if(!$defaultSetup["memo_limit_time"]) $defaultSetup["memo_limit_time"] = 7;
-		$defaultSetup["memo_limit_time"] = 60 * 60 * 24 * $defaultSetup["memo_limit_time"];
+		if(!$defaultSetup['url']) $defaultSetup['url'] = $HTTP_HOST;
+		if(!$defaultSetup['sitename']) $defaultSetup['sitename'] = $HTTP_HOST;
+		if(!$defaultSetup['session_path']) $defaultSetup['session_path'] = "data/__zbSessionTMP";
+		if(!$defaultSetup['session_view_size']) $defaultSetup['session_view_size'] = 512;
+		if(!$defaultSetup['session_vote_size']) $defaultSetup['session_vote_size'] = 256;
+		if(!$defaultSetup['login_time']) $defaultSetup['login_time'] = 60*30;
+		if(!$defaultSetup['nowconnect_enable']) $defaultSetup['nowconnect_enable'] = "true";
+		if(!$defaultSetup['nowconnect_refresh_time']) $defaultSetup['nowconnect_refresh_time'] = 60*3;
+		if(!$defaultSetup['nowconnect_time']) $defaultSetup['nowconnect_tim'] = 60*5;
+		if(!$defaultSetup['enable_hangul_id']) $defaultSetup['enable_hangul_id'] = "false";
+		if(!$defaultSetup['check_email']) $defaultSetup['check_email'] = "true";
+		if(!$defaultSetup['memo_limit_time']) $defaultSetup['memo_limit_time'] = 7;
+		$defaultSetup['memo_limit_time'] = 60 * 60 * 24 * $defaultSetup['memo_limit_time'];
 		 
 		return $defaultSetup;
 	}
@@ -979,10 +979,10 @@ exit();
 	// URL, Mail을 자동으로 체크하여 링크만듬
 	function autolink($str) {
 		global $is_admin, $data, $member;
-		$regex["file"] = "gz|tgz|tar|gzip|zip|rar|mpeg|mpg|exe|rpm|dep|rm|ram|asf|ace|viv|avi|mid|gif|jpg|png|bmp|eps|mov";
-		$regex["file"] = "(\.($regex[file])\") TARGET=\"_blank\"";
-		$regex["http"] = "(http|https|ftp|telnet|news|mms):\/\/(([\xA1-\xFEa-z0-9:_\-]+\.[\xA1-\xFEa-z0-9,:;&#=_~%\[\]?\/.,+\-]+)([.]*[\/a-z0-9\[\]]|=[\xA1-\xFE]+))";
-		$regex["mail"] = "([\xA1-\xFEa-z0-9_.-]+)@([\xA1-\xFEa-z0-9_-]+\.[\xA1-\xFEa-z0-9._-]*[a-z]{2,3}(\?[\xA1-\xFEa-z0-9=&\?]+)*)";
+		$regex['file'] = "gz|tgz|tar|gzip|zip|rar|mpeg|mpg|exe|rpm|dep|rm|ram|asf|ace|viv|avi|mid|gif|jpg|png|bmp|eps|mov";
+		$regex['file'] = "(\.($regex[file])\") TARGET=\"_blank\"";
+		$regex['http'] = "(http|https|ftp|telnet|news|mms):\/\/(([\xA1-\xFEa-z0-9:_\-]+\.[\xA1-\xFEa-z0-9,:;&#=_~%\[\]?\/.,+\-]+)([.]*[\/a-z0-9\[\]]|=[\xA1-\xFE]+))";
+		$regex['mail'] = "([\xA1-\xFEa-z0-9_.-]+)@([\xA1-\xFEa-z0-9_-]+\.[\xA1-\xFEa-z0-9._-]*[a-z]{2,3}(\?[\xA1-\xFEa-z0-9=&\?]+)*)";
 		$src[] = "/<([^<>\n]*)\n([^<>\n]+)\n([^<>\n]*)>/i";
 		$tar[] = "<\\1\\2\\3>";
 		$src[] = "/<([^<>\n]*)\n([^\n<>]*)>/i";
@@ -1023,7 +1023,7 @@ exit();
 		$tar[] = "\\1";
 		$src[] = "/_HTTPAT_/";
 		$tar[] = "@";
-		if ($is_admin && $data["ismember"]!=$member["no"]) { 
+		if ($is_admin && $data['ismember']!=$member['no']) { 
         $src[] = "/(\<(embed|object|ruby)[^\>]*)\>?(\<\/(embed|object|ruby)\>)?/i";
         $tar[] = "<div style=\"border:1px solid #dcbba3;padding: 6px;background-color: #f9f2ee;color: #bf0000;line-height: 160%\">보안문제로 인하여 관리자 아이디로는 이 게시물에 사용된 embed 또는 object 태그를 볼 수 없습니다.<br />확인하시려면 관리자 권한이 없는 다른 아이디로 접속하세요.</div>";
 		}

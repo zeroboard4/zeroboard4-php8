@@ -82,7 +82,7 @@
 
 <tr>
   <td  align=right style=font-family:Tahoma;font-size:8pt>Name&nbsp;</td>
-  <td > <input type=text name=name size=20 value='<?php if(isset($data)) echo $data["name"];?>' maxlength=20 style=font-family:Tahoma;font-size:8pt></td>
+  <td > <input type=text name=name size=20 value='<?php if(isset($data)) echo $data['name'];?>' maxlength=20 style=font-family:Tahoma;font-size:8pt></td>
 </tr>
 
 <tr>

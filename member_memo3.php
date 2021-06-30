@@ -8,7 +8,7 @@
 // 멤버정보 구하기
 	$member=member_info();
 
-	if(!$member["no"]) Error("로그인된 회원만이 사용할수 있습니다","window.close");
+	if(!$member['no']) Error("로그인된 회원만이 사용할수 있습니다","window.close");
 
 	if(!$page&&!$status) $status=1;
 
@@ -148,20 +148,20 @@
 // 출력
 	$loop_number=$total-($page-1)*$page_num;
 	while($data=mysql_fetch_array($result)) {
-		$name=stripslashes($data["name"]);
+		$name=stripslashes($data['name']);
 		
-		$temp_name = get_private_icon($data["no"], "2");
+		$temp_name = get_private_icon($data['no'], "2");
 		if($temp_name) $name="<img src='$temp_name' border=0 align=absmiddle>";
-		$temp_name = get_private_icon($data["no"], "1");
+		$temp_name = get_private_icon($data['no'], "1");
 		if($temp_name) $name="<img src='$temp_name' border=0 align=absmiddle>&nbsp;".$name;
 
 		
-		$user_id=stripslashes($data["user_id"]);
-		//$check=mysql_fetch_array(mysql_query("select count(*) from $now_table where user_id='$data["user_id"]'"));
+		$user_id=stripslashes($data['user_id']);
+		//$check=mysql_fetch_array(mysql_query("select count(*) from $now_table where user_id='$data['user_id']'"));
 		if($check[0]) $stat="<img src=images/memo_online.gif>";
 		else $stat="<img src=images/memo_offline.gif>";
-		if($data["is_admin"]==1) $kind="<font color=#aa0000 style=font-family:Tahoma;font-size:8pt;><b>Super Administrator</b>($data[level])</font>";
-		elseif($data["is_admin"]==2) $kind="<font color=#0000aa style=font-family:Tahoma;font-size:8pt;><b>Group Administrator</b>($data[level])</font>";
+		if($data['is_admin']==1) $kind="<font color=#aa0000 style=font-family:Tahoma;font-size:8pt;><b>Super Administrator</b>($data[level])</font>";
+		elseif($data['is_admin']==2) $kind="<font color=#0000aa style=font-family:Tahoma;font-size:8pt;><b>Group Administrator</b>($data[level])</font>";
 		else $kind="<font style=font-family:Tahoma;font-size:8pt;><b>Member</b>($data[level])</font>";
 
 		echo"

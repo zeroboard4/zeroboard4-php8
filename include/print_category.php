@@ -2,7 +2,7 @@
 	if(!defined("_zb_lib_included")) return;
 	if(eregi(":\/\/",$dir)||eregi("^\.",$dir)) $dir ="./";
 
-	if($setup["use_category"]) {
+	if($setup['use_category']) {
 
 		$c_href="&id=$id&page=$page&page_num=$page_num&sn=$sn&ss=$ss&sc=$sc&keyword=$keyword";
 		$c_sort="&select_arrange=$select_arrange&desc=$desc";

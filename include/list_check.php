@@ -18,11 +18,11 @@ function list_check(&$data,$view_check=0) {
 
 	$_listCheckTimeStart = getmicrotime();
 
-	if($view_check) $setup["only_board"]=0;
+	if($view_check) $setup['only_board']=0;
 
 	// 제목에 5줄로 툴바 만듬
-	if($setup["use_status"]) {
-		$tmpData = explode("\n",stripslashes($data["memo"]));
+	if($setup['use_status']) {
+		$tmpData = explode("\n",stripslashes($data['memo']));
 		$totalCommentLineNum = count($tmpData);
 		if($totalCommentLineNum>10) {
 			$showCommentStr_tail.="\n".($totalCommentLineNum - 10)." lines more... (total : $totalCommentLineNum lines)";
@@ -41,20 +41,20 @@ function list_check(&$data,$view_check=0) {
 	$_zbCount = check_zbLayer($data);
 	
 	// HTML 사용일 경우 현재 회원의 html 권한이 없거나 관리자가 아니라면 style 속성을 제거
-	if($data["use_html"]&&$data["islevel"]>$setup["grant_html"]) {
+	if($data['use_html']&&$data['islevel']>$setup['grant_html']) {
 		$style_pattern = "/(\<.*?)style=(.*?)(\>?)/i";
-		$data["memo"]=preg_replace($style_pattern,"\\1\\3",$data["memo"]);
+		$data['memo']=preg_replace($style_pattern,"\\1\\3",$data['memo']);
 	}
 	
 
 
 	// ' 등의 특수문자때문에 붙인 \(역슬래쉬)를 떼어낸다
-	$name=$data["name"]=stripslashes($data["name"]); 
-	$temp_name = get_private_icon($data["ismember"], "2");
+	$name=$data['name']=stripslashes($data['name']); 
+	$temp_name = get_private_icon($data['ismember'], "2");
 	if($temp_name) $name="<img src='$temp_name' border=0 align=absmiddle>"; 
 
-	$subject=$data["subject"]=stripslashes($data["subject"]); // 제목
-	$subject=cut_str($subject,$setup["cut_length"]); // 제목 자르는 부분
+	$subject=$data['subject']=stripslashes($data['subject']); // 제목
+	$subject=cut_str($subject,$setup['cut_length']); // 제목 자르는 부분
 
 	// 검색어에 해당하는 글자를 빨간;; 색으로 바꾸어줌;;
 	if($keyword) {
@@ -63,35 +63,35 @@ function list_check(&$data,$view_check=0) {
 		if($ss=="on") $subject = preg_replace($keyword_pattern, "<span color='FF001E' style='color:#FF001E;background-color:#FFF000;'>$keyword</span>", $subject);
 	}
 
-	$hit=$data["hit"];  // 조회수
-	$vote=$data["vote"];  // 투표수
-	$comment_num="[".$data["total_comment"]."]"; // 간단한 답글 수
-	if($data["total_comment"]==0) $comment_num="";
-	if($setup["use_alllist"]) $view_file="zboard.php"; else $view_file="view.php";
+	$hit=$data['hit'];  // 조회수
+	$vote=$data['vote'];  // 투표수
+	$comment_num="[".$data['total_comment']."]"; // 간단한 답글 수
+	if($data['total_comment']==0) $comment_num="";
+	if($setup['use_alllist']) $view_file="zboard.php"; else $view_file="view.php";
 	// 제목에 링크 거는 부분;
-	if($member["level"]<=$setup["grant_view"]||$is_admin) {
-		//if($setup["use_status"]&&!$data["is_secret"]) $addShowComment = " onMouseOver=\"showComment('$showCommentStr',true)\" onMouseOut=\"showComment('',false)\" ";
-		if($setup["use_status"]&&!$data["is_secret"]) $addShowComment = " title=\"$showCommentStr\" ";
+	if($member['level']<=$setup['grant_view']||$is_admin) {
+		//if($setup['use_status']&&!$data['is_secret']) $addShowComment = " onMouseOver=\"showComment('$showCommentStr',true)\" onMouseOut=\"showComment('',false)\" ";
+		if($setup['use_status']&&!$data['is_secret']) $addShowComment = " title=\"$showCommentStr\" ";
 		$subject="<a href=\"".$view_file."?$href$sort&no=$data[no]\" $addShowComment >".$subject."</a>"; 
 	}
 
-	if(!$setup["only_board"]) {
-		$homepage=$data["homepage"]=stripslashes($data["homepage"]);
+	if(!$setup['only_board']) {
+		$homepage=$data['homepage']=stripslashes($data['homepage']);
 		if($homepage) $homepage="<a href='$homepage' target=_blank>$homepage</a>";
 
 		// 이미지 박스 사용을 위해서 정규표현식 사용
-		if($data["ismember"]) {
+		if($data['ismember']) {
 			$imageBoxPattern = "/\[img\:(.+?)\.(jpg|gif)\,align\=([a-z]){0,}\,width\=([0-9]+)\,height\=([0-9]+)\,vspace\=([0-9]+)\,hspace\=([0-9]+)\,border\=([0-9]+)\]/i";
-			$data["memo"]=preg_replace($imageBoxPattern,"<img src='icon/member_image_box/$data[ismember]/\\1.\\2' align='\\3' width='\\4' height='\\5' vspace='\\6' hspace='\\7' border='\\8'>", stripslashes($data["memo"]));
+			$data['memo']=preg_replace($imageBoxPattern,"<img src='icon/member_image_box/$data[ismember]/\\1.\\2' align='\\3' width='\\4' height='\\5' vspace='\\6' hspace='\\7' border='\\8'>", stripslashes($data['memo']));
 		} else {
-			$data["memo"]=stripslashes($data["memo"]); 
+			$data['memo']=stripslashes($data['memo']); 
 		}
 
-		if($data["use_html"]<2) $memo=$data["memo"]=nl2br($data["memo"]);
-		$memo=$data["memo"];
+		if($data['use_html']<2) $memo=$data['memo']=nl2br($data['memo']);
+		$memo=$data['memo'];
 
 		// 자동링크 거는 부분;;
-		if($setup["use_autolink"]) $memo=autolink($memo); 
+		if($setup['use_autolink']) $memo=autolink($memo); 
 
 		$memo .= "<!--\"<-->";
 
@@ -107,7 +107,7 @@ function list_check(&$data,$view_check=0) {
 		$_zbResizeCheck = true;
 
 		// 아이피
-		if($is_admin) $ip="IP Address : ".$data["ip"]."&nbsp;";  
+		if($is_admin) $ip="IP Address : ".$data['ip']."&nbsp;";  
 
 		$sitelink1=$data["sitelink1"]=stripslashes($data["sitelink1"]);
 		$sitelink2=$data["sitelink2"]=stripslashes($data["sitelink2"]);
@@ -139,26 +139,26 @@ function list_check(&$data,$view_check=0) {
 	}
 
 	// 카테고리의 이름을 구함
-	if($data["category"]&&$setup["use_category"]) $category_name=$category_data[$data["category"]];
+	if($data['category']&&$setup['use_category']) $category_name=$category_data[$data['category']];
 	else $category_name="&nbsp;";
 
 	// 글쓴 시간을 년월일 시분초 로 변환함
-	$reg_date="<span title='".date("Y년 m월 d일 H시 i분 s초", $data["reg_date"])."'>".date("Y/m/d", $data["reg_date"])."</span>";
-	$date=date("Y-m-d H:i:s", $data["reg_date"]);
+	$reg_date="<span title='".date("Y년 m월 d일 H시 i분 s초", $data['reg_date'])."'>".date("Y/m/d", $data['reg_date'])."</span>";
+	$date=date("Y-m-d H:i:s", $data['reg_date']);
 	
 	// 폼메일을 사용하고 관련메뉴가 생성이 되면 레이어오픈
-	if($_zbCount&&$setup["use_formmail"]) {
+	if($_zbCount&&$setup['use_formmail']) {
 		$name = "<span onMousedown=\"ZB_layerAction('zbLayer$_zbCheckNum','visible')\" style=cursor:hand>$name</span>";
 	// 폼메일을 사용안할 경우 무조건 메일링크
 	} else {
-		if($data["email"]) $name="<a href=\"javascript:void(window.open('open_window.php?mode=m&str=".urlencode(base64_encode($data["email"]))."','ZBremote','width=1,height=1,left=1,top=1'))\">$name</a>";
-		//$name="<a href=\"javascript:void(window.open('view_info.php?to=$email&id=$id&member_no=$data["ismember"]','mailform','width=400,height=510,statusbar=no,scrollbars=yes,toolbar=no'))\">$name</a>";
+		if($data['email']) $name="<a href=\"javascript:void(window.open('open_window.php?mode=m&str=".urlencode(base64_encode($data['email']))."','ZBremote','width=1,height=1,left=1,top=1'))\">$name</a>";
+		//$name="<a href=\"javascript:void(window.open('view_info.php?to=$email&id=$id&member_no=$data['ismember']','mailform','width=400,height=510,statusbar=no,scrollbars=yes,toolbar=no'))\">$name</a>";
 	}
 
 	// Depth에 의한 들임값을 정함
 	$insert="";
-	if($data["depth"]>15) $data["depth"]=15;
-	for($z=0;$z<$data["depth"];$z++) $insert .="&nbsp; ";
+	if($data['depth']>15) $data['depth']=15;
+	for($z=0;$z<$data['depth'];$z++) $insert .="&nbsp; ";
 
 	$icon=get_icon($data);
 
@@ -168,22 +168,22 @@ function list_check(&$data,$view_check=0) {
 	$number=$loop_number;
 
 	// 바로 전에 본 글인 경우 번호를 아이콘으로 바꿈
-	if($prev_no==$data["no"]) $number="<img src=$dir/arrow.gif border=0 align=absmiddle>"; elseif($number!="&nbsp;") $number=$loop_number;
+	if($prev_no==$data['no']) $number="<img src=$dir/arrow.gif border=0 align=absmiddle>"; elseif($number!="&nbsp;") $number=$loop_number;
 
 	// 답글 버튼
-	if(($is_admin||$member["level"]<=$setup["grant_reply"])&&$data["headnum"]>-2000000000&&$data["headnum"]!=-1) $a_reply="<a href='write.php?$href$sort&no=$data[no]&mode=reply'>"; 
+	if(($is_admin||$member['level']<=$setup['grant_reply'])&&$data['headnum']>-2000000000&&$data['headnum']!=-1) $a_reply="<a href='write.php?$href$sort&no=$data[no]&mode=reply'>"; 
 	else $a_reply="<Zeroboard";
 
 	// 삭제버튼
-	if(($is_admin||$member["level"]<=$setup["grant_delete"]||$data["ismember"]==$member["no"]||!$data["ismember"])&&!$data["child"]) $a_delete="<a href='delete.php?$href$sort&no=$data[no]'>"; 
+	if(($is_admin||$member['level']<=$setup['grant_delete']||$data['ismember']==$member['no']||!$data['ismember'])&&!$data['child']) $a_delete="<a href='delete.php?$href$sort&no=$data[no]'>"; 
 	else $a_delete="<Zeroboard";
 
 	// 수정버튼
-	if(($is_admin||$member["level"]<=$setup["grant_delete"]||$data["ismember"]==$member["no"]||!$data["ismember"])) $a_modify="<a href='write.php?$href$sort&no=$data[no]&mode=modify'>"; 
+	if(($is_admin||$member['level']<=$setup['grant_delete']||$data['ismember']==$member['no']||!$data['ismember'])) $a_modify="<a href='write.php?$href$sort&no=$data[no]&mode=modify'>"; 
 	else $a_modify="<Zeroboard";
 
 	// 스팸메일러 금지
-	$mail=$data["email"]="";
+	$mail=$data['email']="";
 
 	$_listCheckTime += getmicrotime() - $_listCheckTimeStart;
 }
