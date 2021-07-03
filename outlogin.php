@@ -140,10 +140,12 @@
 			$info_img = $_zb_url."outlogin_skin/$skinname/images/i_info.gif";
 			$admin_img = $_zb_url."outlogin_skin/$skinname/images/i_admin.gif";
 			$memo_swf = $_zb_url."outlogin_skin/$skinname/images/i_memo.swf";
+			$memo_mp3 = $_zb_url."outlogin_skin/$skinname/images/i_memo.mp3";
 
 			if($member['new_memo']) {
 				$memo_on_image = "<img src=$memo_on_img border=0 align=absmiddle> ";
 				$memo_on_sound_out ="<object classid='clsid:D27CDB6E-AE6D-11cf-96B8-444553540000' codebase='http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=5,0,0,0' width='0' height='0'><param name=menu value=false><param name=wmode value=transparent><param name=movie value='$memo_swf'><param name=quality value=low><param name='LOOP' value='false'><embed src='$memo_swf' quality=low pluginspage='http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash' type='application/x-shockwave-flash' width='0' height='0' loop='false' wmode=transparent menu='false'></embed></object>"; 
+				$memo_on_sound_out .="<audio src=\"$memo_mp3\" controls autoplay hidden style=\"display:none;\"><embed src=\"$memo_mp3\" width=\"0\" height=\"0\" loop=\"false\" hidden=\"false\"></audio>";
 			} else {
 				$memo_on_image = "<img src=$memo_off_img border=0 align=absmiddle> ";
 			}

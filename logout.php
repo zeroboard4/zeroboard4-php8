@@ -15,7 +15,7 @@
   
 	if($setup['group_no']&&!$group_no) $group_no=$setup['group_no'];
   
-	mysql_close($connect);
+	//mysql_close($connect);
 
 	destroyZBSessionID($member['no']);
 	
