@@ -27,7 +27,7 @@
 
 // 답글이나 수정일때 원본글을 가져옴;;
 	if(($mode=="reply"||$mode=="modify")&&$no) {
-		$result=zb_query("select * from $t_board"."_$id where no='$no'") or error(mysql_error());
+		$result=zb_query("select * from $t_board"."_$id where no='$no'") or error(zb_error());
 		unset($data);
 		$data=mysql_fetch_array($result);
 		if(!$data['no']) Error("원본글이 존재하지 않습니다");

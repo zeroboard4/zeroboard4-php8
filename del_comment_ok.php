@@ -33,14 +33,14 @@
 	}
 
 // 코멘트 삭제
-	zb_query("delete from $t_comment"."_$id where no='$c_no'") or error(mysql_error());
+	zb_query("delete from $t_comment"."_$id where no='$c_no'") or error(zb_error());
 
 // 코멘트 갯수 정리
 	$total=mysql_fetch_array(zb_query("select count(*) from $t_comment"."_$id where parent='$no'"));
-	zb_query("update $t_board"."_$id set total_comment='$total[0]' where no='$no'")  or error(mysql_error()); 
+	zb_query("update $t_board"."_$id set total_comment='$total[0]' where no='$no'")  or error(zb_error()); 
 
 // 회원일 경우 해당 해원의 점수 주기
-	if($member['no']==$s_data['ismember']) zb_query("update $member_table set point2=point2-1 where no='$member[no]'",$connect) or error(mysql_error());
+	if($member['no']==$s_data['ismember']) zb_query("update $member_table set point2=point2-1 where no='$member[no]'",$connect) or error(zb_error());
 
 // 페이지 이동
 	if($setup['use_alllist']) movepage("zboard.php?id=$id&page=$page&page_num=$page_num&select_arrange=$select_arrange&desc=$des&sn=$sn&ss=$ss&sc=$sc&keyword=$keyword&no=$no");

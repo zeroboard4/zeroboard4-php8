@@ -14,7 +14,7 @@
 	$group_data=mysql_fetch_array(zb_query("select * from $group_table where no='$member[group_no]'"));
 
 // 지정 시간이 넘은 글 삭제;;
-	if(intval($_zbDefaultSetup['memo_limit_time'])!==0) zb_query("delete from $send_memo_table where member_no='$member[no]' and (".time()." - reg_date) >= ".$_zbDefaultSetup['memo_limit_time']) or error(mysql_error());
+	if(intval($_zbDefaultSetup['memo_limit_time'])!==0) zb_query("delete from $send_memo_table where member_no='$member[no]' and (".time()." - reg_date) >= ".$_zbDefaultSetup['memo_limit_time']) or error(zb_error());
 
 // 선택된 메모 삭제;;;
 	if(isset($exec) && $exec=="del_all") {
@@ -56,7 +56,7 @@
 
 // 데이타 뽑아오는 부분... 
 	$que="select a.no as no, a.subject as subject, a.reg_date as reg_date, a.readed as readed, b.name as name, b.user_id as user_id, a.member_to as member_to from $send_memo_table a ,$member_table b where a.member_no='$member[no]' and a.member_to=b.no  order by a.no desc limit $start_num,$page_num";
-	$result=zb_query($que) or Error(mysql_error());
+	$result=zb_query($que) or Error(zb_error());
 
 // MySQL 닫기
 	if($connect) mysql_close($connect);

@@ -80,7 +80,7 @@ if (!function_exists("mysql_fetch_array")) {
 }
 
 if (!function_exists("mysql_error")) {
-	function mysql_error()
+	function zb_error()
 	{
 		global $connect;
 		return mysqli_error($connect);

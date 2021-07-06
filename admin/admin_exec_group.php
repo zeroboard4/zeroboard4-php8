@@ -6,14 +6,14 @@
 		if($member['is_admin']>1&&$member['no']!=$member_data['no']&&$member_data['level']<=$member['level']&&$member_data['is_admin']<=$member['is_admin']) error("선택하신 회원의 정보를 변경할 권한이 없습니다");
 
 		// 멤버 정보 삭제
-		zb_query("delete from $member_table where no='$no'") or error(mysql_error());
+		zb_query("delete from $member_table where no='$no'") or error(zb_error());
 
 		// 쪽지 테이블에서 멤버 정보 삭제
-		zb_query("delete from $get_memo_table where member_no='$no'") or error(mysql_error());
-		zb_query("delete from $send_memo_table where member_no='$no'") or error(mysql_error());
+		zb_query("delete from $get_memo_table where member_no='$no'") or error(zb_error());
+		zb_query("delete from $send_memo_table where member_no='$no'") or error(zb_error());
 
 		// 그룹테이블에서 회원수 -1
-		zb_query("update $group_table set member_num=member_num-1 where no = '$group_no'") or error(mysql_error());
+		zb_query("update $group_table set member_num=member_num-1 where no = '$group_no'") or error(zb_error());
 	
 		// 이름 그림, 아이콘, 이미지 박스 사용용량 파일 삭제
 		@z_unlink("icon/private_name/".$no.".gif");
@@ -186,7 +186,7 @@
 		use_jumin='$use_jumin',use_comment='$use_comment',use_job='$use_job',use_hobby='$use_hobby',          
 		use_home_address='$use_home_address',use_home_tel='$use_home_tel',use_office_address='$use_office_address',
 		use_office_tel='$use_office_tel',use_handphone='$use_handphone',use_mailing='$use_mailing',          
-		use_birth='$use_birth',use_picture='$use_picture' where no='$group_no'") or error(mysql_error());              
+		use_birth='$use_birth',use_picture='$use_picture' where no='$group_no'") or error(zb_error());              
 		movepage("$PHP_SELF?exec=modify_member_join&group_no=$group_no");                                                  
 	}    
 	}    

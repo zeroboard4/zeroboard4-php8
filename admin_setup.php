@@ -141,7 +141,7 @@
 			//$t_member_num=mysql_fetch_array(zb_query("select count(*) from $member_table where group_no='$group_data['no']'"));
 			//$t_board_num=mysql_fetch_array(zb_query("select count(*) from $admin_table where group_no='$group_data['no']'"));
 
-			//zb_query("update $group_table set member_num='$t_member_num[0]',board_num='$t_board_num[0]' where no='$group_data['no']'") or Error(mysql_error());
+			//zb_query("update $group_table set member_num='$t_member_num[0]',board_num='$t_board_num[0]' where no='$group_data['no']'") or Error(zb_error());
 
 			//$group_data['member_num']=$t_member_num[0];
 			//$group_data['board_num']=$t_board_num[0];

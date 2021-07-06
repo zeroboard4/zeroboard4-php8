@@ -1,7 +1,7 @@
 <?php
 	function zbDB_getFields($tableName) {
 		global $connect;
-		$result = zb_query("show fields from $tableName",$connect) or die(mysql_error());
+		$result = zb_query("show fields from $tableName",$connect) or die(zb_error());
 		unset($query);
 		$query = '';
 		while($data=mysql_fetch_array($result)) {
@@ -18,7 +18,7 @@
 
 	function zbDB_getKeys($tableName) {
 		global $connect;
-		$result = zb_query("show keys from $tableName",$connect) or die(mysql_error());
+		$result = zb_query("show keys from $tableName",$connect) or die(zb_error());
 		unset($query);
 		$i=0;
 		$toggle_name = '';
@@ -54,7 +54,7 @@
 
 	function zbDB_getDataList($tableName) {
 		global $connect;
-		$result = zb_query("show fields from $tableName", $connect) or die(mysql_error());
+		$result = zb_query("show fields from $tableName", $connect) or die(zb_error());
 		$field = '';
 		while($data=mysql_fetch_array($result)) {
 			$field .= $data['Field'].",";
@@ -64,7 +64,7 @@
 		$field_count = count($field_array);
 
 		$query = "\n";
-		$result = zb_query("select $field from $tableName") or die(mysql_error());
+		$result = zb_query("select $field from $tableName") or die(zb_error());
 		while($data=mysql_fetch_array($result)) {
 			unset($str);
 			$str = '';
@@ -89,7 +89,7 @@
 
 	function zbDB_All_down($dbname) {
 		global $connect;
-		$result = zb_query("show table status from $dbname like 'zetyx%'",$connect) or die(mysql_error());
+		$result = zb_query("show table status from $dbname like 'zetyx%'",$connect) or die(zb_error());
 		$i=0;
 		while($dbData=mysql_fetch_array($result)) {
 			$tableName = $dbData['Name'];

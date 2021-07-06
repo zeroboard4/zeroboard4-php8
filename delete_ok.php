@@ -67,7 +67,7 @@
 
   if(!$s_data['child']) // 답글이 없을때;;
   {
-   zb_query("delete from $t_board"."_$id where no='$no'") or Error(mysql_error()); // 글삭제
+   zb_query("delete from $t_board"."_$id where no='$no'") or Error(zb_error()); // 글삭제
 
    // 파일삭제
    @z_unlink("./".$s_data["file_name1"]);
@@ -96,7 +96,7 @@
    zb_query("update $t_category"."_$id set num=num-1 where no='$s_data[category]'",$connect);
 
    // 회원일 경우 해당 해원의 점수 주기
-   if(isset($member['no'])&&$member['no']==$s_data['ismember']) zb_query("update $member_table set point1=point1-1 where no='$member[no]'",$connect) or error(mysql_error());
+   if(isset($member['no'])&&$member['no']==$s_data['ismember']) zb_query("update $member_table set point1=point1-1 where no='$member[no]'",$connect) or error(zb_error());
   }
 
   //////// MySQL 닫기 ///////////////////////////////////////////////

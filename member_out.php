@@ -12,26 +12,26 @@
 	$group_no = $member['group_no'];
 
 // 멤버 정보 삭제
-	zb_query("delete from $member_table where no='$member[no]'") or error(mysql_error());
+	zb_query("delete from $member_table where no='$member[no]'") or error(zb_error());
 
   
 // 쪽지 테이블에서 멤버 정보 삭제
-	zb_query("delete from $get_memo_table where member_no='$member[no]'") or error(mysql_error());
-	zb_query("delete from $send_memo_table where member_no='$member[no]'") or error(mysql_error());
+	zb_query("delete from $get_memo_table where member_no='$member[no]'") or error(zb_error());
+	zb_query("delete from $send_memo_table where member_no='$member[no]'") or error(zb_error());
 	
 // 각종 게시판에서 현재 탈퇴한 멤버의 모든 정보를 삭제 (부하 문제로 인해서 주석 처리)
 	/*
 	$result=zb_query("select name from $admin_table");
 	while($data=mysql_fetch_array($result)) {
 		// 게시판 테이블에서 삭제
-		zb_query("update $t_board"."_$data['name'] set ismember='0', password=password('".time()."') where ismember='$member[no]'") or error(mysql_error());
+		zb_query("update $t_board"."_$data['name'] set ismember='0', password=password('".time()."') where ismember='$member[no]'") or error(zb_error());
 		// 코멘트 테이블에서 삭제
-		zb_query("update $t_comment"."_$data['name'] set ismember='0', password=password('".time()."')  where ismember='$member[no]'") or error(mysql_error());
+		zb_query("update $t_comment"."_$data['name'] set ismember='0', password=password('".time()."')  where ismember='$member[no]'") or error(zb_error());
 	}
 	*/
 
 // 그룹테이블에서 회원수 -1
-	zb_query("update $group_table set member_num=member_num-1 where no = '$group_no'") or error(mysql_error());
+	zb_query("update $group_table set member_num=member_num-1 where no = '$group_no'") or error(zb_error());
 
 // 로그아웃 시킴
 	destroyZBSessionID($member['no']);

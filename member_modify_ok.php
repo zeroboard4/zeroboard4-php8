@@ -77,7 +77,7 @@
 	$que.=",openinfo='$openinfo',open_email='$open_email',open_homepage='$open_homepage',open_icq='$open_icq',open_msn='$open_msn',open_comment='$open_comment',open_job='$open_job',open_hobby='$open_hobby',open_home_address='$open_home_address',open_home_tel='$open_home_tel',open_office_address='$open_office_address',open_office_tel='$open_office_tel',open_handphone='$open_handphone',open_birth='$open_birth',open_picture='$open_picture',open_aol='$open_aol' ";
 	$que.=" where no='$member[no]'";
 
-	zb_query($que) or Error("회원정보 수정시에 에러가 발생하였습니다 ".mysql_error());
+	zb_query($que) or Error("회원정보 수정시에 에러가 발생하였습니다 ".zb_error());
 
 	if(isset($del_picture)) {
 		z_unlink($member['picture']);

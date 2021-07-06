@@ -24,11 +24,11 @@
 
 
 // 회원 로그인 체크
-	$result = zb_query("select * from $member_table where user_id='$user_id' and password=password('$password')") or error(mysql_error());
+	$result = zb_query("select * from $member_table where user_id='$user_id' and password=password('$password')") or error(zb_error());
 	$member_data = mysql_fetch_array($result);
 	
 	if(!isset($member_data['no'])&&strlen(get_password("a"))>=41) {
-		$result = zb_query("select * from $member_table where user_id='$user_id' and password=old_password('$password')") or error(mysql_error());
+		$result = zb_query("select * from $member_table where user_id='$user_id' and password=old_password('$password')") or error(zb_error());
 		$member_data = mysql_fetch_array($result);
 	}
 

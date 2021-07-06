@@ -16,7 +16,7 @@
  	if(isblank($jumin1)||!isnum($jumin1)) Error("주민등록번호를 제대로 입력하여 주세요");
 	if(isblank($jumin2)||!isnum($jumin2)) Error("주민등록번호를 제대로 입력하여 주세요");
 
-	$result=zb_query("select * from ".$member_table." where email='$email' and jumin=password('$jumin1"."$jumin2')",$connect) or Error(mysql_error());
+	$result=zb_query("select * from ".$member_table." where email='$email' and jumin=password('$jumin1"."$jumin2')",$connect) or Error(zb_error());
 
 	if(!mysql_num_rows($result)) Error("입력하신 정보에 해당하는 회원이 없습니다.<br><br>다시 한번확인하여 주시기 바랍니다");
  	else {
@@ -24,7 +24,7 @@
 
 		$data=mysql_fetch_array($result);
 
-		zb_query("update $member_table set password=password('$temp') where no='$data[no]'",$connect) or Error(mysql_error());
+		zb_query("update $member_table set password=password('$temp') where no='$data[no]'",$connect) or Error(zb_error());
 
 		$name=stripslashes($data['name']);
 		$to=$data['email'];

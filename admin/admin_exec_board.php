@@ -63,7 +63,7 @@
 			}
 
 		// 같은 이름의 게시판이 이미 생성되었는지를 검사
-		$result=zb_query("select count(*) from $admin_table where name='$name'",$connect) or Error(mysql_error());
+		$result=zb_query("select count(*) from $admin_table where name='$name'",$connect) or Error(zb_error());
 		$temp=mysql_fetch_array($result);
 		if($temp[0]>0) Error("이미 등록되어 있는 게시판입니다.<br>다른 이름으로 생성하십시요","");
 
@@ -95,7 +95,7 @@
 					('$group_no','$name','$skinname','$header','$footer','$header_url','$footer_url','$bg_image','$bg_color','$table_width',
 					'$memo_num','$page_num','$cut_length','$use_category','$use_html','$use_filter','$use_status','$use_pds','$use_homelink',
 					'$use_filelink','$use_cart','$use_autolink','$use_showip','$use_comment','$use_formmail','$use_showreply','$use_secret','$filter','$avoid_tag','$avoid_ip','$use_alllist','$max_upload_size','$title','$pds_ext1','$pds_ext2','$only_board')")                  
-				or Error("관리자 테이블 생성 에러<br><br>".mysql_error());
+				or Error("관리자 테이블 생성 에러<br><br>".zb_error());
 
 		$table_name=$name;
 
@@ -182,10 +182,10 @@
 			zb_query("update $t_board"."_$table_data[name] set category='$movename' where category='$value'",$connect);
 		}
 
-		$result = zb_query("select * from $t_category"."_$table_data[name]") or die(mysql_error());
+		$result = zb_query("select * from $t_category"."_$table_data[name]") or die(zb_error());
 		while($data=mysql_fetch_array($result)) {
 			$num = mysql_fetch_array(zb_query("select count(*) from $t_board"."_$table_data[name] where category='$data[no]'"));
-			zb_query("update $t_category"."_$table_data[name] set num='$num[0]' where no = '$data[no]'") or die(mysql_error());
+			zb_query("update $t_category"."_$table_data[name] set num='$num[0]' where no = '$data[no]'") or die(zb_error());
 		}
 
 		movepage("$PHP_SELF?exec=view_board&exec2=category&no=$no&page=$page&page_num=$page_num&group_no=$group_no");
@@ -202,7 +202,7 @@
 		zb_query("update $admin_table set grant_html='$grant_html', grant_list='$grant_list',
 				grant_view='$grant_view', grant_comment='$grant_comment', grant_write='$grant_write',
 				grant_reply='$grant_reply', grant_delete='$grant_delete', grant_notice='$grant_notice',
-				grant_view_secret='$grant_view_secret', use_showip = '$grant_imagebox' where no='$no'") or Error("권한 설정 변경시 에러가 발생하였습니다".mysql_error());
+				grant_view_secret='$grant_view_secret', use_showip = '$grant_imagebox' where no='$no'") or Error("권한 설정 변경시 에러가 발생하였습니다".zb_error());
 		movepage("$PHP_SELF?exec=view_board&exec=view_board&exec2=grant&no=$no&page=$page&page_num=$page_num&group_no=$group_no");
 	}
 ?>

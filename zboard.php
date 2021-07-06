@@ -17,7 +17,7 @@
 	if(isset($s_que)) {
 		$_dbTimeStart = getmicrotime();
 		$que="select * from $t_board"."_$id $s_que order by $select_arrange $desc limit $start_num, $page_num";
-		$result=zb_query($que,$connect) or Error(mysql_error());
+		$result=zb_query($que,$connect) or Error(zb_error());
 		$_dbTime += getmicrotime()-$_dbTimeStart;
 	}
 
@@ -34,7 +34,7 @@
 					$start_num=$start_num-($sum-$division_data['num']);
 					$_dbTimeStart = getmicrotime();
 					$que="select * from $t_board"."_$id where division='$division' and headnum<0 order by headnum,arrangenum limit $start_num, $page_num";
-					$result=zb_query($que) or error(mysql_error());
+					$result=zb_query($que) or error(zb_error());
 					$_dbTime += getmicrotime()-$_dbTimeStart;
 					$check1=1;
 	
@@ -48,7 +48,7 @@
 							$minus=$page_num-$returnNum;
 							$_dbTimeStart = getmicrotime();
 							$que2="select * from $t_board"."_$id where division=$division and headnum!=0 order by headnum,arrangenum limit $minus";
-							$result2=zb_query($que2) or error(mysql_error());
+							$result2=zb_query($que2) or error(zb_error());
 							$_dbTime += getmicrotime()-$_dbTimeStart;
 							$check2=1;
 							break;
@@ -62,7 +62,7 @@
 		else {
 			$que="select * from $t_board"."_$id $s_que order by $select_arrange $desc $add_on limit $start_num, $page_num";
 			$_dbTimeStart = getmicrotime();
-			$result=zb_query($que,$connect) or Error(mysql_error());
+			$result=zb_query($que,$connect) or Error(zb_error());
 			$_dbTime += getmicrotime()-$_dbTimeStart;
 		}
 	}

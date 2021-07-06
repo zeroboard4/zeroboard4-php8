@@ -11,14 +11,14 @@
 		if($member['is_admin']>1&&$member['no']!=$member_data['no']&&$member_data['level']<=$member['level']&&$member_data['is_admin']<=$member['is_admin']) error("선택하신 회원의 정보를 변경할 권한이 없습니다");
 
 		// 멤버 정보 삭제
-		zb_query("delete from $member_table where no='$no'") or error(mysql_error());
+		zb_query("delete from $member_table where no='$no'") or error(zb_error());
 
 		// 쪽지 테이블에서 멤버 정보 삭제
-		zb_query("delete from $get_memo_table where member_no='$no'") or error(mysql_error());
-		zb_query("delete from $send_memo_table where member_no='$no'") or error(mysql_error());
+		zb_query("delete from $get_memo_table where member_no='$no'") or error(zb_error());
+		zb_query("delete from $send_memo_table where member_no='$no'") or error(zb_error());
 
 		// 그룹테이블에서 회원수 -1
-		zb_query("update $group_table set member_num=member_num-1 where no = '$group_no'") or error(mysql_error());
+		zb_query("update $group_table set member_num=member_num-1 where no = '$group_no'") or error(zb_error());
 
 		// 이름 그림, 아이콘, 이미지 박스 사용용량 파일 삭제
 		@z_unlink("icon/private_name/".$no.".gif");
@@ -57,7 +57,7 @@ del_member($value);
 			if($kk&&$kk!=$board_num&&isnum($kk)) $_st.=$kk.",";
 		}
 
-		zb_query("update $member_table set board_name = '$_st' where no='$member_no'",$connect) or error(mysql_Error());
+		zb_query("update $member_table set board_name = '$_st' where no='$member_no'",$connect) or error(zb_error());
 
 		movepage("$PHP_SELF?exec=view_member&exec2=modify&group_no=$group_no&page=$page&keyword=$keyword&level_search=$level_search&page_num=$page_num&no=$member_no&keykind=$keykind&like=$like");
 	}
@@ -70,7 +70,7 @@ del_member($value);
 		$_temp=mysql_fetch_array(zb_query("select * from $member_table where no = '$member_no'",$connect));
 		$_board_name = $_temp['board_name'].$board_num.",";
 
-		zb_query("update $member_table set board_name = '$_board_name' where no='$member_no'",$connect) or error(mysql_Error());
+		zb_query("update $member_table set board_name = '$_board_name' where no='$member_no'",$connect) or error(zb_error());
 
 		movepage("$PHP_SELF?exec=view_member&exec2=modify&group_no=$group_no&page=$page&keyword=$keyword&level_search=$level_search&page_num=$page_num&no=$member_no&keykind=$keykind&like=$like");
 	}
@@ -157,7 +157,7 @@ zb_query("update $member_table set group_no='$movegroup' where no='$value'",$con
 		$que.=",comment='$comment'";
 		$que.=" where no='$member_no'";
 
-		zb_query($que) or Error("회원정보 수정시에 에러가 발생하였습니다 ".mysql_error());
+		zb_query($que) or Error("회원정보 수정시에 에러가 발생하였습니다 ".zb_error());
 
 		// 회원의 소개 사진 
 		if($_FILES['picture']) {

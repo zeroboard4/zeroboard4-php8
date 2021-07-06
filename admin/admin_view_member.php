@@ -48,7 +48,7 @@
 
 
 // 멤버정보를 구해옴
-	$result=zb_query("select * from $member_table $s_que order by no desc limit $start_num,$page_num",$connect) or Error(mysql_error(),"");
+	$result=zb_query("select * from $member_table $s_que order by no desc limit $start_num,$page_num",$connect) or Error(zb_error(),"");
 
 //  앞에 붙는 가상번호
 	$number=$total-($page-1)*$page_num;

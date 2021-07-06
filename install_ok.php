@@ -11,7 +11,7 @@
 
 // DB에 커넥트 하고 DB NAME으로 select DB
 	$connect = mysql_connect($hostname,$user_id,$password) or Error("MySQL-DB Connect<br>Error!!!","");
-	if(mysql_error()) Error(mysql_error(),"");
+	if(zb_error()) Error(zb_error(),"");
 	mysql_select_db($dbname, $connect ) or Error("MySQL-DB Select<br>Error!!!","");
 	zb_query("set names 'utf8'");
 

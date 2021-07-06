@@ -35,7 +35,7 @@
 <?php flush()?>
 <pre>
 <?php
-	$result = zb_query("select * from $admin_table order by name") or die(mysql_error());
+	$result = zb_query("select * from $admin_table order by name") or die(zb_error());
 
 	$totalfilesnum = 0;
 	$ntotalfilesnum = 0;
@@ -104,7 +104,7 @@
 				z_unlink($source);
 				@rmdir($path);
 
-				zb_query($sql) or die(mysql_error());
+				zb_query($sql) or die(zb_error());
 
 			} else {
 
@@ -142,7 +142,7 @@
 				z_unlink($source);
 				@rmdir($path);
 
-				zb_query($sql) or die(mysql_error());
+				zb_query($sql) or die(zb_error());
 
 			} else {
 

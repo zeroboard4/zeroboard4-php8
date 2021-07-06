@@ -98,15 +98,15 @@
 	if(!$check[0]) Error("원본 글이 존재하지 않습니다.");
 
 // 코멘트 입력
-	zb_query("insert into $t_comment"."_$id (parent,ismember,name,password,memo,reg_date,ip) values ('$parent','$member[no]','$name','$password','$memo','$reg_date','$REMOTE_ADDR')") or error(mysql_error());
+	zb_query("insert into $t_comment"."_$id (parent,ismember,name,password,memo,reg_date,ip) values ('$parent','$member[no]','$name','$password','$memo','$reg_date','$REMOTE_ADDR')") or error(zb_error());
 
 
 // 코멘트 갯수를 구해서 정리
 	$total=mysql_fetch_array(zb_query("select count(*) from $t_comment"."_$id where parent='$no'"));
-	zb_query("update $t_board"."_$id set total_comment='$total[0]' where no='$no'") or error(mysql_error());
+	zb_query("update $t_board"."_$id set total_comment='$total[0]' where no='$no'") or error(zb_error());
 
 // 회원일 경우 해당 해원의 점수 주기
-	zb_query("update $member_table set point2=point2+1 where no='$member[no]'",$connect) or error(mysql_error());
+	zb_query("update $member_table set point2=point2+1 where no='$member[no]'",$connect) or error(zb_error());
 	
 	if(!isset($des)) $des='';
 // 페이지 이동

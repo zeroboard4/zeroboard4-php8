@@ -54,7 +54,7 @@
 // 오프라인 멤버
 	if(empty($status)) {
 		$que="select * from $member_table $s_que order by no desc limit $start_num,$page_num";
-		$result=zb_query($que) or Error(mysql_error());
+		$result=zb_query($que) or Error(zb_error());
 // 온라인 멤버
 	} else {
 		$endnum = $start_num + $page_num;
@@ -65,7 +65,7 @@
 			if(isset($s_que)) $s_que .= " or no = '$member_no' "; else $s_que = " where no = '$member_no' ";
 		}
 		$que = "select * from $member_table $s_que";
-		$result=zb_query($que) or Error(mysql_error());
+		$result=zb_query($que) or Error(zb_error());
 
 	}
 

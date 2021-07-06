@@ -47,7 +47,7 @@
     if($keykind[$i]=="email"||$keykind[$i]=="subject") $comment_search=0;
    }
 
-   $table_name_result=zb_query("select name, use_alllist from $admin_table order by name",$connect) or error(mysql_error());
+   $table_name_result=zb_query("select name, use_alllist from $admin_table order by name",$connect) or error(zb_error());
   }
 
  }
@@ -101,7 +101,7 @@ if($keyword&&$s_que)
    if($table_data['use_alllist']) $file="zboard.php"; else $file="view.php";
 
    // 본문
-   $result=zb_query("select * from $t_board"."_$table_name $s_que", $connect) or error(mysql_error());
+   $result=zb_query("select * from $t_board"."_$table_name $s_que", $connect) or error(zb_error());
 ?>
 
 <br><br><br>
@@ -129,7 +129,7 @@ if($keyword&&$s_que)
    /// 코멘트
    if($comment_search)
    {
-    $result=zb_query("select * from $t_comment"."_$table_name $s_que", $connect) or error(mysql_error());
+    $result=zb_query("select * from $t_comment"."_$table_name $s_que", $connect) or error(zb_error());
 ?>
 
 <br><Br><br>

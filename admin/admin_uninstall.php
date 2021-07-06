@@ -7,10 +7,10 @@
 
 		mysql_close($connect);
 
-		$connect = mysql_connect($u_hostname,$u_userid,$u_password) or error(mysql_error());
-		mysql_select_db($u_dbname) or Error(mysql_error());
+		$connect = mysql_connect($u_hostname,$u_userid,$u_password) or error(zb_error());
+		mysql_select_db($u_dbname) or Error(zb_error());
 		
-		$result = zb_query("show table status from $u_dbname like 'zetyx%'",$connect) or error(mysql_error());
+		$result = zb_query("show table status from $u_dbname like 'zetyx%'",$connect) or error(zb_error());
 		while($data=mysql_fetch_array($result)) {
 			zb_query("drop table $data[Name]");
 		}

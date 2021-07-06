@@ -259,8 +259,8 @@
 			if(!$temp[0]) $second_division=0; else $second_division=$temp[0];
 			$temp=mysql_fetch_array(zb_query("select count(*) from $t_board"."_$board_id where (division='$max_division' or division='$second_division') and headnum<=-2000000000"));
 			if($temp[0]>0) {
-				zb_query("update $t_board"."_$board_id set division='$max_division' where (division='$max_division' or division='$second_division') and  headnum<='-2000000000'") or error(mysql_error());
-				zb_query("update $t_division"."_$board_id set num=num-$temp[0] where division=$max_division-1") or error(mysql_error());
+				zb_query("update $t_board"."_$board_id set division='$max_division' where (division='$max_division' or division='$second_division') and  headnum<='-2000000000'") or error(zb_error());
+				zb_query("update $t_division"."_$board_id set num=num-$temp[0] where division=$max_division-1") or error(zb_error());
 			}
 			$num=$temp[0]+1;
 			zb_query("insert into $t_division"."_$board_id (division,num) values ('$max_division','$num')");
@@ -609,11 +609,9 @@
 
 	// 에러 메세지 출력
 	function error($message, $url="") {
-		global $setup, $connect, $dir, $config_dir, $is_admin;
+		global $setup, $connect, $dir, $config_dir;
 
 		if(!empty($setup['skinname'])) $dir="skin/".$setup['skinname']; else $dir="skin/";
-		if(empty($is_admin)&&(strpos($_SERVER['PHP_SELF'], 'install')===false)&&(strpos($message, 'SQL')!==false))
-			$message='DB 질의 중 오류가 발생했습니다.<br>관리자라면 로그인해서 해당 내용을 확인 할 수 있습니다.';
 		if($url=="window.close") {
 			$message=str_replace("<br>","\\n",$message);
 			$message=str_replace("\"","\\\"",$message);
@@ -669,7 +667,7 @@
 			$dbname=$f[4];
 		}
 
-		$result = mysql_list_tables($dbname) or error(mysql_error(),"");
+		$result = mysql_list_tables($dbname) or error(zb_error(),"");
 
 		$i=0;
 
@@ -1266,10 +1264,14 @@
 		}
 	}
 
-	if (!function_exists("mysql_error")) {
-		function mysql_error() {
-			global $connect;
+	function zb_error() {
+		global $connect, $is_admin;
+		if(empty($is_admin)&&(strpos($_SERVER['PHP_SELF'], 'install')===false)) {
+			return 'DB 질의 중 오류가 발생했습니다.<br>관리자라면 로그인해서 해당 내용을 확인 할 수 있습니다.';
+		} elseif(!function_exists("mysql_error")) {
 			return mysqli_error($connect);
+		} else {
+			return mysql_error();
 		}
 	}
 

@@ -25,9 +25,9 @@
 		$subject=addslashes($subject);
 		$memo=addslashes($memo);
 		$reg_date=time();
-		zb_query("insert into $get_memo_table (member_no,member_from,subject,memo,readed,reg_date) values ('$data[no]','$member[no]','$subject','$memo',1,'$reg_date')") or error(mysql_error());
-		zb_query("insert into $send_memo_table (member_to,member_no,subject,memo,readed,reg_date) values ('$data[no]','$member[no]','$subject','$memo',1,'$reg_date')") or error(mysql_error());
-		zb_query("update $member_table set new_memo=1 where no='$data[no]'") or error(mysql_error());
+		zb_query("insert into $get_memo_table (member_no,member_from,subject,memo,readed,reg_date) values ('$data[no]','$member[no]','$subject','$memo',1,'$reg_date')") or error(zb_error());
+		zb_query("insert into $send_memo_table (member_to,member_no,subject,memo,readed,reg_date) values ('$data[no]','$member[no]','$subject','$memo',1,'$reg_date')") or error(zb_error());
+		zb_query("update $member_table set new_memo=1 where no='$data[no]'") or error(zb_error());
 		echo"<script language=\"javascript\">alert(\"$data[name] 님께 쪽지를 보냈습니다\");window.close();</script>";
 	}
 

@@ -136,7 +136,7 @@
 	   for($__k=1;$__k<count($manager_board_temp);$__k++){
 	   	if(trim($manager_board_temp[$__k])) $get_string .= " or (no = '$manager_board_temp[$__k]') ";
 	   }
-	   $manager_board_list = zb_query("select * from $admin_table where $get_string",$connect) or die(mysql_error());
+	   $manager_board_list = zb_query("select * from $admin_table where $get_string",$connect) or die(zb_error());
 	   while($__manager_data = mysql_fetch_array($manager_board_list)) {
 	   $__manager_board_name .= "&nbsp;".stripslashes($__manager_data['name'])." &nbsp; <a href='$PHP_SELF?exec=view_member&exec2=modify_member_board_manager&group_no=$group_no&member_no=$no&page=$page&keyword=$keyword&board_num=$__manager_data[no]' onclick=\"return confirm('권한을 취소시키시겠습니까?')\">[권한취소]</a><br><img src=images/t.gif border=0 height=4><br>";
 
@@ -144,7 +144,7 @@
    }
 
    $select[$member_data['board_name']]="selected";                                                      
-   $board_list=zb_query("select no,name from $admin_table where group_no='$group_data[no]'") or error(mysql_error());
+   $board_list=zb_query("select no,name from $admin_table where group_no='$group_data[no]'") or error(zb_error());
 ?>                                                                                                  
   <tr height=22 align=center>                                                                       
      <td bgcolor=#a0a0a0 align=right style=font-family:Tahoma;font-size:8pt;font-weight:bold;>게시판 관리자 지정&nbsp;&nbsp;</td>

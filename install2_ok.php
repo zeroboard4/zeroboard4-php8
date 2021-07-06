@@ -19,7 +19,7 @@
 	if(isBlank($name)) Error("이름을 입력하셔야 합니다","");
 
 // 관리자 정보 입력
-	zb_query("insert into $member_table (user_id,password,name,is_admin,reg_date,level) values ('$user_id',password('$password1'),'$name','1','".time()."','1')",$connect) or Error(mysql_error(),"");
+	zb_query("insert into $member_table (user_id,password,name,is_admin,reg_date,level) values ('$user_id',password('$password1'),'$name','1','".time()."','1')",$connect) or Error(zb_error(),"");
 
 	mysql_close($connect);
 
