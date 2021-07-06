@@ -29,6 +29,7 @@
 <form name=uninstall method=post onsubmit="return confirm('제거하시겠습니까?')">
 <input type=hidden name=exec value="uninstall">
 <input type=hidden name=uninstall value="ok">
+<input type=hidden name=csrf_token value=<?=generate_csrf_token()?>>
 <tr>
 	<td valign=top style=line-height:160% align=center>
 	<br>

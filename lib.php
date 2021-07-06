@@ -612,8 +612,8 @@
 		global $setup, $connect, $dir, $config_dir, $is_admin;
 
 		if(!empty($setup['skinname'])) $dir="skin/".$setup['skinname']; else $dir="skin/";
-		if(empty($is_admin) && (strpos($message, 'SQL')!==false)) $message='DB 질의 중 오류가 발생했습니다.<br>관리자라면 로그인해서 해당 내용을 확인 할 수 있습니다.';
-
+		if(empty($is_admin)&&(strpos($_SERVER['PHP_SELF'], 'install')===false)&&(strpos($message, 'SQL')!==false))
+			$message='DB 질의 중 오류가 발생했습니다.<br>관리자라면 로그인해서 해당 내용을 확인 할 수 있습니다.';
 		if($url=="window.close") {
 			$message=str_replace("<br>","\\n",$message);
 			$message=str_replace("\"","\\\"",$message);
