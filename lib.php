@@ -871,7 +871,7 @@
 		$str=str_replace("<","&lt;",$str);
 		$source = array();
 		$target = array();
-    $list = explode(",", trim($list));
+    $list = explode(",", trim($list).',iframe');
 		while (list ($key, $val) = each ($list)) {
 			$val = trim($val);
 			if (!$val) continue;
@@ -1387,10 +1387,12 @@
 	/* 제로보드4.1 XSS/CSRF (by 체리맛 http://ncafe.kr) */
 		$message_comment = str_replace("<","\n<",$message_comment);
 		$message_comment = str_replace(">",">\n",$message_comment);
+		$message_comment = preg_replace("#>.*\n\n<\/iframe>#i","></iframe>",$message_comment);
 		$array_mess = explode ("\n",$message_comment);
 		$message_comment = "";
+		$youtube = '<iframe(?:\b|_).*?(?:\b|_)src=\"https?:\/\/(?:www\.)?youtube.com\/(?:\b|_).*?(?:\b|_)';
 		foreach ($array_mess as $val) {
-			if (preg_match("/</",$val) ){
+			if (preg_match("/</",$val)&&!preg_match("/{$youtube}/i", $val) ){
 				$val = preg_replace('#\<(\/{0,1})([a-z]{0,2})(frame|applet|script|body|iframe|xmp|xml)(.*?)\>#i', '', $val);
 				$val = preg_replace('#( on[a-z]{1,})="(.*?)"#i', '', $val);
 				$val = preg_replace('#( on[a-z]{1,})=\'(.*?)\'#i', '', $val);

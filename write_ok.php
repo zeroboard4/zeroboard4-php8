@@ -29,6 +29,7 @@
 	if(!isset($member['no'])) {
 		if(isblank($name)) Error("이름을 입력하셔야 합니다");
 		if(isblank($password)) Error("비밀번호를 입력하셔야 합니다");
+		$member['is_admin'] = '0';
 	} else {
 		$password = $member['password'];
 	}
@@ -41,7 +42,7 @@
 	if(isblank($subject)) Error("제목을 입력하셔야 합니다");
 	if(isblank($memo)) Error("내용을 입력하셔야 합니다");
 
-	if(!isset($category)) {
+	if(empty($category)) {
 		$cate_temp=mysql_fetch_array(zb_query("select min(no) from $t_category"."_$id",$connect));
 		$category=$cate_temp[0];
 	}
@@ -106,7 +107,7 @@
 
 
 // 회원등록이 되어 있을때 이름등을 가져옴;;
-	if(isset($member['no'])) {
+	if(!empty($member['no'])) {
 		if($mode=="modify"&&$member['no']!=$s_data['ismember']) {
 			$name=$s_data['name'];
 			$email=$s_data['email'];
@@ -262,9 +263,9 @@
  * 수정글일때
  **************************************************************************/
 	if($mode=="modify"&&isset($no)) {
-		if(!isset($use_html)) $use_html='';
-		if(!isset($reply_mail)) $reply_mail='';
-		if(!isset($is_secret)) $is_secret='';
+		if(!isset($use_html)) $use_html='0';
+		if(!isset($reply_mail)) $reply_mail='0';
+		if(!isset($is_secret)) $is_secret='0';
 		
 		if($s_data['ismember']) {
 			if(!$is_admin&&$member['level']>$setup['grant_delete']&&$s_data['ismember']!=$member['no']) Error("정상적인 방법으로 수정하세요");
@@ -285,7 +286,7 @@
 		if(isset($file_name2)) {@z_unlink("./".$s_data["file_name2"]);$del_que2=",file_name2='$file_name2',s_file_name2='$s_file_name2'";}
 
 		// 공지 -> 일반글 
-		if(!isset($notice)&&$s_data['headnum']<="-2000000000") {
+		if(empty($notice)&&$s_data['headnum']<="-2000000000") {
 			$temp=mysql_fetch_array(zb_query("select max(division) from $t_division"."_$id"));
 			$max_division=$temp[0];
 			$temp=mysql_fetch_array(zb_query("select max(division) from $t_division"."_$id where num>0 and division!='$max_division'"));
@@ -324,7 +325,7 @@
 		}
 
    		// 일반글 -> 공지 
-		elseif(isset($notice)&&$s_data['headnum']>-2000000000) {
+		elseif(!empty($notice)&&$s_data['headnum']>-2000000000) {
 			$temp=mysql_fetch_array(zb_query("select max(division) from $t_division"."_$id"));
 			$max_division=$temp[0];
 			$temp=mysql_fetch_array(zb_query("select max(division) from $t_division"."_$id where num>0 and division!='$max_division'"));
@@ -389,6 +390,7 @@
 
 		$division=$s_data['division'];
 		plus_division($s_data['division']);
+		if(empty($member['no'])) $member['no'] = '0';
    
 		// 답글 데이타 입력;;
 		zb_query("insert into $t_board"."_$id (division,headnum,arrangenum,depth,prev_no,next_no,father,child,ismember,memo,ip,password,name,homepage,email,subject,use_html,reply_mail,category,is_secret,sitelink1,sitelink2,file_name1,file_name2,s_file_name1,s_file_name2,x,y,reg_date,islevel) values ('$division','$headnum','$arrangenum','$depth','$prev_no','$next_no','$father','$child','$member[no]','$memo','$ip','$password','$name','$homepage','$email','$subject','$use_html','$reply_mail','$category','$is_secret','$sitelink1','$sitelink2','$file_name1','$file_name2','$s_file_name1','$s_file_name2','$x','$y','$reg_date','$member[is_admin]')") or error(mysql_error());    
@@ -463,21 +465,22 @@
 			$prev_no=0; 
 		}
 
-		$next_no=isset($next_data['no']) ? $next_data['no'] : '';
+		$next_no=isset($next_data['no']) ? $next_data['no'] : '0';
 		$child="0";
 		$depth="0";
 		$arrangenum="0";
 		$father="0";
 		$division=add_division();
 
-		if(!isset($use_html)) $use_html='';
-		if(!isset($reply_mail)) $reply_mail='';
-		if(!isset($is_secret)) $is_secret='';
+		if(!isset($use_html)) $use_html='0';
+		if(!isset($reply_mail)) $reply_mail='0';
+		if(!isset($is_secret)) $is_secret='0';
 		if(!isset($file_name1)) $file_name1='';
 		if(!isset($file_name2)) $file_name2='';
 		if(!isset($s_file_name1)) $s_file_name1='';
 		if(!isset($s_file_name2)) $s_file_name2='';
 		if(!isset($des)) $des='';
+		if(empty($member['no'])) $member['no'] = '0';
 		zb_query("insert into $t_board"."_$id (division,headnum,arrangenum,depth,prev_no,next_no,father,child,ismember,memo,ip,password,name,homepage,email,subject,use_html,reply_mail,category,is_secret,sitelink1,sitelink2,file_name1,file_name2,s_file_name1,s_file_name2,x,y,reg_date,islevel) values ('$division','$headnum','$arrangenum','$depth','$prev_no','$next_no','$father','$child','$member[no]','$memo','$ip','$password','$name','$homepage','$email','$subject','$use_html','$reply_mail','$category','$is_secret','$sitelink1','$sitelink2','$file_name1','$file_name2','$s_file_name1','$s_file_name2','$x','$y','$reg_date','$member[is_admin]')") or error(mysql_error());
 		$no=mysql_insert_id();
 

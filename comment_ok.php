@@ -19,9 +19,11 @@
 // 각종 변수 검사;;
 	$memo = str_replace("ㅤ","",$memo);
 	if(isblank($memo)) Error("내용을 입력하셔야 합니다");
-	if(!$member['no']) {
+	if(!isset($member['no'])) {
 		if(isblank($name)) Error("이름을 입력하셔야 합니다");
 		if(isblank($password)) Error("비밀번호를 입력하셔야 합니다");
+		$member['no'] = '0';
+                $member['is_admin'] = '0';
 	}
 
 // 필터링;; 관리자가 아닐때;;
