@@ -150,7 +150,7 @@ function list_check(&$data,$view_check=0) {
 	
 	// 폼메일을 사용하고 관련메뉴가 생성이 되면 레이어오픈
 	if($_zbCount&&$setup['use_formmail']) {
-		$name = "<span onMousedown=\"ZB_layerAction('zbLayer$_zbCheckNum','visible')\" style=cursor:hand>$name</span>";
+		$name = "<span onMousedown=\"ZB_layerAction('zbLayer$_zbCheckNum','visible')\" style=\"cursor:hand;white-space:nowrap;\">$name</span>";
 	// 폼메일을 사용안할 경우 무조건 메일링크
 	} else {
 		if($data['email']) $name="<a href=\"javascript:void(window.open('open_window.php?mode=m&str=".urlencode(base64_encode($data['email']))."','ZBremote','width=1,height=1,left=1,top=1'))\">$name</a>";
