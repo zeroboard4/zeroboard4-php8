@@ -9,7 +9,7 @@
 
 	$member=member_info();
 
-	if(!$member['no']) Error("로그인후 사용하여주십시요","admin.php");
+	if(!isset($member['no'])) Error("로그인후 사용하여주십시요","admin.php");
 	
 	if($member['is_admin']>=3&&!$member['board_name']) Error("관리자페이지를 사용할수 있는 권한이 없습니다","admin.php");
 	$zb_hash_chk = md5($member['reg_m_date'].$member['user_id'].$member['no'].$_SERVER['REMOTE_ADDR'].$_SERVER['HTTP_USER_AGENT']);
@@ -28,6 +28,7 @@
 
 // DB 백업일때
 	if($member['is_admin']==1&&$exec=="db_dump"&&$_POST['act']=="db_dump_ok") {
+		if(!check_csrf_token()) Error('CSRF 토큰이 일치하지 않습니다.');
 		if(!$admin_passwd) Error("관리자 비밀번호를 입력해주세요.");
 		$isold = false;
 		if(strlen($member['password'])<=16&&strlen(get_password("a"))>=41) $isold = true;
@@ -126,7 +127,7 @@
 	if($member['is_admin']==1) {
 
 		// 모든그룹의 데이타 갖고옴;;
-		$result=mysql_query("select * from $group_table order by no ");
+		$result=zb_query("select * from $group_table order by no ");
 ?>
 		<table width=100% border=0 cellspacing=0 cellpadding=0>
 		<tr> 
@@ -137,10 +138,10 @@
 
 		while($group_data=mysql_fetch_array($result)) {
 
-			//$t_member_num=mysql_fetch_array(mysql_query("select count(*) from $member_table where group_no='$group_data['no']'"));
-			//$t_board_num=mysql_fetch_array(mysql_query("select count(*) from $admin_table where group_no='$group_data['no']'"));
+			//$t_member_num=mysql_fetch_array(zb_query("select count(*) from $member_table where group_no='$group_data['no']'"));
+			//$t_board_num=mysql_fetch_array(zb_query("select count(*) from $admin_table where group_no='$group_data['no']'"));
 
-			//mysql_query("update $group_table set member_num='$t_member_num[0]',board_num='$t_board_num[0]' where no='$group_data['no']'") or Error(mysql_error());
+			//zb_query("update $group_table set member_num='$t_member_num[0]',board_num='$t_board_num[0]' where no='$group_data['no']'") or Error(mysql_error());
 
 			//$group_data['member_num']=$t_member_num[0];
 			//$group_data['board_num']=$t_board_num[0];
@@ -177,7 +178,7 @@
 				<img src=images/t.gif width=10 height=5><br>
 				<img src=images/w_top1.gif width=58 height=14 align=absmiddle><b><font color=#FFFFFF><?=$group_data['board_num']?></font></b><img src=images/w_top2.gif width=4 height=14 align=absmiddle> 
 				<br>
-				<a href=<?=$PHP_SELF?>?exec=view_board&group_no=<?=$group_data['no']?>&page=<?=$page?>&page_num=<?=$page_num?>><img src=images/w_manage.gif alt="게시판 관리" border=0></a><a href=<?=$PHP_SELF?>?exec=view_board&exec2=add&group_no=<?=$group_data['no']?>><img src=images/w_add.gif alt="게시판 추가" border=0></a> 
+				<a href=<?=$PHP_SELF?>?exec=view_board&group_no=<?=$group_data['no']?>&page=<?=isset($page)?$page:''?>&page_num=<?=isset($page_num)?$page_num:''?>><img src=images/w_manage.gif alt="게시판 관리" border=0></a><a href=<?=$PHP_SELF?>?exec=view_board&exec2=add&group_no=<?=$group_data['no']?>><img src=images/w_add.gif alt="게시판 추가" border=0></a> 
 			</td>
 		</tr>
 <?php
@@ -192,7 +193,7 @@
 
 	else {  
 
-		$group_data=mysql_fetch_array(mysql_query("select * from $group_table where no=$member[group_no]"));
+		$group_data=mysql_fetch_array(zb_query("select * from $group_table where no=$member[group_no]"));
 ?>
 
 		<table width=100% border=0 cellspacing=0 cellpadding=0>

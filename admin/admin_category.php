@@ -1,12 +1,13 @@
 <?php
-  $group_data=mysql_fetch_array(mysql_query("select * from $group_table where no='$group_no'"));
+  $group_data=mysql_fetch_array(zb_query("select * from $group_table where no='$group_no'"));
 
   if($member['is_admin']>2&&!eregi($no.",",$member['board_name'])) error("사용 권한이 없습니다");
 
-  $table_data=mysql_fetch_array(mysql_query("select name from $admin_table where no='$no'"));
+  $table_data=mysql_fetch_array(zb_query("select name from $admin_table where no='$no'"));
 
-  $result=mysql_query("select * from $t_category"."_$table_data[name] order by no",$connect);
+  $result=zb_query("select * from $t_category"."_$table_data[name] order by no",$connect);
   $total_category=mysql_num_rows($result);
+  $csrf_category = generate_csrf_token();
 ?>
 <table border=0 cellspacing=1 cellpadding=3 width=100% bgcolor=#b0b0b0>
   <tr height=30><td bgcolor=#3d3d3d colspan=5><img src=images/admin_webboard.gif></td></tr>
@@ -24,6 +25,7 @@
 <input type=hidden name=page value=<?=$page?>>
 <input type=hidden name=page_num value=<?=$page_num?>>
 <input type=hidden name=no value=<?=$no?>>
+<input type=hidden name=csrf_token value=<?=$csrf_category?>>
 <tr height=23 align=center bgcolor=#a0a0a0>
     <td style=font-family:Tahoma;font-size:8pt;font-weight:bold;>선택</td>
     <td style=font-family:Tahoma;font-size:8pt;font-weight:bold;>카테고리명</td>
@@ -34,7 +36,7 @@
 <?php
   while($data=mysql_fetch_array($result))
   {
-   $temp=mysql_fetch_array(mysql_query("select count(*) from $t_board"."_$table_data[name] where category='$data[no]'",$connect));
+   $temp=mysql_fetch_array(zb_query("select count(*) from $t_board"."_$table_data[name] where category='$data[no]'",$connect));
    $total_num=$temp[0];
 ?>
 
@@ -58,7 +60,7 @@
     <td colspan=5 ><table border=0 cellpadding=2 cellspacing=0><tr><td style=font-family:Tahoma;font-size:8pt;font-weight:bold;>
       선택된 카테고리의 게시물을 일괄 이동 : </td><td><img src=images/t.gif height=2><br><select name=movename class=input> 
 <?php
-  $temp2=mysql_query("select * from $t_category"."_$table_data[name] order by no desc",$connect);
+  $temp2=zb_query("select * from $t_category"."_$table_data[name] order by no desc",$connect);
   while($data2=mysql_fetch_array($temp2))
   {
    echo "<option value=$data2[no]>$data2[name]</option>";
@@ -77,6 +79,7 @@
 <input type=hidden name=no value=<?=$no?>>
 <input type=hidden name=page value=<?=$page?>>
 <input type=hidden name=page_num value=<?=$page_num?>>
+<input type=hidden name=csrf_token value=<?=$csrf_category?>>
 <table border=0 cellpadding=2 cellspacing=0>
 <tr><td style=font-size:8pt;font-family:Tahoma;color:#ffffff;font-weight:bold>
       카테고리 추가</td><td><input type=text size=10 name=name></td><td><input type=submit value=' 추가 ' style=border-color:#b0b0b0;background-color:#3d3d3d;color:#ffffff;font-size:8pt;font-family:Tahoma;height:20px;></td></tr></table><br><br>

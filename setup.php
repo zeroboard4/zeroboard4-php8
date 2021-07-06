@@ -41,6 +41,6 @@ enable_hangul_id = false
 ; E-Mail 의 MX를 검사하여 허위 E-Mail인지 검사 ( true : 허위 E-Mail 검사, false : 검사안함)
 check_email = false
 
-; 쪽지 보관 일수의 저장 ( ex) 10 -> 10일)
-memo_limit_time = 7
+; 쪽지 보관 일수의 저장 ( ex) 10 -> 10일, 0일시 삭제하지 않음)
+memo_limit_time = 0
 */?>

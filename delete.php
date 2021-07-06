@@ -11,7 +11,7 @@
  **************************************************************************/
 
 // 원본글을 가져옴
-	$s_data=mysql_fetch_array(mysql_query("select * from $t_board"."_$id where no='$no'"));
+	$s_data=mysql_fetch_array(zb_query("select * from $t_board"."_$id where no='$no'"));
 
 	if($s_data['ismember']||$is_admin||$member['level']<=$setup['grant_delete']) {
 		if($s_data['ismember']!=$member['no']&&!$is_admin&&$member['level']>$setup['grant_delete']) Error("삭제할 권한이 없습니다");
@@ -26,7 +26,7 @@
 	$a_list="<a href=zboard.php?$href$sort>";
   
 	$a_view="<a href=# onclick=history.back()>";
-
+	if(!isset($c_no)) $c_no='';
 	head();
 
 	include $dir."/ask_password.php";

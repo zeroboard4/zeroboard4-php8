@@ -5,7 +5,7 @@
  *************************************************************************/
 
 	if($connect) {
-		@mysql_close($connect);
+		mysql_close($connect);
 		unset($connect);
 	}
 

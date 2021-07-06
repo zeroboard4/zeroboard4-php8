@@ -4,7 +4,7 @@
   $user_id = htmlspecialchars(trim($user_id));
   $user_id = trim($user_id);
   $connect=dbconn();
-  $check=mysql_fetch_array(mysql_query("select count(*) from $member_table where user_id='$user_id'"));
+  $check=mysql_fetch_array(zb_query("select count(*) from $member_table where user_id='$user_id'"));
   mysql_close($connect);
   head();
 ?>
@@ -26,6 +26,5 @@
 </table>
 
 <?php 
-	 @mysql_close($connect);
 	 foot(); 
 ?>

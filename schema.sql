@@ -36,7 +36,7 @@ $member_table_schema = "
     icq char(20),
     aol char(20),
     msn char(20),
-    jumin char(18),
+    jumin char(41),
     comment text,
     point1 int(20) default 0,
     point2 int(20) default 0,

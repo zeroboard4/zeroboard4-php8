@@ -7,8 +7,8 @@
 	if(getenv("REQUEST_METHOD") == 'GET' ) Error("정상적으로 글을 쓰시기 바랍니다","window.close");
 
 
-	if(!$subject) Error("제목을 입력하여 주십시요","window.close");
-	if(!$memo) Error("내용을 입력하여 주십시요","window.close");
+	if(!isset($subject)) Error("제목을 입력하여 주십시요","window.close");
+	if(!isset($memo)) Error("내용을 입력하여 주십시요","window.close");
 	
 
 	$connect=dbconn();
@@ -31,7 +31,7 @@
 
 // 가상의 게시물 데이타 제작
 
-	if($use_html<2) {
+	if(isset($use_html) && $use_html<2) {
 		$memo=str_replace("  ","&nbsp;&nbsp;",$memo);
 		$memo=str_replace("\t","&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;",$memo);
 	}
@@ -56,7 +56,7 @@
 			}
 		}
 	} else {
-		if(!$use_html) {
+		if(!isset($use_html)) {
 			$memo=del_html($memo);
 		}
 	}
@@ -64,11 +64,11 @@
 	$data['memo']=$memo;
 
 	// 제목 제작
-	if(($is_admin||$member['level']<=$setup['use_html'])&&$use_html) $data['subject']=$subject;
+	if(($is_admin||$member['level']<=$setup['use_html'])&&isset($use_html)) $data['subject']=$subject;
 	else $data['subject']=del_html($subject);
 
 	// 기타 데이타 작성
-	$data['use_html']=$use_html;
+	$data['use_html']=isset($use_html) ? $use_html : null;
 	$data['ismember']=$member['no'];
 
 // 데이타 가공
@@ -109,5 +109,5 @@
 </html>
 
 <?php
-	@mysql_close($connect);
+	mysql_close($connect);
 ?>

@@ -2,18 +2,18 @@
 	include "lib.php";
 
 // DB 연결
-	if(!$connect) $connect=dbConn();
+	if(!isset($connect)) $connect=dbConn();
 
 // 멤버 정보 구해오기
 	$member=member_info();
 
-	if(!$member['no']) Error("로그인 상태가 아닙니다");
+	if(!isset($member['no'])) Error("로그인 상태가 아닙니다");
 
-	if(!$group_no) $group_no=$member['group_no'];
+	if(!isset($group_no)) $group_no=$member['group_no'];
 
-	if($id) $setup=get_table_attrib($id);
+	if(isset($id)) $setup=get_table_attrib($id);
   
-	if($setup['group_no']&&!$group_no) $group_no=$setup['group_no'];
+	if(isset($setup['group_no'])&&!isset($group_no)) $group_no=$setup['group_no'];
   
 	//mysql_close($connect);
 

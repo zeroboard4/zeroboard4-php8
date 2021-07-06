@@ -3,25 +3,25 @@
 	include "lib.php";
 
 // DB 연결
-	if(!$connect) $connect=dbConn();
+	if(!isset($connect)) $connect=dbConn();
 
 // 그룹 번호 체크
-	if(!$group_no) {
-		$tmpResult = mysql_fetch_array(mysql_query("select * from $group_table order by no limit 1"));
+	if(!isset($group_no)) {
+		$tmpResult = mysql_fetch_array(zb_query("select * from $group_table order by no limit 1"));
 		$group_no = $tmpResult['no'];
 	}
 
 // 멤버 정보 구해오기;;; 멤버가 있을때
 	$member=member_info();
 
-	if($mode=="admin"&&($member['is_admin']==1||($member['is_admin']==2&&$member['group_no']==$group_no))) $mode = "admin";
+	if(isset($mode)&&$mode=="admin"&&($member['is_admin']==1||($member['is_admin']==2&&$member['group_no']==$group_no))) $mode = "admin";
 	else $mode = "";
 
-	if($member['no']&&!$mode) Error("이미 가입이 되어 있습니다.","window.close");
+	if(isset($member['no'])&&!$mode) Error("이미 가입이 되어 있습니다.","window.close");
 
 
 // 게시판과 그룹설정에 따라서 회원 가입 설정
-	if($id) {
+	if(isset($id)) {
 		// 현재 게시판 설정 읽어 오기
 		$setup=get_table_attrib($id);
 
@@ -34,16 +34,16 @@
 
 	} else {
 
-		if($group_name) $group=mysql_fetch_array(mysql_query("select * from $group_table where name='$group_name'"));
-		elseif($group_no) $group=mysql_fetch_array(mysql_query("select * from $group_table where no='$group_no'"));
-		if(!$group['no']) Error("지정된 그룹이 존재하지 않습니다");
+		if(isset($group_name)) $group=mysql_fetch_array(zb_query("select * from $group_table where name='$group_name'"));
+		elseif(isset($group_no)) $group=mysql_fetch_array(zb_query("select * from $group_table where no='$group_no'"));
+		if(!isset($group['no'])) Error("지정된 그룹이 존재하지 않습니다");
 		if(!$group['use_join']&&!$mode) Error("현재 지정된 그룹은 추가 회원을 모집하지 않습니다");
 
 	}
 
 	$check[1]="checked";
 
-	if(!$referer) $referer=$HTTP_REFERER;
+	if(!isset($referer)) $referer=$HTTP_REFERER;
 
 	$setup['header']="";
 	$setup['footer']="";
@@ -59,7 +59,7 @@
 
 	echo "<div align=center><br>";
 ?>
-
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script>
  function address_popup(num)
  {
@@ -123,7 +123,7 @@
   if(write.password.value!=write.password1.value) {alert("패스워드가 일치하지 않습니다.");write.password.value="";write.password1.value=""; write.password.focus(); return false;}
   if(!write.name.value) { alert("이름을 입력하세요"); write.name.focus(); return false; }
 
-<?php if($group['use_birth'])
+<?php if(!empty($group['use_birth']))
    { ?>
 
     if ( write.birth_1.value < 1000 || write.birth_1.value <= 0 )  {
@@ -171,6 +171,20 @@
   function check_accept() {
 	return confirm("위의 가입 약관을 모두 보았으며, 동의하십니까?");
   }
+  
+    function execDaumPostcode(isoffice) {
+		if(isoffice) {
+			var idval = "office_address";
+		} else {
+			var idval = "home_address";
+		}
+        new daum.Postcode({
+            oncomplete: function(data) {
+                var addr = data.address;
+                document.getElementById(idval).value = addr;
+            }
+        }).open();
+    }
 
 </script>
 <table border=0 cellspacing=1 cellpadding=0 width=540>
@@ -217,12 +231,12 @@
         </tr>
   <tr align=right height=28>
      <td style=font-family:Tahoma;font-size:8pt;><b>Name&nbsp;</td>
-     <td align=left>&nbsp;<input type=text name=name size=20 maxlength=20 value="<?=$member['name']?>" style=border-color:#d8b3b3 class=input></td>
+     <td align=left>&nbsp;<input type=text name=name size=20 maxlength=20 value="<?=isset($member['name'])?$member['name']:''?>" style=border-color:#d8b3b3 class=input></td>
   </tr>
         <tr>
           <td colspan="5" bgcolor="#EBD9D9" align="center"><img src="images/t.gif" width="10" height="1"></td>
         </tr>
-<?php if($group['use_birth']) { ?>
+<?php if(!empty($group['use_birth'])) { ?>
   <tr align=right height=28>
      <td style=font-family:Tahoma;font-size:8pt;><b>Birthday&nbsp;</td>
      <td align=left>&nbsp;<input type=text name=birth_1 size=4 maxlength=4 style=border-color:#d8b3b3 class=input> 년 
@@ -236,7 +250,7 @@
 
   <tr align=right height=28>
      <td style=font-family:Tahoma;font-size:8pt;><b>E-mail&nbsp;</td>
-     <td align=left>&nbsp;<input type=text name=email size=50 maxlength=255 value="<?=$member['email']?>" style=border-color:#d8b3b3 class=input>
+     <td align=left>&nbsp;<input type=text name=email size=50 maxlength=255 value="<?=isset($member['email'])?$member['email']:''?>" style=border-color:#d8b3b3 class=input>
                           <input type=checkbox value=1 name=open_email checked> 공개
                           </td>
   </tr>        <tr>
@@ -244,123 +258,123 @@
         </tr>
   <tr align=right height=28>
      <td style=font-family:Tahoma;font-size:8pt;>Homepage&nbsp;</td>
-     <td align=left>&nbsp;<input type=text name=homepage size=50 maxlength=255 value="<?=$member['homepage']?>" style=border-color:#d8b3b3 class=input>
+     <td align=left>&nbsp;<input type=text name=homepage size=50 maxlength=255 value="<?=isset($member['homepage'])?$member['homepage']:''?>" style=border-color:#d8b3b3 class=input>
                           <input type=checkbox value=1 name=open_homepage checked> 공개</td>
   </tr>        <tr>
           <td colspan="5" bgcolor="#EBD9D9" align="center"><img src="images/t.gif" width="10" height="1"></td>
         </tr>
 
-<?php if($group['use_icq']) { ?>
+<?php if(!empty($group['use_icq'])) { ?>
   <tr align=right height=28>
      <td style=font-family:Tahoma;font-size:8pt;>ICQ&nbsp;</td>
-     <td align=left>&nbsp;<input type=text name=icq size=20 maxlength=20 value="<?=$member['icq']?>" style=border-color:#d8b3b3 class=input>
+     <td align=left>&nbsp;<input type=text name=icq size=20 maxlength=20 value="<?=isset($member['icq'])?$member['icq']:''?>" style=border-color:#d8b3b3 class=input>
                           <input type=checkbox value=1 name=open_icq checked> 공개</td>
   </tr>        <tr>
           <td colspan="5" bgcolor="#EBD9D9" align="center"><img src="images/t.gif" width="10" height="1"></td>
         </tr>
 <?php } ?>
 
-<?php if($group['use_aol']) { ?>
+<?php if(!empty($group['use_aol'])) { ?>
   <tr align=right height=28>
      <td style=font-family:Tahoma;font-size:8pt;>AIM&nbsp;</td>
-     <td align=left>&nbsp;<input type=text name=aol size=20 maxlength=20 value="<?=$member['aol']?>" style=border-color:#d8b3b3 class=input>
+     <td align=left>&nbsp;<input type=text name=aol size=20 maxlength=20 value="<?=isset($member['aol'])?$member['aol']:''?>" style=border-color:#d8b3b3 class=input>
                           <input type=checkbox value=1 name=open_aol checked> 공개</td>
   </tr>        <tr>
           <td colspan="5" bgcolor="#EBD9D9" align="center"><img src="images/t.gif" width="10" height="1"></td>
         </tr>
 <?php } ?>
 
-<?php if($group['use_msn']) { ?>
+<?php if(!empty($group['use_msn'])) { ?>
   <tr align=right height=28>
      <td style=font-family:Tahoma;font-size:8pt;>MSN&nbsp;</td>
-     <td align=left>&nbsp;<input type=text name=msn size=20 maxlength=250 value="<?=$member['msn']?>" style=border-color:#d8b3b3 class=input>
+     <td align=left>&nbsp;<input type=text name=msn size=20 maxlength=250 value="<?=isset($member['msn'])?$member['msn']:''?>" style=border-color:#d8b3b3 class=input>
                           <input type=checkbox value=1 name=open_msn checked> 공개</td>
   </tr>        <tr>
           <td colspan="5" bgcolor="#EBD9D9" align="center"><img src="images/t.gif" width="10" height="1"></td>
         </tr>
 <?php } ?>
 
-<?php if($group['use_jumin']) { ?>
+<?php if(!empty($group['use_jumin'])) { ?>
   <tr align=right height=28>
      <td style=font-family:Tahoma;font-size:8pt; valign=top><table border=0 cellspacing=0 cellpadding=0 height=4><tr><td></td></tr></table><b>주민등록번호 &nbsp;</td>
-     <td align=left>&nbsp<input type=text name=jumin1 size=6 maxlength=6 style=border-color:#d8b3b3 class=input>-<input type=text name=jumin2 size=7 maxlength=7 style=border-color:#d8b3b3 class=input> <br>* 주민등록번호는 암호화되어 저장이 되므로 관리자도 알수 없습니다<br>
+     <td align=left>&nbsp<input type=text name=jumin1 size=6 maxlength=6 style=border-color:#d8b3b3 class=input>-<input type=password name=jumin2 size=7 maxlength=7 style=border-color:#d8b3b3 class=input> <br>* 주민등록번호는 암호화되어 저장이 되므로 관리자도 알수 없습니다<br>
      &nbsp; (회원 중복가입을 막기 위한 검사수단으로만 사용이 됩니다)</td>
   </tr>        <tr>
           <td colspan="5" bgcolor="#EBD9D9" align="center"><img src="images/t.gif" width="10" height="1"></td>
         </tr>
 <?php } ?>
 
-<?php if($group['use_hobby']) { ?>
+<?php if(!empty($group['use_hobby'])) { ?>
   <tr align=right height=28>
      <td style=font-family:Tahoma;font-size:8pt;>Hobby&nbsp;</td>
-     <td align=left>&nbsp;<input type=text name=hobby size=50 maxlength=50 value="<?=$member['hobby']?>" style=border-color:#d8b3b3 class=input>
+     <td align=left>&nbsp;<input type=text name=hobby size=50 maxlength=50 value="<?=isset($member['hobby'])?$member['hobby']:''?>" style=border-color:#d8b3b3 class=input>
                           <input type=checkbox value=1 name=open_hobby checked> 공개</td>
   </tr>        <tr>
           <td colspan="5" bgcolor="#EBD9D9" align="center"><img src="images/t.gif" width="10" height="1"></td>
         </tr>
 <?php } ?>
 
-<?php if($group['use_job']) { ?>
+<?php if(!empty($group['use_job'])) { ?>
   <tr align=right height=28>
      <td style=font-family:Tahoma;font-size:8pt;>Occupation(Job)&nbsp;</td>
-     <td align=left>&nbsp;<input type=text name=job size=20 maxlength=20 value="<?=$member['job']?>" style=border-color:#d8b3b3 class=input>
+     <td align=left>&nbsp;<input type=text name=job size=20 maxlength=20 value="<?=isset($member['job'])?$member['job']:''?>" style=border-color:#d8b3b3 class=input>
                           <input type=checkbox value=1 name=open_job checked> 공개</td>
   </tr>        <tr>
           <td colspan="5" bgcolor="#EBD9D9" align="center"><img src="images/t.gif" width="10" height="1"></td>
         </tr>
 <?php } ?>
 
-<?php if($group['use_home_address']) { ?> 
+<?php if(!empty($group['use_home_address'])) { ?> 
   <tr align=right height=28>
      <td style=font-family:Tahoma;font-size:8pt;>Home Address&nbsp;</td>
-     <td align=left>&nbsp;<input type=text name=home_address size=40 maxlength=255 value="<?=$member['home_address']?>" style=border-color:#d8b3b3 class=input><input type=button value='검색' class=input style=border-color:#d8b3b3 onclick=address_popup(1)>
+     <td align=left>&nbsp;<input type=text id=home_address name=home_address size=40 maxlength=255 value="<?=isset($member['home_address'])?$member['home_address']:''?>" style=border-color:#d8b3b3 class=input><input type=button value='검색' class=input style=border-color:#d8b3b3 onclick=execDaumPostcode(false)>
                           <input type=checkbox value=1 name=open_home_address checked> 공개</td>
   </tr>        <tr>
           <td colspan="5" bgcolor="#EBD9D9" align="center"><img src="images/t.gif" width="10" height="1"></td>
         </tr>
 <?php } ?>
 
-<?php if($group['use_home_tel']) { ?>
+<?php if(!empty($group['use_home_tel'])) { ?>
   <tr align=right height=28>
      <td style=font-family:Tahoma;font-size:8pt;>Home Phone&nbsp;</td>
-     <td align=left>&nbsp;<input type=text name=home_tel size=20 maxlength=20 value="<?=$member['home_tel']?>" style=border-color:#d8b3b3 class=input>
+     <td align=left>&nbsp;<input type=text name=home_tel size=20 maxlength=20 value="<?=isset($member['home_tel'])?$member['home_tel']:''?>" style=border-color:#d8b3b3 class=input>
                           <input type=checkbox value=1 name=open_home_tel checked> 공개</td>
   </tr>        <tr>
           <td colspan="5" bgcolor="#EBD9D9" align="center"><img src="images/t.gif" width="10" height="1"></td>
         </tr>
 <?php } ?>
 
-<?php if($group['use_office_address']) { ?>
+<?php if(!empty($group['use_office_address'])) { ?>
   <tr align=right height=28>
      <td style=font-family:Tahoma;font-size:8pt;>Office Address&nbsp;</td>
-     <td align=left>&nbsp;<input type=text name=office_address size=40 maxlength=255 value="<?=$member['office_address']?>" style=border-color:#d8b3b3 class=input><input type=button value='검색' class=input style=border-color:#d8b3b3 onclick=address_popup(2)>
+     <td align=left>&nbsp;<input type=text id=office_address name=office_address size=40 maxlength=255 value="<?=isset($member['office_address'])?$member['office_address']:''?>" style=border-color:#d8b3b3 class=input><input type=button value='검색' class=input style=border-color:#d8b3b3 onclick=execDaumPostcode(true)>
                           <input type=checkbox value=1 name=open_office_address checked> 공개</td>
   </tr>        <tr>
           <td colspan="5" bgcolor="#EBD9D9" align="center"><img src="images/t.gif" width="10" height="1"></td>
         </tr>
 <?php } ?>
 
-<?php if($group['use_office_tel']) { ?>
+<?php if(!empty($group['use_office_tel'])) { ?>
   <tr align=right height=28>
      <td style=font-family:Tahoma;font-size:8pt;>Office Phone&nbsp;</td>
-     <td align=left>&nbsp;<input type=text name=office_tel size=20 maxlength=20 value="<?=$member['office_tel']?>" style=border-color:#d8b3b3 class=input>
+     <td align=left>&nbsp;<input type=text name=office_tel size=20 maxlength=20 value="<?=isset($member['office_tel'])?$member['office_tel']:''?>" style=border-color:#d8b3b3 class=input>
                           <input type=checkbox value=1 name=open_office_tel checked> 공개</td>
   </tr>        <tr>
           <td colspan="5" bgcolor="#EBD9D9" align="center"><img src="images/t.gif" width="10" height="1"></td>
         </tr>
 <?php } ?>
 
-<?php if($group['use_handphone']) { ?>
+<?php if(!empty($group['use_handphone'])) { ?>
   <tr align=right height=28>
      <td style=font-family:Tahoma;font-size:8pt;>Cellular&nbsp;</td>
-     <td align=left>&nbsp;<input type=text name=handphone size=20 maxlength=20 value="<?=$member['handphone']?>" style=border-color:#d8b3b3 class=input>
+     <td align=left>&nbsp;<input type=text name=handphone size=20 maxlength=20 value="<?=isset($member['handphone'])?$member['handphone']:''?>" style=border-color:#d8b3b3 class=input>
                           <input type=checkbox value=1 name=open_handphone checked> 공개</td>
   </tr>        <tr>
           <td colspan="5" bgcolor="#EBD9D9" align="center"><img src="images/t.gif" width="10" height="1"></td>
         </tr>
 <?php } ?>
 
-<?php if($group['use_mailing']) { ?>
+<?php if(!empty($group['use_mailing'])) { ?>
   <tr align=right height=28>
      <td style=font-family:Tahoma;font-size:8pt;><b>Mailling List&nbsp;</td>
      <td align=left>&nbsp;<input type=checkbox name=mailing value=1 checked> 메일링 가입</td>
@@ -369,11 +383,11 @@
         </tr>
 <?php } ?>
 
-<?php if($group['use_picture']) { ?>
+<?php if(!empty($group['use_picture'])) { ?>
   <tr align=right height=28>
      <td style=font-family:Tahoma;font-size:8pt;>Photo&nbsp;</td>
      <td align=left>&nbsp;<input type=file name=picture size=35 maxlength=255 style=border-color:#d8b3b3 class=input>
-                 <?php if($member['picture']) echo"<br>&nbsp;<img src='$member[picture]' border=0>"; ?>
+                 <?php if(isset($member['picture'])) echo"<br>&nbsp;<img src='$member[picture]' border=0>"; ?>
                           <input type=checkbox value=1 name=open_picture checked> 공개
      </td>
   </tr>        <tr>
@@ -381,10 +395,10 @@
         </tr>
 <?php } ?>
 
-<?php if($group['use_comment']) { ?>
+<?php if(!empty($group['use_comment'])) { ?>
   <tr align=right height=28>
      <td style=font-family:Tahoma;font-size:8pt;>자기 소개서</td>
-     <td align=left>&nbsp;<textarea cols=50 rows=4 name=comment style=border-color:#d8b3b3 class=textarea><?=$member['comment']?></textarea><br>&nbsp;<input type=checkbox value=1 name=open_comment checked> 공개</td>
+     <td align=left>&nbsp;<textarea cols=50 rows=4 name=comment style=border-color:#d8b3b3 class=textarea><?=isset($member['comment'])?$member['comment']:''?></textarea><br>&nbsp;<input type=checkbox value=1 name=open_comment checked> 공개</td>
 
   </tr>        <tr>
           <td colspan="5" bgcolor="#EBD9D9" align="center"><img src="images/t.gif" width="10" height="1"></td>
@@ -410,6 +424,6 @@
 
 
 <?php
-	@mysql_close($connect);
+	mysql_close($connect);
 	foot();
 ?>

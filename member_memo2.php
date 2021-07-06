@@ -3,50 +3,50 @@
 	include "lib.php";
 
 // DB 연결
-	if(!$connect) $connect=dbConn();
+	if(!isset($connect)) $connect=dbConn();
 
 // 멤버정보 구하기
 	$member=member_info();
 
-	if(!$member['no']) Error("로그인된 회원만이 사용할수 있습니다","window.close");
+	if(!isset($member['no'])) Error("로그인된 회원만이 사용할수 있습니다","window.close");
 
 // 그룹데이타 읽어오기;;
-	$group_data=mysql_fetch_array(mysql_query("select * from $group_table where no='$member[group_no]'"));
+	$group_data=mysql_fetch_array(zb_query("select * from $group_table where no='$member[group_no]'"));
 
 // 지정 시간이 넘은 글 삭제;;
-	mysql_query("delete from $send_memo_table where member_no='$member[no]' and (".time()." - reg_date) >= ".$_zbDefaultSetup['memo_limit_time']) or error(mysql_error());
+	if(intval($_zbDefaultSetup['memo_limit_time'])!==0) zb_query("delete from $send_memo_table where member_no='$member[no]' and (".time()." - reg_date) >= ".$_zbDefaultSetup['memo_limit_time']) or error(mysql_error());
 
 // 선택된 메모 삭제;;;
-	if($exec=="del_all") {
+	if(isset($exec) && $exec=="del_all") {
 		foreach ($_POST['del'] as $value) {
-			mysql_query("delete from $send_memo_table where no='$value' and member_no='$member[no]'");
+			zb_query("delete from $send_memo_table where no='$value' and member_no='$member[no]'");
 		}
 		movepage("$PHP_SELF?page=$page");
 	}
 
 // 메모삭제
-	if($exec=="del") {
-		mysql_query("delete from $send_memo_table where no='$no' and member_no='$member[no]'");
+	if(isset($exec) && $exec=="del") {
+		zb_query("delete from $send_memo_table where no='$no' and member_no='$member[no]'");
 		movepage("$PHP_SELF?page=$page");
 	}
 
 // 선택된 메모가 있을시 데이타 뽑아오기;;
-	if($no) {
-		$now_data=mysql_fetch_array(mysql_query("select a.no as no, a.subject as subject, a.reg_date as reg_date, a.readed as readed, b.name as name, b.user_id as user_id, a.member_to as member_to, a.memo as memo from $send_memo_table a ,$member_table b where a.member_no='$member[no]' and a.member_to=b.no and a.no='$no'"));
+	if(isset($no)) {
+		$now_data=mysql_fetch_array(zb_query("select a.no as no, a.subject as subject, a.reg_date as reg_date, a.readed as readed, b.name as name, b.user_id as user_id, a.member_to as member_to, a.memo as memo from $send_memo_table a ,$member_table b where a.member_no='$member[no]' and a.member_to=b.no and a.no='$no'"));
 	}
 
 
 // 읽지 않은 쪽지의 갯수 구하기
-	$temp1=mysql_fetch_array(mysql_query("select count(*) from $send_memo_table where readed='1' and member_no='$member[no]'"));
+	$temp1=mysql_fetch_array(zb_query("select count(*) from $send_memo_table where readed='1' and member_no='$member[no]'"));
 	$new_total=$temp1[0];
 
 // 전체 쪽지의 갯수
-	$temp2=mysql_fetch_array(mysql_query("select count(*) from $send_memo_table  where member_no='$member[no]'"));
+	$temp2=mysql_fetch_array(zb_query("select count(*) from $send_memo_table  where member_no='$member[no]'"));
 
 	$total=$temp2[0];
 
 // 페이지 계산
-	if(!$page) $page=1;
+	if(!isset($page)) $page=1;
 	$page_num=13;
 	$start_num=($page-1)*$page_num; // 페이지 수에 따른 출력시 첫번째가 될 글의 번호 구함
 
@@ -56,7 +56,7 @@
 
 // 데이타 뽑아오는 부분... 
 	$que="select a.no as no, a.subject as subject, a.reg_date as reg_date, a.readed as readed, b.name as name, b.user_id as user_id, a.member_to as member_to from $send_memo_table a ,$member_table b where a.member_no='$member[no]' and a.member_to=b.no  order by a.no desc limit $start_num,$page_num";
-	$result=mysql_query($que) or Error(mysql_error());
+	$result=zb_query($que) or Error(mysql_error());
 
 // MySQL 닫기
 	if($connect) mysql_close($connect);
@@ -122,7 +122,7 @@
 
 <!-- 선택된 메모가 있을때;; -->
 <?php
- if($now_data['no']) {
+ if(isset($now_data['no'])) {
 	$temp_name = get_private_icon($now_data['member_to'], "2");
 	if($temp_name) $now_data['name']="<img src='$temp_name' border=0 align=absmiddle>";
 	$temp_name = get_private_icon($now_data['member_to'], "1");

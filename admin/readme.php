@@ -52,7 +52,7 @@
 
     - E-Mail 유효 검사 : <?=$_zbDefaultSetup['check_email']?>
 
-    - 쪽지 보관일수 : <?=(int)($_zbDefaultSetup['memo_limit_time']/(60*60*24))?> 일
+    - 쪽지 보관일수 : <?php if(intval($_zbDefaultSetup['memo_limit_time'])===0) echo '무제한'; else echo (int)($_zbDefaultSetup['memo_limit_time']/(60*60*24)).' 일'; ?>
 
     * 자세한 내용은 <a href=http://zeroboard.com target=_blank>http://zeroboard.com</a>에서 매뉴얼을 보세요
 

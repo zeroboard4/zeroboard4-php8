@@ -1,6 +1,6 @@
 <?php
-  $table_data=mysql_fetch_array(mysql_query("select name from $admin_table where no='$no'"));
-  $data=mysql_fetch_array(mysql_query("select name from $t_category"."_$table_data[name] where no='$category_no'"));
+  $table_data=mysql_fetch_array(zb_query("select name from $admin_table where no='$no'"));
+  $data=mysql_fetch_array(zb_query("select name from $t_category"."_$table_data[name] where no='$category_no'"));
 ?>
 <table border=0 cellspacing=1 cellpadding=0 width=100% bgcolor=#b0b0b0>
   <tr height=30><td bgcolor=#3d3d3d colspan=2></td></tr>
@@ -14,6 +14,7 @@
    <input type=hidden name=page_num value=<?=$page_num?>>
    <input type=hidden name=no value=<?=$no?>>
    <input type=hidden name=category_no value=<?=$category_no?>>
+   <input type=hidden name=csrf_token value=<?=generate_csrf_token()?>>
    
   <tr align=center><td bgcolor=bbbbbb colspan=2 height=25 style=font-family:Tahoma;font-size:8pt;></td></tr>
   <tr align=center><td colspan=2 style=line-height:180%; bgcolor=#e0e0e0><br>

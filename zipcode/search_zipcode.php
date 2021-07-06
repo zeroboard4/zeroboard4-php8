@@ -26,7 +26,7 @@ function check_submit()
 
 <table border=0 cellspacing=1 cellpadding=4 width=100% bgcolor=black height=100%>
 <form name=write2 method=post action=search_zipcode2.php onsubmit='return check_submit()'>
-<input type=hidden name=num value=<?=$num?>>
+<input type=hidden name=num value=<?=isset($num)?$num:''?>>
 <tr bgcolor=777777>
   <td align=center><b><font color=white>우편번호 검색 </b>(Search Zipcode)</td>
 </tr>

@@ -24,22 +24,22 @@
 
 
 // 회원 로그인 체크
-	$result = mysql_query("select * from $member_table where user_id='$user_id' and password=password('$password')") or error(mysql_error());
+	$result = zb_query("select * from $member_table where user_id='$user_id' and password=password('$password')") or error(mysql_error());
 	$member_data = mysql_fetch_array($result);
 	
 	if(!isset($member_data['no'])&&strlen(get_password("a"))>=41) {
-		$result = mysql_query("select * from $member_table where user_id='$user_id' and password=old_password('$password')") or error(mysql_error());
+		$result = zb_query("select * from $member_table where user_id='$user_id' and password=old_password('$password')") or error(mysql_error());
 		$member_data = mysql_fetch_array($result);
 	}
 
 // 회원로그인이 성공하였을 경우 세션을 생성하고 페이지를 이동함
 	if(isset($member_data['no'])) {
-		$query = mysql_fetch_array(mysql_query("show columns from $member_table like 'reg_m_date'"));
-		if(!$query[0]) {
-		mysql_query("alter table $member_table add reg_m_date int(13)");
+		$query = mysql_fetch_array(zb_query("show columns from $member_table like 'reg_m_date'"));
+		if(!isset($query[0])) {
+		zb_query("alter table $member_table add reg_m_date int(13)");
 		}
 		$dbqry="UPDATE $member_table SET reg_m_date = '$now_time' WHERE no='$member_data[no]'";
-		mysql_query($dbqry);
+		zb_query($dbqry);
 
 		if(isset($auto_login)) {
 			makeZBSessionID($member_data['no']);
@@ -73,5 +73,5 @@
 		foot();
 	}
 
-	@mysql_close($connect);
+	mysql_close($connect);
 ?>

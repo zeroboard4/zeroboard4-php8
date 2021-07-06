@@ -8,23 +8,26 @@
 // 멤버정보 구하기
 	$member=member_info();
 
-	if(!$member['no']) Error("로그인된 회원만이 사용할수 있습니다","window.close");
+	if(!isset($member['no'])) Error("로그인된 회원만이 사용할수 있습니다","window.close");
 
-	if(!$page&&!$status) $status=1;
+	if(!isset($page)&&!isset($status)) $status=1;
+	if(empty($status)) $status='';
+	if(empty($keyword)) $keyword='';
 
 // 그룹데이타 읽어오기;;
-	$group_data=mysql_fetch_array(mysql_query("select * from $group_table where no='$member[group_no]'"));
+	$group_data=mysql_fetch_array(zb_query("select * from $group_table where no='$member[group_no]'"));
 
 // 검색어 처리;;
-	if($keyword) {
+	if(!empty($keyword)) {
 		if(!$status) $s_que=" where user_id like '%$keyword%' or name like '%$keyword%' ";
 	}
 
 // 전체 회원의 수
-	$temp2=mysql_fetch_array(mysql_query("select count(*) from $member_table  $s_que"));
+	if(!isset($s_que)) $s_que = '';
+	$temp2=mysql_fetch_array(zb_query("select count(*) from $member_table  $s_que"));
 	$total_member=$temp2[0];
 
-	if($status) {
+	if(!empty($status)) {
 		$_str = trim(zReadFile("data/now_member_connect.php"));
 		if($_str) {
 			$_str = str_replace("<?php die('Access Denied');/*","",$_str);
@@ -39,7 +42,7 @@
 	$page_num=10;
 	$total_page=(int)(($total-1)/$page_num)+1; // 전체 페이지 구함
 
-	if(!$page) $page=1;
+	if(!isset($page)) $page=1;
 	if($page>$total_page) $page=1; // 페이지가 전체 페이지보다 크면 페이지 번호 바꿈
  
 	$start_num=($page-1)*$page_num; // 페이지 수에 따른 출력시 첫번째가 될 글의 번호 구함
@@ -49,9 +52,9 @@
 // 데이타 뽑아오는 부분
 
 // 오프라인 멤버
-	if(!$status) {
+	if(empty($status)) {
 		$que="select * from $member_table $s_que order by no desc limit $start_num,$page_num";
-		$result=mysql_query($que) or Error(mysql_error());
+		$result=zb_query($que) or Error(mysql_error());
 // 온라인 멤버
 	} else {
 		$endnum = $start_num + $page_num;
@@ -59,10 +62,10 @@
 		unset($s_que);
 		for($i=$start_num;$i<$endnum;$i++) {
 			$member_no = substr($_connector[$i],12);
-			if($s_que) $s_que .= " or no = '$member_no' "; else $s_que = " where no = '$member_no' ";
+			if(isset($s_que)) $s_que .= " or no = '$member_no' "; else $s_que = " where no = '$member_no' ";
 		}
 		$que = "select * from $member_table $s_que";
-		$result=mysql_query($que) or Error(mysql_error());
+		$result=zb_query($que) or Error(mysql_error());
 
 	}
 
@@ -157,8 +160,8 @@
 
 		
 		$user_id=stripslashes($data['user_id']);
-		//$check=mysql_fetch_array(mysql_query("select count(*) from $now_table where user_id='$data['user_id']'"));
-		if($check[0]) $stat="<img src=images/memo_online.gif>";
+		//$check=mysql_fetch_array(zb_query("select count(*) from $now_table where user_id='$data['user_id']'"));
+		if(isset($check[0])) $stat="<img src=images/memo_online.gif>";
 		else $stat="<img src=images/memo_offline.gif>";
 		if($data['is_admin']==1) $kind="<font color=#aa0000 style=font-family:Tahoma;font-size:8pt;><b>Super Administrator</b>($data[level])</font>";
 		elseif($data['is_admin']==2) $kind="<font color=#0000aa style=font-family:Tahoma;font-size:8pt;><b>Group Administrator</b>($data[level])</font>";
@@ -188,8 +191,8 @@
   <td colspan=5 height=30>
      <table border=0 align=center cellpadding=0 cellspacing=0>
      <tr>
-     <td><input type=text name=keyword value="<?=$keyword?>" size=20 style=font-size:9pt;width:100px;height:20px;></td>
-     <td><input type=checkbox value=1 name=status <?=$checked[1]?>></td>
+     <td><input type=text name=keyword value="<?=isset($keyword)?$keyword:''?>" size=20 style=font-size:9pt;width:100px;height:20px;></td>
+     <td><input type=checkbox value=1 name=status <?=isset($checked[1])?$checked[1]:''?>></td>
      <td><img src=images/memo_online.gif align=absmiddle style=cursor:hand >&nbsp;&nbsp;&nbsp;</td>
      <td><input type=image border=0 src=images/memo_search.gif align=absmiddle>&nbsp;</td>
      <td><a href=<?=$PHP_SELF?>?page=<?=$page?>><img src=images/memo_cancel.gif border=0></a></td>

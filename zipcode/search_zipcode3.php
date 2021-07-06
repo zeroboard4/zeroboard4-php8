@@ -23,7 +23,7 @@ function postaddr(var1)
 <body bgcolor=white leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
 
 <?php
- echo urldecode(stripslashes($memo));
+ echo urldecode(stripslashes($_POST['memo']));
 ?>
 <br>
 <div align=center><a href=# onclick=history.go(-2)><font color=black>뒤로가기</a> <font color=bbbbbb>|</font> <a href=# onclick=window.close()><font color=black>창 닫기</a>

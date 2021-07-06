@@ -9,8 +9,9 @@
  *
  ******************************************************************************/
     if(realpath($_SERVER['SCRIPT_FILENAME']) == realpath(__FILE__)) exit;
+
+    // 에러 표시 설정    
     ini_set('display_errors', '0');
-    require_once "legacyFunctions.php";
     require_once "fixcloudflare.php";
 
     // W3C P3P 규약설정
@@ -24,14 +25,22 @@
  	 ******************************************************************************/
  	@error_reporting(E_ALL & ~E_NOTICE);
 	
- 	$ext_arr = array ('PHP_SELF', '_ENV', '_GET', '_POST', '_FILES', '_SERVER', '_COOKIE', '_SESSION', '_REQUEST',
-                  	    'HTTP_ENV_VARS', 'HTTP_GET_VARS', 'HTTP_POST_VARS', 'HTTP_POST_FILES', 'HTTP_SERVER_VARS',
+ 	$ext_arr = array('PHP_SELF', '_ENV', '_GET', '_POST', '_FILES', '_SERVER', '_COOKIE', '_SESSION', '_REQUEST',
+                  	'HTTP_ENV_VARS', 'HTTP_GET_VARS', 'HTTP_POST_VARS', 'HTTP_POST_FILES', 'HTTP_SERVER_VARS',
                	    'HTTP_COOKIE_VARS', 'HTTP_SESSION_VARS', 'GLOBALS');
+	$filterxssval = array('name', 'email', 'homepage', 'subject', 'memo', 'keyword', 'user_id',
+					'birth_1', 'birth_2', 'birth_3', 'icq', 'aol', 'msn', 'hobby', 'job',
+					'home_address', 'home_tel', 'office_address', 'office_tel', 'handphone', 'comment');
  	$ext_cnt = count($ext_arr);
- 	for ($i=0; $i<$ext_cnt; $i++) {
+ 	for($i=0; $i<$ext_cnt; $i++) {
  	 	if (isset($_GET[$ext_arr[$i]]))  unset($_GET[$ext_arr[$i]]);
      	 	if (isset($_POST[$ext_arr[$i]])) unset($_POST[$ext_arr[$i]]);
  	}
+	foreach($filterxssval as $val) {
+		if(in_array($val, array_keys($_GET))) $_GET[$val] = xss2($_GET[$val]);
+		if(in_array($val, array_keys($_POST))) $_POST[$val] = xss2($_POST[$val]);
+	}
+	
  	$_GET = array_map('Request_Var', $_GET);
  	zb_gpc_extract($_GET);
  	zb_gpc_extract($_POST);
@@ -103,12 +112,14 @@
 		@session_start();
 
 		// 조회수 가 512byte를, 투표 세션변수가 256byte를 넘을시 리셋 (개인서버를 이용시에는 조금 더 늘려도 됨)
-		if(isset($_SESSION['zb_hit']) || isset($_SESSION['zb_vote'])) {
+		if(isset($_SESSION['zb_hit'])) {
 			if(strlen($_SESSION['zb_hit'])>$_zbDefaultSetup['session_view_size']) {
 				///$zb_hit='';
 				//session_register("zb_hit");
 				$_SESSION['zb_hit'] = '';
 			}
+		}
+		if(isset($_SESSION['zb_vote'])) {
 			if(strlen($_SESSION['zb_vote'])>$_zbDefaultSetup['session_vote_size']) {
 				//$zb_vote='';
 				//session_register("zb_vote");
@@ -189,17 +200,18 @@
 
 
 	// 관리자 테이블과 회원관리 테이블의 이름을 미리 변수로 정의
-	$member_table = "zetyx_member_table";  // 회원들의 데이타가 들어 있는 직접적인 테이블
-	$group_table = "zetyx_group_table";   // 그룹테이블
-	$admin_table="zetyx_admin_table";     // 게시판의 관리자 테이블
+	$table_prefix = 'zetyx_';  // 테이블 접두사
+	$member_table = $table_prefix . 'member_table';  // 회원들의 데이타가 들어 있는 직접적인 테이블
+	$group_table = $table_prefix . 'group_table';   // 그룹테이블
+	$admin_table=$table_prefix . 'admin_table';     // 게시판의 관리자 테이블
 
-	$send_memo_table ="zetyx_send_memo";
-	$get_memo_table ="zetyx_get_memo";
+	$send_memo_table =$table_prefix . 'send_memo';
+	$get_memo_table =$table_prefix . 'get_memo';
 
-	$t_division="zetyx_division"; // Division 테이블
-	$t_board = "zetyx_board"; // 메인 테이블
-	$t_comment ="zetyx_board_comment"; // 코멘트테이블
-	$t_category ="zetyx_board_category"; // 카테고리 테이블
+	$t_division=$table_prefix . 'division'; // Division 테이블
+	$t_board = $table_prefix . 'board'; // 메인 테이블
+	$t_comment =$table_prefix . 'board_comment'; // 코멘트테이블
+	$t_category =$table_prefix . 'board_category'; // 카테고리 테이블
 
 
 	// 마이크로 타임 구함
@@ -215,20 +227,20 @@
 	// 전체 division 구함
 	function total_division() {
  		global $connect, $t_division, $id;
- 		$temp=mysql_fetch_array(mysql_query("select max(division) from $t_division"."_$id"));
+ 		$temp=mysql_fetch_array(zb_query("select max(division) from $t_division"."_$id"));
  		return $temp[0];
 	}
 
 	// 답글일때 해당 division의 num 값 증가
 	function plus_division($division) {
 		global $connect, $t_division, $id;
-		mysql_query("update $t_division"."_$id set num=num+1 where division='$division'") or error(mysql_error);
+		zb_query("update $t_division"."_$id set num=num+1 where division='$division'") or error(mysql_error);
 	}
 
 	// 삭제하거나 공지글을 일반글로 옮기는 등의 division num값 변화시 해당 division의 num값 감소시킴
 	function minus_division($division) {
 		global $connect, $t_division, $id;
-		mysql_query("update $t_division"."_$id set num=num-1 where division='$division'") or error(mysql_error);
+		zb_query("update $t_division"."_$id set num=num-1 where division='$division'") or error(mysql_error);
 	}
 
 
@@ -237,27 +249,27 @@
 		global $connect, $t_division, $id, $t_board;
 		if($board_name) $board_id=$board_name;
 		else $board_id=$id;
-		$temp=mysql_fetch_array(mysql_query("select num from $t_division"."_$board_id order by division desc limit 1"));
+		$temp=mysql_fetch_array(zb_query("select num from $t_division"."_$board_id order by division desc limit 1"));
 
 		// 현재 division의 num값이 기준값일때는 division +1 해줌;
 		if($temp[0]>=500000) {
-			$temp=mysql_fetch_array(mysql_query("select max(division) from $t_division"."_$board_id"));
+			$temp=mysql_fetch_array(zb_query("select max(division) from $t_division"."_$board_id"));
 			$max_division=$temp[0]+1;
-			$temp=mysql_fetch_array(mysql_query("select max(division) from $t_division"."_$board_id where num>0 and division!='$max_division'"));
+			$temp=mysql_fetch_array(zb_query("select max(division) from $t_division"."_$board_id where num>0 and division!='$max_division'"));
 			if(!$temp[0]) $second_division=0; else $second_division=$temp[0];
-			$temp=mysql_fetch_array(mysql_query("select count(*) from $t_board"."_$board_id where (division='$max_division' or division='$second_division') and headnum<=-2000000000"));
+			$temp=mysql_fetch_array(zb_query("select count(*) from $t_board"."_$board_id where (division='$max_division' or division='$second_division') and headnum<=-2000000000"));
 			if($temp[0]>0) {
-				mysql_query("update $t_board"."_$board_id set division='$max_division' where (division='$max_division' or division='$second_division') and  headnum<='-2000000000'") or error(mysql_error());
-				mysql_query("update $t_division"."_$board_id set num=num-$temp[0] where division=$max_division-1") or error(mysql_error());
+				zb_query("update $t_board"."_$board_id set division='$max_division' where (division='$max_division' or division='$second_division') and  headnum<='-2000000000'") or error(mysql_error());
+				zb_query("update $t_division"."_$board_id set num=num-$temp[0] where division=$max_division-1") or error(mysql_error());
 			}
 			$num=$temp[0]+1;
-			mysql_query("insert into $t_division"."_$board_id (division,num) values ('$max_division','$num')");
+			zb_query("insert into $t_division"."_$board_id (division,num) values ('$max_division','$num')");
 			return $max_division;
 		} else {
  		// 현재 division이 기준값개보다 작을때~
-			$temp=mysql_fetch_array(mysql_query("select max(division) from $t_division"."_$board_id"));
+			$temp=mysql_fetch_array(zb_query("select max(division) from $t_division"."_$board_id"));
 			$division=$temp[0];
-			mysql_query("update $t_division"."_$board_id set num=num+1 where division='$division'");
+			zb_query("update $t_division"."_$board_id set num=num+1 where division='$division'");
 			return $division;
 		}
 	}
@@ -274,7 +286,7 @@
 		if(isset($member['no'])) return $member;
 		
 		if(isset($_SESSION['zb_logged_no'])) {
-			$query=mysql_query("select * from $member_table where no ='".$_SESSION['zb_logged_no']."'");
+			$query=zb_query("select * from $member_table where no ='".$_SESSION['zb_logged_no']."'");
 			$member=mysql_fetch_array($query);
 			if(mysql_num_rows($query) < 1) {
 			session_destroy();
@@ -297,19 +309,8 @@
 
 	function group_info($no) {
 		global $group_table;
-		$temp=mysql_fetch_array(mysql_query("select * from $group_table where no='$no'"));
+		$temp=mysql_fetch_array(zb_query("select * from $group_table where no='$no'"));
 		return $temp;
-	}
-
-	function get_password($str, $isold=false) {
-		global $connect;
-		if($isold)
-			$rs = mysql_query("SELECT old_password('$str')");
-		else
-			$rs = mysql_query("SELECT password('$str')");
-		$tmp=mysql_fetch_array($rs);
-		mysql_free_result($rs);
-		return $tmp[0];
 	}
 
 	/******************************************************************************
@@ -327,10 +328,10 @@
 
 		for($i=1;$i<=4;$i++) $f[$i]=trim(str_replace("\n","",$f[$i]));
 
-		if(!$connect) $connect = @mysql_connect($f[1],$f[2],$f[3]) or Error("DB 접속시 에러가 발생했습니다");
+		if(!isset($connect)) $connect = mysql_connect($f[1],$f[2],$f[3]) or Error("DB 접속시 에러가 발생했습니다");
 
-		@mysql_select_db($f[4], $connect) or Error("DB Select 에러가 발생했습니다","");
-		@mysql_query("set names 'utf8'");
+		mysql_select_db($f[4], $connect) or Error("DB Select 에러가 발생했습니다","");
+		zb_query("set names 'utf8'");
 	
 		return $connect;
 	}
@@ -371,7 +372,7 @@
 	// 이름 앞에 붙는 얼굴 아이콘
 	function get_face($data, $check=0) {
 		global $group;
-
+		$face_image='';
 		// 이름앞에 붙는 아이콘 정의;;
 		if($group['use_icon']==0) {
 			if($data['ismember']) { 
@@ -399,6 +400,7 @@
 
 	// 게시판 관리자인지 체크하는 부분
 	function check_board_master($member, $board_num) {
+		if(!isset($member['board_name'])) return 0;
 		$temp = explode(",",$member['board_name']);
 		for($i=0;$i<count($temp);$i++) {
 			$t = trim($temp[$i]);
@@ -415,13 +417,14 @@
 		if($_head_executived) return;
 		$_head_executived = true;
 
-		$license = file_get_contents("license.txt");
-
-		print "<!--\n".$license."\n-->\n";
+		if(file_exists('license.txt')) {
+			$license = file_get_contents('license.txt');
+			print "<!--\n".$license."\n-->\n";
+		}
 	
 		if(strpos(strtolower($PHP_SELF),"member_") === false && isset($setup)) $stylefile="skin/$setup[skinname]/style.css"; else $stylefile="style.css";
 
-		if(isset($setup) && $setup['use_formmail']) {
+		if(isset($setup) && isset($setup['use_formmail'])) {
 			$f = fopen("script/script_zbLayer.php","r");
 			$zbLayerScript = fread($f, filesize("script/script_zbLayer.php"));
 			fclose($f);
@@ -535,16 +538,16 @@
 			<?php
 		}
 
-		$_phpExcutedTime = (getmicrotime()-$_startTime)-($_sessionEnd-$_sessionStart)-($_nowConnectEnd-$_nowConnectStart)-$_dbTime-$_skinTime;
+		$_phpExecutedTime = (getmicrotime()-$_startTime)-($_sessionEnd-$_sessionStart)-($_nowConnectEnd-$_nowConnectStart)-$_dbTime-$_skinTime;
 		// 실행시간 출력
 		echo "\n\n<!--"; 
-		if($_sessionStart&&$_sessionEnd)  		echo"\n Session Excuted  : ".sprintf("%0.4f",$_sessionEnd-$_sessionStart);
+		if($_sessionStart&&$_sessionEnd)  		echo"\n Session Executed  : ".sprintf("%0.4f",$_sessionEnd-$_sessionStart);
 		if($_nowConnectStart&&$_nowConnectEnd) 	echo"\n Connect Checked  : ".sprintf("%0.4f",$_nowConnectEnd-$_nowConnectStart);
-		if($_dbTime)  							echo"\n Query Excuted  : ".sprintf("%0.3f",$_dbTime);
-		if($_phpExcutedTime)  					echo"\n PHP Excuted  : ".sprintf("%0.3f",$_phpExcutedTime);
+		if($_dbTime)  							echo"\n Query Executed  : ".sprintf("%0.3f",$_dbTime);
+		if($_phpExecutedTime)  					echo"\n PHP Executed  : ".sprintf("%0.3f",$_phpExecutedTime);
 		if($_listCheckTime) 					echo"\n Check Lists : ".sprintf("%0.3f",$_listCheckTime);
-		if($_skinTime) 							echo"\n Skins Excuted  : ".sprintf("%0.3f",$_skinTime);
-   		if($_startTime) 						echo"\n Total Excuted Time : ".sprintf("%0.3f",getmicrotime()-$_startTime);
+		if($_skinTime) 							echo"\n Skins Executed  : ".sprintf("%0.3f",$_skinTime);
+   		if($_startTime) 						echo"\n Total Executed Time : ".sprintf("%0.3f",getmicrotime()-$_startTime);
 		echo "\n-->\n";
 	}
 
@@ -560,7 +563,7 @@
 			//$data['name']=str_replace("'","\'",$data['name']);
 			//$data['name']=str_replace(" ","",$data['name']);
 
-			if($data['homepage']){
+			if(isset($data['homepage'])){
 				$data['homepage']=str_replace("http://","",stripslashes($data['homepage']));
 				//$data['homepage']=str_replace("\"","",$data['homepage']);
 				//$data['homepage']=str_replace("'","",$data['homepage']);
@@ -569,36 +572,47 @@
 				$data['homepage']="http://".$data['homepage'];
 			}
 
-			$data['email']=base64_encode($data['email']);
+			$data['email']=base64_encode(isset($data['email'])?$data['email']:'');
 
 			$_zbCheckNum++;
 			$_zbCount=1;
 
-			if(($member['is_admin']==1||$member['is_admin']==2)&&$data['ismember']) {
-				$traceID = $data['ismember'];
-				$traceType="t";
-				$isAdmin=1;
-			} elseif(($member['is_admin']==1||$member['is_admin']==2)&&!$data['ismember']) {
-				$traceID = $data['name'];
-				$traceType="tn";
-				$isAdmin=1;
+			if($member['level']!==10) {
+				if(($member['is_admin']==1||$member['is_admin']==2)&&$data['ismember']) {
+					$traceID = $data['ismember'];
+					$traceType="t";
+					$isAdmin=1;
+				} elseif(($member['is_admin']==1||$member['is_admin']==2)&&!$data['ismember']) {
+					$traceID = $data['name'];
+					$traceType="tn";
+					$isAdmin=1;
+				}
 			}
 
-			if($member['no']) $isMember = 1;
+			if(isset($member['no'])) $isMember = 1;
 
 			if($data['ismember']<1) $data['ismember']="";
 
-			$zbLayer = $zbLayer."\nprint_ZBlayer('zbLayer$_zbCheckNum', '$data[homepage]', '$data[email]', '$data[ismember]', '$id', '$data[name]', '$traceID', '$traceType', '$isAdmin', '$isMember');";
+			if(!isset($traceID)) $traceID = '';
+			if(!isset($traceType)) $traceType = '';
+			if(!isset($isAdmin)) $isAdmin = '';
+			if(!isset($isMember)) $isMember = '';
+			if(!isset($data['homepage'])) $data['homepage'] = '';
+			$zbLayer = $zbLayer."\nprint_ZBlayer('zbLayer$_zbCheckNum', '".$data['homepage']."', '$data[email]', '$data[ismember]', '$id', '$data[name]', '$traceID', '$traceType', '$isAdmin', '$isMember');";
+			return $_zbCount;
 		}   
-		return $_zbCount;
+		else {
+			return 0;
+		}
 	}
 	
 
 	// 에러 메세지 출력
 	function error($message, $url="") {
-		global $setup, $connect, $dir, $config_dir;
+		global $setup, $connect, $dir, $config_dir, $is_admin;
 
-		if(isset($setup['skinname'])) $dir="skin/".$setup['skinname']; else $dir="skin/";
+		if(!empty($setup['skinname'])) $dir="skin/".$setup['skinname']; else $dir="skin/";
+		if(empty($is_admin) && (strpos($message, 'SQL')!==false)) $message='DB 질의 중 오류가 발생했습니다.<br>관리자라면 로그인해서 해당 내용을 확인 할 수 있습니다.';
 
 		if($url=="window.close") {
 			$message=str_replace("<br>","\\n",$message);
@@ -613,7 +627,7 @@
 
 			head();
 
-			if(isset($setup['skinname'])) {
+			if(!empty($setup['skinname'])) {
 				include "skin/$setup[skinname]/error.php";
 			} else {
 				include $config_dir."error.php";
@@ -623,7 +637,7 @@
 
 		}
 
-		if($connect) @mysql_close($connect);
+		if($connect) mysql_close($connect);
 
 		exit;
 	}
@@ -634,7 +648,7 @@
 
 		global $connect, $admin_table;
 
-		$data=mysql_fetch_array(mysql_query("select * from $admin_table where name='$id'",$connect));
+		$data=mysql_fetch_array(zb_query("select * from $admin_table where name='$id'",$connect));
 
 		if($data['table_width']<=100) $data['table_width']=$data['table_width']."%"; 
 
@@ -660,7 +674,7 @@
 		$i=0;
 
 		while ($i < mysql_num_rows($result)) {
-			if($str==mysql_tablename ($result, $i)) return 1;
+			if($str==mysql_tablename($result, $i)) return 1;
 			$i++;
 		}
 		return 0;
@@ -791,7 +805,7 @@
 	// 제로보드 자동 로그인 세션값 파기시키는 함수
 	function destroyZBSessionID($no) {
 		global $_zb_path, $_zbDefaultSetup;
-		$zbSessionID = $_COOKIE['ZBSESSIONID'];
+		$zbSessionID = isset($_COOKIE['ZBSESSIONID']) ? $_COOKIE['ZBSESSIONID'] : '';
 		z_unlink($_zb_path.$_zbDefaultSetup['session_path']."/zbSessionID_".$zbSessionID.".php");
 		@setcookie("ZBSESSIONID", "", time()+60*60*24*365, "/");
 	}
@@ -824,7 +838,7 @@
 		if(!$defaultSetup['nowconnect_time']) $defaultSetup['nowconnect_tim'] = 60*5;
 		if(!$defaultSetup['enable_hangul_id']) $defaultSetup['enable_hangul_id'] = "false";
 		if(!$defaultSetup['check_email']) $defaultSetup['check_email'] = "true";
-		if(!$defaultSetup['memo_limit_time']) $defaultSetup['memo_limit_time'] = 7;
+		if(!$defaultSetup['memo_limit_time']) $defaultSetup['memo_limit_time'] = 0;
 		$defaultSetup['memo_limit_time'] = 60 * 60 * 24 * $defaultSetup['memo_limit_time'];
 		 
 		return $defaultSetup;
@@ -870,56 +884,34 @@
 	}
 
 
-function download_file($server_name,$file_name) {
-if(empty($server_name) || empty($file_name)) return 1;
+	function download_file($server_name,$file_name) {
+		if(empty($server_name) || empty($file_name)) return 1;
 
-$filename = $server_name;
-$filename = realpath($filename);
+		$filename = $server_name;
+		$filename = realpath($filename);
 
-if(strstr($_SERVER['HTTP_USER_AGENT'], "MSIE")) {
-//$file_name = rawurlencode($file_name);
-$file_name = preg_replace("/\./", "%2E", $file_name, substr_count($file_name, '.') - 1);
-}
+		if(strstr($_SERVER['HTTP_USER_AGENT'], "MSIE")) {
+			//$file_name = rawurlencode($file_name);
+			$file_name = preg_replace("/\./", "%2E", $file_name, substr_count($file_name, '.') - 1);
+		}
 
- $fp = fopen($filename, 'rb');
-if (!$fp) {
-die("NO FILE HERE");
-}
-header("Cache-Control: ");
-header("Pragma: ");
-header("Content-Type: application/octet-stream");
-header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
-header("Content-Length: ".@filesize($filename));
-header("Content-Disposition: attachment; filename=\"".$file_name."\"");
-header("Content-Transfer-Encoding: binary\n");
-fpassthru($fp);
-exit();
-}
+		$fp = fopen($filename, 'rb');
+		if(!$fp) exit;
+		header("Cache-Control: ");
+		header("Pragma: ");
+		header("Content-Type: application/octet-stream");
+		header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
+		header("Content-Length: ".@filesize($filename));
+		header("Content-Disposition: attachment; filename=\"".$file_name."\"");
+		header("Content-Transfer-Encoding: binary\n");
+		fpassthru($fp);
+		exit();
+	}
 
 	// 숫자, 영문자 일경우 1을 리턴
 	function isalNum($str) {
 		if(preg_match("/[^0-9a-zA-Z\_]/",$str)) return 0;
 		return 1;
-	}
-
-	function Request_Var($str)
-	{
-		if(is_array($str)) return $str;
-		else return htmlspecialchars(str_replace(array("\r\n", "\r", "\0"), array("\n", "\n", ''), $str));
-	}
-
-	function zb_gpc_extract($array)
-	{
-		if(!is_array($array)) return false;
-		
-		$valid_variables = preg_replace("/^(GLOBALS|dir|_.*)$/i", '', array_keys($array));
-		$valid_variables = array_unique($valid_variables);
-	
-		foreach ( $valid_variables as $key ) {
-			if(strlen($key)===0) continue;
-			$GLOBALS[$key] = trim((string)$array[$key]);
-		}
-		return true;
 	}
 
 	// HTML Tag를 제거하는 함수
@@ -1024,9 +1016,11 @@ exit();
 		$tar[] = "\\1";
 		$src[] = "/_HTTPAT_/";
 		$tar[] = "@";
-		if ($is_admin && $data['ismember']!=$member['no']) { 
-        $src[] = "/(\<(embed|object|ruby)[^\>]*)\>?(\<\/(embed|object|ruby)\>)?/i";
-        $tar[] = "<div style=\"border:1px solid #dcbba3;padding: 6px;background-color: #f9f2ee;color: #bf0000;line-height: 160%\">보안문제로 인하여 관리자 아이디로는 이 게시물에 사용된 embed 또는 object 태그를 볼 수 없습니다.<br />확인하시려면 관리자 권한이 없는 다른 아이디로 접속하세요.</div>";
+		if (!empty($is_admin) && isset($data['ismember']) && isset($member['no'])) { 
+			if ($is_admin && $data['ismember']!==$member['no']) { 
+            	$src[] = "/(\<(embed|object|ruby)[^\>]*)\>?(\<\/(embed|object|ruby)\>)?/i";
+            	$tar[] = "<div style=\"border:1px solid #dcbba3;padding: 6px;background-color: #f9f2ee;color: #bf0000;line-height: 160%\">보안문제로 인하여 관리자 아이디로는 이 게시물에 사용된 embed 또는 object 태그를 볼 수 없습니다.<br />확인하시려면 관리자 권한이 없는 다른 아이디로 접속하세요.</div>";
+			}
 		}
 	
 		$str = preg_replace($src,$tar,$str);
@@ -1037,15 +1031,18 @@ exit();
 	// 파일 사이즈를 kb, mb에 맞추어서 변환해서 리턴
 	function getfilesize($bytes) {
 		$units = array( 0 => 'Byte', 1 => 'KB', 2 => 'MB', 3 => 'GB' );
-    $log = log( $bytes, 1024 );
-    $power = (int) $log;
-    $size = pow(1024, $log - $power);
-    return round($size, 2) . ' ' . $units[$power];
+    	$log = log( $bytes, 1024 );
+    	$power = (int) $log;
+    	$size = pow(1024, $log - $power);
+    	return round($size, 2) . ' ' . $units[$power];
 	}
 
 
 	// 문자열 끊기 (이상의 길이일때는 ... 로 표시)
 	function cut_str($msg,$cut_size) {
+		$han = 0;
+		$eng = 0;
+		$pointtmp = '';
 		if($cut_size<=0) return $msg;
 		if(strpos(strtolower($msg),'[re]') !== false) $cut_size=$cut_size+4;
 		for($i=0;$i<$cut_size;$i++) if(ord($msg[$i])>127) $han++; else $eng++;
@@ -1071,7 +1068,7 @@ exit();
 	function movepage($url) {
 		global $connect;
 		echo"<meta http-equiv=\"refresh\" content=\"0; url=$url\">";
-		if($connect) @mysql_close($connect);
+		if(isset($connect)) mysql_close($connect);
 		exit;
 	}
 
@@ -1111,7 +1108,7 @@ exit();
 		$comment = stripslashes($comment);
 		$comment = str_replace("\n\r","\n", $comment);
 
-		return mail($recipient , $subject , $comment , $headers);
+		return @mail($recipient , $subject , $comment , $headers);
 
 	}
 
@@ -1192,6 +1189,199 @@ exit();
 		$directory->close(); 
 		@RmDir($path); 
 	}
+	
+	//////////////////////////////////////
+	////////////////////////////////////// 레거시 함수 시작
+	//////////////////////////////////////
+	if (!function_exists("ereg")) {
+		function ereg($pattern, $string, &$regs = array()) {
+			$pattern = str_replace("\\/", "/", $pattern);
+			$pattern = str_replace("/", "\\/", $pattern);
+			return preg_match("/" . $pattern . "/", $string, $regs);
+		}
+	}
+
+	if (!function_exists("eregi")) {
+		function eregi($pattern, $string, &$regs = array()) {
+			$pattern = str_replace("\\/", "/", $pattern);
+			$pattern = str_replace("/", "\\/", $pattern);
+			return preg_match("/" . $pattern . "/i", $string, $regs);
+		}
+	}
+
+	if (!function_exists("ereg_replace")) {
+		function ereg_replace($pattern, $replacement, $string) {
+			$pattern = str_replace("\\/", "/", $pattern);
+			$pattern = str_replace("/", "\\/", $pattern);
+			return preg_replace("/" . $pattern . "/", $replacement, $string);
+		}
+	}
+
+	if (!function_exists("eregi_replace")) {
+		function eregi_replace($pattern, $replacement, $string) {
+			$pattern = str_replace("\\/", "/", $pattern);
+			$pattern = str_replace("/", "\\/", $pattern);
+			return preg_replace("/" . $pattern . "/i", $replacement, $string);
+		}
+	}
+
+	if (!function_exists("split")) {
+		function split($pattern, $string) {
+			return explode($pattern, $string);
+		}
+	}
+
+	if (!function_exists("session_register")) {
+		function session_register() {
+			$arg_list = func_get_args();
+			foreach ($arg_list as $name) {
+				if (isset($GLOBALS[$name])) $_SESSION[$name] = $GLOBALS[$name];
+				$GLOBALS[$name] = &$_SESSION[$name];
+			}
+		}
+	}
+
+	if (!function_exists("get_magic_quotes_gpc")) {
+		function get_magic_quotes_gpc() {
+			return false;
+		}
+	}
+	
+	function zb_query($query, $conn = null) {
+		global $connect;
+		$query = trim($query);
+		$query = preg_replace("#^select.*from.*[\s\(]+union[\s\)]+.*#i ", "select 1", $query);
+		$query = preg_replace("#^select.*from.*where.*`?information_schema`?.*#i", "select 1", $query);
+		if ($conn != null) $connect = $conn;
+		if (!function_exists("mysql_query")) {
+			return @mysqli_query($connect, $query);
+		} else {
+			return @mysql_query($query);
+		}
+	}
+
+	if (!function_exists("mysql_fetch_array")) {
+		function mysql_fetch_array($resource) {
+			return mysqli_fetch_array($resource);
+		}
+	}
+
+	if (!function_exists("mysql_error")) {
+		function mysql_error() {
+			global $connect;
+			return mysqli_error($connect);
+		}
+	}
+
+	if (!function_exists("mysql_connect")) {
+		function mysql_connect($host = null, $user = null, $password = null, $database = null, $port = null, $socket = null) {
+			return @mysqli_connect($host, $user, $password, $database, $port, $socket);
+		}
+	}
+
+	if (!function_exists("mysql_select_db")) {
+		function mysql_select_db($dbname, $conn = null) {
+			global $connect;
+			if ($conn != null) $connect = $conn;
+			return mysqli_select_db($connect, $dbname);
+		}
+	}
+
+	if (!function_exists("mysql_close")) {
+		function mysql_close($result) {
+			return mysqli_close($result);
+		}
+	}
+
+	if (!function_exists("mysql_list_tables")) {
+		function mysql_list_tables($dbname = null) {
+			global $connect, $config_dir;
+			if ($dbname) mysql_select_db($dbname, $connect);
+			return zb_query("show tables");
+		}
+	}
+
+	if (!function_exists("mysql_num_rows")) {
+		function mysql_num_rows($result = null) {
+			return mysqli_num_rows($result);
+		}
+	}
+
+	if (!function_exists("mysql_tablename")) {
+		function mysql_tablename($result, $i) {
+			global $connect;
+			$result_copy = $result;
+			$values = array();
+			while ($row = mysql_fetch_array($result_copy)) {
+				$values[] = $row[0];
+			}
+			return isset($values[$i]) ? $values[$i] : 0;
+		}
+	}
+
+	if (!function_exists("mysql_insert_id")) {
+		function mysql_insert_id($result = null) {
+			global $connect;
+			if ($result != null) $connect = $result;
+			return mysqli_insert_id($connect);
+		}
+	}
+
+	if (!function_exists("mysql_free_result")) {
+		function mysql_free_result($result) {
+			return mysqli_free_result($result);
+		}
+	}
+
+	//////////////////////////////////////
+	////////////////////////////////////// 레거시 함수 끝
+	//////////////////////////////////////
+	
+	function Request_Var($str) {
+		if(is_array($str)) return $str;
+		else return htmlspecialchars(str_replace(array("\r\n", "\r", "\0"), array("\n", "\n", ''), $str));
+	}
+	
+	function get_password($str, $isold=false) {
+		global $connect;
+		if($isold)
+			$rs = zb_query("SELECT old_password('$str')");
+		else
+			$rs = zb_query("SELECT password('$str')");
+		$tmp=mysql_fetch_array($rs);
+		mysql_free_result($rs);
+		return $tmp[0];
+	}
+	
+	// <input type=hidden name=csrf_token value=<?=generate_csrf_token() 방식으로 사용
+	function generate_csrf_token() {
+		$_SESSION['csrf_token'] = uniqid(md5(mt_rand()), false);
+		return $_SESSION['csrf_token'];
+	}
+	
+	function check_csrf_token() {
+		if (!empty($_POST['csrf_token']) && ($_SESSION['csrf_token'] === $_POST['csrf_token'])) {
+			unset($_SESSION['csrf_token']);
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	function zb_gpc_extract($array)
+	{
+		if(!is_array($array)) return false;
+		
+		$valid_variables = preg_replace("/^(GLOBALS|dir|_.*)$/i", '', array_keys($array));
+		$valid_variables = array_unique($valid_variables);
+	
+		foreach ( $valid_variables as $key ) {
+			if(strlen($key)===0) continue;
+			if(is_array($array[$key])) continue;
+			$GLOBALS[$key] = trim(strval($array[$key]));
+		}
+		return true;
+	}
 
 	function zb_script_conv($message_comment) {
 	/* 제로보드4.1 XSS/CSRF (by 체리맛 http://ncafe.kr) */
@@ -1229,4 +1419,26 @@ exit();
  		}
  		return $message;
 	}
-?>
+	
+    function xss2($data) {
+        $data = str_replace(array('&amp;','&lt;','&gt;'), array('&amp;amp;','&amp;lt;','&amp;gt;'), $data);
+        $data = preg_replace('/(&#*\w+)[\x00-\x20]+;/u', '$1;', $data);
+        $data = preg_replace('/(&#x*[0-9A-F]+);*/iu', '$1;', $data);
+        $data = html_entity_decode($data, ENT_COMPAT, 'UTF-8');
+        $data = preg_replace('#(<[^>]+?[\x00-\x20"\'])(?:on|xmlns)[^>]*+>#iu', '$1>', $data);
+        $data = preg_replace('#([a-z]*)[\x00-\x20]*=[\x00-\x20]*([`\'"]*)[\x00-\x20]*j[\x00-\x20]*a[\x00-\x20]*v[\x00-\x20]*a[\x00-\x20]*s[\x00-\x20]*c[\x00-\x20]*r[\x00-\x20]*i[\x00-\x20]*p[\x00-\x20]*t[\x00-\x20]*:#iu', '$1=$2nojavascript...', $data);
+        $data = preg_replace('#([a-z]*)[\x00-\x20]*=([\'"]*)[\x00-\x20]*v[\x00-\x20]*b[\x00-\x20]*s[\x00-\x20]*c[\x00-\x20]*r[\x00-\x20]*i[\x00-\x20]*p[\x00-\x20]*t[\x00-\x20]*:#iu', '$1=$2novbscript...', $data);
+        $data = preg_replace('#([a-z]*)[\x00-\x20]*=([\'"]*)[\x00-\x20]*-moz-binding[\x00-\x20]*:#u', '$1=$2nomozbinding...', $data);
+        $data = preg_replace('#(<[^>]+?)style[\x00-\x20]*=[\x00-\x20]*[`\'"]*.*?expression[\x00-\x20]*\([^>]*+>#i', '$1>', $data);
+        $data = preg_replace('#(<[^>]+?)style[\x00-\x20]*=[\x00-\x20]*[`\'"]*.*?behaviour[\x00-\x20]*\([^>]*+>#i', '$1>', $data);
+        $data = preg_replace('#(<[^>]+?)style[\x00-\x20]*=[\x00-\x20]*[`\'"]*.*?s[\x00-\x20]*c[\x00-\x20]*r[\x00-\x20]*i[\x00-\x20]*p[\x00-\x20]*t[\x00-\x20]*:*[^>]*+>#iu', '$1>', $data);
+        $data = preg_replace('#</*\w+:\w[^>]*+>#i', '', $data);
+		$youtube = '<iframe(?:\b|_).*?(?:\b|_)src=\"https?:\/\/(?:www\.)?youtube.com\/(?:\b|_).*?(?:\b|_)iframe>';
+        do {
+            $Temporary = $data;
+			if(!preg_match("/{$youtube}/i", $data))
+                $data = preg_replace('#</*(?:applet|b(?:ase|gsound|link)|embed|frame(?:set)?|i(?:frame|layer)|l(?:ayer|ink)|meta|object|s(?:cript|tyle)|title|xml)[^>]*+>#i', '', $data);
+        } while ($Temporary !== $data);
+ 
+        return trim($data);
+    }

@@ -10,27 +10,27 @@
 	if(isBlank($dbname)) Error("DB NAME을 입력하세요","");
 
 // DB에 커넥트 하고 DB NAME으로 select DB
-	$connect = @mysql_connect($hostname,$user_id,$password) or Error("MySQL-DB Connect<br>Error!!!","");
+	$connect = mysql_connect($hostname,$user_id,$password) or Error("MySQL-DB Connect<br>Error!!!","");
 	if(mysql_error()) Error(mysql_error(),"");
 	mysql_select_db($dbname, $connect ) or Error("MySQL-DB Select<br>Error!!!","");
-	@mysql_query("set names 'euckr'");
+	zb_query("set names 'utf8'");
 
 // 관리자 테이블 생성
-	if(!isTable($admin_table,$dbname)) @mysql_query($admin_table_schema, $connect) or Error("관리자 테이블 생성 실패","");
+	if(!isTable($admin_table,$dbname)) zb_query($admin_table_schema, $connect) or Error("관리자 테이블 생성 실패","");
 	else $admin_table_exist=1;
   
 // 그룹테이블 생성
-	if(!isTable($group_table,$dbname)) @mysql_query($group_table_schema, $connect) or Error("그룹 테이블 생성 실패","");
+	if(!isTable($group_table,$dbname)) zb_query($group_table_schema, $connect) or Error("그룹 테이블 생성 실패","");
 	else $group_table_exist=1;
 
 // 회원관리 테이블 생성
-	if(!istable($member_table,$dbname)) @mysql_query($member_table_schema, $connect) or Error("회원관리 테이블 생성 실패","");
+	if(!istable($member_table,$dbname)) zb_query($member_table_schema, $connect) or Error("회원관리 테이블 생성 실패","");
 	else $member_table_exist=1;
 
 // 쪽지테이블
-	if(!istable($get_memo_table,$dbname))  @mysql_query($get_memo_table_schema, $connect) or Error("받은 쪽지 테이블 생성 실패");
+	if(!istable($get_memo_table,$dbname))  zb_query($get_memo_table_schema, $connect) or Error("받은 쪽지 테이블 생성 실패");
 	else $get_memo_table_exists=1;
-	if(!istable($send_memo_table,$dbname)) @mysql_query($send_memo_table_schema, $connect) or Error("보낸 쪽지 테이블 생성 실패");
+	if(!istable($send_memo_table,$dbname)) zb_query($send_memo_table_schema, $connect) or Error("보낸 쪽지 테이블 생성 실패");
 	else $send_memo_table_exist=1;
 
 // 파일로 DB 정보 저장
@@ -49,9 +49,7 @@
 	@chmod("icon",0707);
 	@chmod("config.php",0707);
 
-	$temp=mysql_fetch_array(mysql_query("select count(*) from $member_table where is_admin = '1'",$connect));
-
-	mysql_close($connect);
+	$temp=mysql_fetch_array(zb_query("select count(*) from $member_table where is_admin = '1'",$connect));
 
 	if($temp[0]) {movepage("admin.php");}
 	else {movepage("install2.php");} // 관리자 정보가 없을때 관리자 정보 입력

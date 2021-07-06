@@ -4,25 +4,25 @@ require "lib.php";
 
 
 // DB 연결
-	if(!$connect) $connect=dbConn();
+	if(!isset($connect)) $connect=dbConn();
 
 // 멤버정보 구하기
 	$member=member_info();
 
 	if(!$member['no']) Error("가입되어 있는 회원만 쪽지 보내기가 가능합니다","window.close");
 
-	$data=mysql_fetch_array(mysql_query("select * from $member_table where no='$member_no'"));
+	$data=mysql_fetch_array(zb_query("select * from $member_table where no='$member_no'"));
 
 	$data['name']=del_html($data['name']);
 
 	$temp_name = get_private_icon($data['no'], "2");
 	if($temp_name) $data['name']="<img src='$temp_name' border=0 align=absmiddle>";
 	$temp_name = get_private_icon($data['no'], "1");
-	if($temp_name) $data['name']="<img src='$temp_name' border=0 align=absmiddle>&nbsp;".$data[name];
+	if($temp_name) $data['name']="<img src='$temp_name' border=0 align=absmiddle>&nbsp;".$data['name'];
 	$data['name']="&nbsp;".$data['name']."&nbsp;";
 
 // 그룹데이타 읽어오기;;
-	$group_data=mysql_fetch_array(mysql_query("select * from $group_table where no='$data[group_no]'"));
+	$group_data=mysql_fetch_array(zb_query("select * from $group_table where no='$data[group_no]'"));
 
 	mysql_close($connect);
 	$query_time=getmicrotime();

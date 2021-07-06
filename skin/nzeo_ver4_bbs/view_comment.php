@@ -6,7 +6,7 @@
 <table border=0 cellspacing=0 cellpadding=0 height=1 width=<?=$width?>>
 <tr><td height=1 class=line1 style=height:1px><img src=<?=$dir?>/t.gif border=0 height=1></td></tr>
 </table>
-<img src=/images/t.gif border=0 height=8><br>
+<img src=<?=$dir?>/t.gif border=0 height=8><br>
 <table width=<?=$width?> cellspacing=1 cellpadding=4>
 <col width=100></col><col width=8></col><col width=></col><col width=100></col>
 <tr valign=top bgcolor=white>
@@ -23,4 +23,4 @@
 	<td align=right><font class=list_eng><?=date("Y-m-d",$c_data['reg_date'])?><br><?=date("H:i:s",$c_data['reg_date'])?></font><br><?=$a_del?><img src=<?=$dir?>/del.gif border=0 valign=absmiddle></a></td>
 </tr>
 </table>
-<img src=/images/t.gif border=0 height=8><br>
+<img src=<?=$dir?>/t.gif border=0 height=8><br>

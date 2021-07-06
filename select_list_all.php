@@ -1,7 +1,7 @@
 <?php
 	include "lib.php";
-	if(!$connect) $connect=dbconn();
-	$result=mysql_query("select name from $admin_table order by name");
+	if(!isset($connect)) $connect=dbconn();
+	$result=zb_query("select name from $admin_table order by name");
 
 	// 멤버 정보 구해오기;;; 멤버가 있을때
 	$member=member_info();

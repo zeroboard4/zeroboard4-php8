@@ -1,7 +1,7 @@
 <?php
 	include "lib.php";
 
-	if(!$id&&!$group_no) Error("게시판 이름이나 그룹번호를 지정하여 주셔야 합니다.<br><br>(login.php?id=게시판이름   또는  login.php?group_no=번호)","");
+	if(!isset($id)&&!isset($group_no)) Error("게시판 이름이나 그룹번호를 지정하여 주셔야 합니다.<br><br>(login.php?id=게시판이름   또는  login.php?group_no=번호)","");
 
 	$connect=dbConn();
 
@@ -19,7 +19,7 @@
 
 	} else {
 
-		if($group_no) $group=mysql_fetch_array(mysql_query("select * from $group_table where no='$group_no'"));
+		if($group_no) $group=mysql_fetch_array(zb_query("select * from $group_table where no='$group_no'"));
 		if(!$group['no']) Error("지정된 그룹이 존재하지 않습니다");
 	}
 
@@ -48,21 +48,21 @@
 </script>
 
 <form method=post action=login_check.php onsubmit="return check_submit();" name=login>
-<input type=hidden name=auto_login value=<?php if(!$autologin['ok'])echo"0";else echo"1"?>>
-<input type=hidden name=page value=<?=$page?>>
-<input type=hidden name=id value=<?=$id?>>
-<input type=hidden name=no value=<?=$no?>>
-<input type=hidden name=select_arrange value=<?=$select_arrange?>>
-<input type=hidden name=desc value=<?=$desc?>>
-<input type=hidden name=page_num value=<?=$page_num?>>
-<input type=hidden name=keyword value="<?=$keyword?>">
-<input type=hidden name=category value="<?=$category?>">
-<input type=hidden name=sn value="<?=$sn?>">
-<input type=hidden name=ss value="<?=$ss?>">
-<input type=hidden name=sc value="<?=$sc?>">
-<input type=hidden name=mode value="<?=$mode?>">
-<input type=hidden name=s_url value="<?=$s_url?>">
-<input type=hidden name=referer value="<?=$referer?>">
+<input type=hidden name=auto_login value=<?php if(!isset($autologin['ok']))echo"0";else echo"1"?>>
+<input type=hidden name=page value=<?=isset($page)?$page:''?>>
+<input type=hidden name=id value=<?=isset($id)?$id:''?>>
+<input type=hidden name=no value=<?=isset($no)?$no:''?>>
+<input type=hidden name=select_arrange value=<?=isset($select_arrange)?$select_arrange:''?>>
+<input type=hidden name=desc value=<?=isset($desc)?$desc:''?>>
+<input type=hidden name=page_num value=<?=isset($page_num)?$page_num:''?>>
+<input type=hidden name=keyword value="<?=isset($keyword)?$keyword:''?>">
+<input type=hidden name=category value="<?=isset($category)?$category:''?>">
+<input type=hidden name=sn value="<?=isset($sn)?$sn:''?>">
+<input type=hidden name=ss value="<?=isset($ss)?$ss:''?>">
+<input type=hidden name=sc value="<?=isset($sc)?$sc:''?>">
+<input type=hidden name=mode value="<?=isset($mode)?$mode:''?>">
+<input type=hidden name=s_url value="<?=isset($s_url)?$s_url:''?>">
+<input type=hidden name=referer value="<?=isset($referer)?$referer:''?>">
 
 <?php
 	if($id) include $file;
@@ -72,6 +72,6 @@
 
 <?php
 	foot();
-	@mysql_close($connect);
+	mysql_close($connect);
 ?>
 

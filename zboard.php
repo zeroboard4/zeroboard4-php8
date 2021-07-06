@@ -10,13 +10,14 @@
  **************************************************************************/
 
 // 사용권한 체크
+	if(!isset($no)) $no = '';
 	if($setup['grant_list']<$member['level'] && !$is_admin) Error("사용권한이 없습니다","login.php?id=$id&page=$page&category=$category&sn=$sn&ss=$ss&sc=$sc&keyword=$keyword&no=$no&s_url=".urlencode($REQUEST_URI));
 
 // 검색조건이 있을때 : 상황 -> 카테고리 선택, Use_Showreply 사용, 또는 검색어로 검색을 할때
-	if($s_que) {
+	if(isset($s_que)) {
 		$_dbTimeStart = getmicrotime();
 		$que="select * from $t_board"."_$id $s_que order by $select_arrange $desc limit $start_num, $page_num";
-		$result=mysql_query($que,$connect) or Error(mysql_error());
+		$result=zb_query($que,$connect) or Error(mysql_error());
 		$_dbTime += getmicrotime()-$_dbTimeStart;
 	}
 
@@ -33,7 +34,7 @@
 					$start_num=$start_num-($sum-$division_data['num']);
 					$_dbTimeStart = getmicrotime();
 					$que="select * from $t_board"."_$id where division='$division' and headnum<0 order by headnum,arrangenum limit $start_num, $page_num";
-					$result=mysql_query($que) or error(mysql_error());
+					$result=zb_query($que) or error(mysql_error());
 					$_dbTime += getmicrotime()-$_dbTimeStart;
 					$check1=1;
 	
@@ -47,7 +48,7 @@
 							$minus=$page_num-$returnNum;
 							$_dbTimeStart = getmicrotime();
 							$que2="select * from $t_board"."_$id where division=$division and headnum!=0 order by headnum,arrangenum limit $minus";
-							$result2=mysql_query($que2) or error(mysql_error());
+							$result2=zb_query($que2) or error(mysql_error());
 							$_dbTime += getmicrotime()-$_dbTimeStart;
 							$check2=1;
 							break;
@@ -61,7 +62,7 @@
 		else {
 			$que="select * from $t_board"."_$id $s_que order by $select_arrange $desc $add_on limit $start_num, $page_num";
 			$_dbTimeStart = getmicrotime();
-			$result=mysql_query($que,$connect) or Error(mysql_error());
+			$result=zb_query($que,$connect) or Error(mysql_error());
 			$_dbTime += getmicrotime()-$_dbTimeStart;
 		}
 	}
@@ -69,7 +70,7 @@
 // 관리자일때는 게시판 글 옮기기때문에 게시판 리스트를 뽑아옴;;
 	if($is_admin) {
 		$_dbTimeStart = getmicrotime();
-		$board_result=mysql_query("select no,name from $admin_table where no!='$setup[no]'");
+		$board_result=zb_query("select no,name from $admin_table where no!='$setup[no]'");
 		$_dbTime += getmicrotime()-$_dbTimeStart;
 	}
 
@@ -82,6 +83,8 @@
 	$show_page_num=$setup['page_num']; // 한번에 보일 페이지 갯수
 	$start_page=(int)(($page-1)/$show_page_num)*$show_page_num;
 	$i=1;
+	if(!isset($sn1)) $sn1='';
+	if(!isset($no)) $no='';
 
 	$a_1_prev_page= "<Zeroboard ";
 	$a_1_next_page= "<Zeroboard ";
@@ -114,9 +117,9 @@
 	}
 
 	// 검색시 Divsion 페이지 이동 표시
-	if($use_division) {
-		if($prevdivpage&&!$prev_page_exists) $a_div_prev_page="<a onfocus=blur() href='$PHP_SELF?id=$id&&select_arrange=$select_arrange&desc=$desc&category=$category&sn=$sn&ss=$ss&sc=$sc&keyword=$keyword&sn1=$sn1&divpage=$prevdivpage'>[이전 검색]</a>...";
-		if($nextdivpage&&!$next_page_exists) $a_div_next_page="...<a onfocus=blur() href='$PHP_SELF?id=$id&&select_arrange=$select_arrange&desc=$desc&category=$category&sn=$sn&ss=$ss&sc=$sc&keyword=$keyword&sn1=$sn1&divpage=$nextdivpage'>[계속 검색]</a>";
+	if(isset($use_division)) {
+		if(isset($prevdivpage)&&!isset($prev_page_exists)) $a_div_prev_page="<a onfocus=blur() href='$PHP_SELF?id=$id&&select_arrange=$select_arrange&desc=$desc&category=$category&sn=$sn&ss=$ss&sc=$sc&keyword=$keyword&sn1=$sn1&divpage=$prevdivpage'>[이전 검색]</a>..."; else $a_div_prev_page='';
+		if(isset($nextdivpage)&&!isset($next_page_exists)) $a_div_next_page="...<a onfocus=blur() href='$PHP_SELF?id=$id&&select_arrange=$select_arrange&desc=$desc&category=$category&sn=$sn&ss=$ss&sc=$sc&keyword=$keyword&sn1=$sn1&divpage=$nextdivpage'>[계속 검색]</a>"; else $a_div_next_page='';
 		$print_page = $a_div_prev_page.$print_page.$a_div_next_page;
 
 	}
@@ -174,7 +177,7 @@
 
 // 상단 현황 부분 출력 
 	include "$dir/setup.php";
-	$_skinTime += getmicrotime()-$_skinTimeStart;
+	$_skinTime = isset($_skinTime) ? $_skinTime+(getmicrotime()-$_skinTimeStart) : getmicrotime()-$_skinTimeStart;
 
 // 현재 선택된 데이타가 있을때, 즉 $no 가 있을때 데이타 가져옴
 	if($no&&$setup['use_alllist']) {
@@ -184,16 +187,18 @@
 
 // 리스트의 상단 부분 출력
 	$_skinTimeStart = getmicrotime();
+	if(!isset($hide_cart_start)) $hide_cart_start='';
+	if(!isset($hide_cart_end)) $hide_cart_end='';
 	include $dir."/list_head.php";
 	$_skinTime += getmicrotime()-$_skinTimeStart;
 
 //가상번호를 정함
 	$loop_number=$total-($page-1)*$page_num;
-	if($setup['use_alllist']&&!$prev_no) $prev_no=$no;
+	if($setup['use_alllist']&&!isset($prev_no)) $prev_no=$no;
 
 // 뽑혀진 데이타만큼 출력함
 	if(isset($result)) {
-		while($data=@mysql_fetch_array($result)) {
+		while($data=mysql_fetch_array($result)) {
 			list_check($data);
 			$_skinTimeStart = getmicrotime();
 			if($data['headnum']>-2000000000) {include $dir."/list_main.php";}
@@ -204,7 +209,7 @@
 	}
 
 	if(isset($check2)) {
-		while($data=@mysql_fetch_array($result2)) {
+		while($data=mysql_fetch_array($result2)) {
 			list_check($data);
 			$_skinTimeStart = getmicrotime();
 			if($data['headnum']>-2000000000) {include $dir."/list_main.php";}
@@ -219,7 +224,7 @@
 	include $dir."/list_foot.php";
 	$_skinTime += getmicrotime()-$_skinTimeStart;
 
-	if($zbLayer) {
+	if(isset($zbLayer)) {
 		$_skinTimeStart = getmicrotime();
 		echo "\n<script>".$zbLayer."\n</script>";
 		unset($zbLayer);

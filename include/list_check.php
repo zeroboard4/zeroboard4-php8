@@ -1,6 +1,6 @@
 <?php
 
-	if($_list_check_included) return;
+	if(isset($_list_check_included)) return;
 	$_list_check_included = true;
 
 /*********************************************************************************************
@@ -24,6 +24,7 @@ function list_check(&$data,$view_check=0) {
 	if($setup['use_status']) {
 		$tmpData = explode("\n",stripslashes($data['memo']));
 		$totalCommentLineNum = count($tmpData);
+		$showCommentStr_tail = '';
 		if($totalCommentLineNum>10) {
 			$showCommentStr_tail.="\n".($totalCommentLineNum - 10)." lines more... (total : $totalCommentLineNum lines)";
 			$tmpData_Count = 10;
@@ -35,7 +36,7 @@ function list_check(&$data,$view_check=0) {
 		}
 		$showCommentStr = str_replace("'","",$showCommentStr);
 		$showCommentStr = str_replace("\"","",$showCommentStr);
-		$showCommentStr .= $showCommentStr_tail;
+		if(isset($showCommentStr_tail)) $showCommentStr .= $showCommentStr_tail;
 	}	
 
 	$_zbCount = check_zbLayer($data);
@@ -66,7 +67,8 @@ function list_check(&$data,$view_check=0) {
 	$hit=$data['hit'];  // 조회수
 	$vote=$data['vote'];  // 투표수
 	$comment_num="[".$data['total_comment']."]"; // 간단한 답글 수
-	if($data['total_comment']==0) $comment_num="";
+	if($data['total_comment']==0) $comment_num='';
+	if(!isset($addShowComment)) $addShowComment='';
 	if($setup['use_alllist']) $view_file="zboard.php"; else $view_file="view.php";
 	// 제목에 링크 거는 부분;
 	if($member['level']<=$setup['grant_view']||$is_admin) {
@@ -175,6 +177,7 @@ function list_check(&$data,$view_check=0) {
 	else $a_reply="<Zeroboard";
 
 	// 삭제버튼
+	if(!isset($member['no'])) $member['no']=null;
 	if(($is_admin||$member['level']<=$setup['grant_delete']||$data['ismember']==$member['no']||!$data['ismember'])&&!$data['child']) $a_delete="<a href='delete.php?$href$sort&no=$data[no]'>"; 
 	else $a_delete="<Zeroboard";
 

@@ -16,7 +16,7 @@
 // 현재 선택된 데이타가 있을때, 즉 $no 가 있을때 데이타 가져옴
 	unset($data);
 	$_dbTimeStart = getmicrotime();
-	$data=mysql_fetch_array(mysql_query("select * from  $t_board"."_$id  where no='$no'"));
+	$data=mysql_fetch_array(zb_query("select * from  $t_board"."_$id  where no='$no'"));
 	$_dbTime += getmicrotime()-$_dbTimeStart;
 
 	if(!$data['no']) Error("선택하신 게시물이 존재하지 않습니다","zboard.php?$href$sort");
@@ -24,22 +24,22 @@
 // 이전글과 이후글의 데이타를 구함;
 	if(!$setup['use_alllist']) {	
 		$_dbTimeStart = getmicrotime();
-		if($data['prev_no']) $prev_data=mysql_fetch_array(mysql_query("select * from  $t_board"."_$id  where no='$data[prev_no]'"));
-		if($data['next_no']) $next_data=mysql_fetch_array(mysql_query("select * from  $t_board"."_$id  where no='$data[next_no]'"));
+		if($data['prev_no']) $prev_data=mysql_fetch_array(zb_query("select * from  $t_board"."_$id  where no='$data[prev_no]'"));
+		if($data['next_no']) $next_data=mysql_fetch_array(zb_query("select * from  $t_board"."_$id  where no='$data[next_no]'"));
 		$_dbTime += getmicrotime()-$_dbTimeStart;
 	}
 
 // 모든 목록 보기가 아닐때 관련글을 모두 읽어옴;;
 	if(!$setup['use_alllist']) {	
 		$_dbTimeStart = getmicrotime();
-		$check_ref=mysql_fetch_array(mysql_query("select count(*) from $t_board"."_$id where division='$data[division]' and headnum='$data[headnum]'"));
-		if($check_ref[0]>1) $view_result=mysql_query("select * from $t_board"."_$id  where division='$data[division]' and headnum='$data[headnum]' order by headnum desc,arrangenum");
+		$check_ref=mysql_fetch_array(zb_query("select count(*) from $t_board"."_$id where division='$data[division]' and headnum='$data[headnum]'"));
+		if($check_ref[0]>1) $view_result=zb_query("select * from $t_board"."_$id  where division='$data[division]' and headnum='$data[headnum]' order by headnum desc,arrangenum");
 		$_dbTime += getmicrotime()-$_dbTimeStart;
 	}
 
 // 간단한 답글의 데이타를 가지고옴;;
 	$_dbTimeStart = getmicrotime();
-	$view_comment_result=mysql_query("select * from $t_comment"."_$id where parent='$no' order by no asc");
+	$view_comment_result=zb_query("select * from $t_comment"."_$id where parent='$no' order by no asc");
 	$_dbTime += getmicrotime()-$_dbTimeStart;
 
 // zboard.php에서 인크루드시 대상 위치를 zboard.php로 설정
@@ -49,11 +49,11 @@
 // 비밀글이고 패스워드가 틀리고 관리자가 아니면 에러 표시
 	if($data['is_secret']&&!$is_admin&&$data['ismember']!=$member['no']&&$member['level']>$setup['grant_view_secret']) {
 		if($member['no']) {
-			$secret_check=mysql_fetch_array(mysql_query("select count(*) from $t_board"."_$id where headnum='$data[headnum]' and ismember='$member[no]'"));
+			$secret_check=mysql_fetch_array(zb_query("select count(*) from $t_board"."_$id where headnum='$data[headnum]' and ismember='$member[no]'"));
 			if(!$secret_check[0]) error("비밀글을 열람할 권한이 없습니다");
 		} else {
-			$secret_check=mysql_fetch_array(mysql_query("select count(*) from $t_board"."_$id where headnum='$data[headnum]' and password=password('$password')"));
-			if(!$secret_check[0]&&strlen(get_password("a"))>=41) $secret_check=mysql_fetch_array(mysql_query("select count(*) from $t_board"."_$id where headnum='$data[headnum]' and password=old_password('$password')"));
+			$secret_check=mysql_fetch_array(zb_query("select count(*) from $t_board"."_$id where headnum='$data[headnum]' and password=password('$password')"));
+			if(!$secret_check[0]&&strlen(get_password("a"))>=41) $secret_check=mysql_fetch_array(zb_query("select count(*) from $t_board"."_$id where headnum='$data[headnum]' and password=old_password('$password')"));
 			if(!$secret_check[0]) {
 				head();
 				$a_list="<a onfocus=blur() href='zboard.php?$href$sort'>";    
@@ -72,9 +72,9 @@
 	}
 
 // 현재글의 HIT수를 올림;;
-	if(strpos($_SESSION['zb_hit'],$setup['no']."_".$no) === false) {
+	if(isset($_SESSION['zb_hit']) && strpos($_SESSION['zb_hit'],$setup['no']."_".$no) === false) {
 		$_dbTimeStart = getmicrotime();
-		mysql_query("update $t_board"."_$id set hit=hit+1 where no='$no'");
+		zb_query("update $t_board"."_$id set hit=hit+1 where no='$no'");
 		$_dbTime += getmicrotime()-$_dbTimeStart;
 		$hitStr=",".$setup['no']."_".$no;
 		
@@ -95,6 +95,9 @@
 		$temp_name = get_private_icon($prev_data['ismember'], "2");
 		if($temp_name) $prev_name="<img src='$temp_name' border=0 align=absmiddle>";
 
+		if(!isset($show_ip)) $show_ip = '';
+		if(!isset($next_email)) $next_email = '';
+		if(!isset($prev_email)) $prev_email = '';
 		if($setup['use_formmail']&&check_zbLayer($prev_data)) {
 			$prev_name = "<span $show_ip onMousedown=\"ZB_layerAction('zbLayer$_zbCheckNum','visible')\" style=cursor:hand>$prev_name</span>";
 		} else {
@@ -137,7 +140,9 @@
 
 		$temp_name = get_private_icon($next_data['ismember'], "2");
 		if($temp_name) $next_name="<img src='$temp_name' border=0 align=absmiddle>";
-
+		
+		if(!isset($show_ip)) $show_ip = '';
+		if(!isset($next_email)) $next_email = '';
 		if($setup['use_formmail']&&check_zbLayer($next_data)) {
 			$next_name = "<span $show_ip onMousedown=\"ZB_layerAction('zbLayer$_zbCheckNum','visible')\" style=cursor:hand>$next_name</span>";
 		} else {
@@ -183,7 +188,7 @@
 /****************************************************************************************
  * 버튼 정리
  ***************************************************************************************/
-
+	if(!isset($sn1)) $sn1 = '';
 // 메일주소가 있으면 이름에 메일 링크
 	if(!isBlank($email)||$data['ismember']) {
 		if(!$setup['use_formmail']) $a_email="<a onfocus=blur() href='mailto:$email'>";
@@ -209,39 +214,42 @@
 	if(($is_admin||$member['level']<=$setup['grant_delete']||$data['ismember']==$member['no']||!$data['ismember'])&&$no) $a_modify="<a onfocus=blur() href='write.php?$href$sort&no=$no&mode=modify'>"; else $a_modify="<Zeroboard ";
 
 // 파일링크
-	if($file_name1) $a_download1="<a onfocus=blur() href='download.php?$href$sort&no=$no&file=1'>"; else $a_download1="<Zeroboard ";
-	if($file_name2) $a_download2="<a onfocus=blur() href='download.php?$href$sort&no=$no&file=2'>"; else $a_download2="<Zeroboard ";
+	if(!empty($file_name1)) $a_download1="<a onfocus=blur() href='download.php?$href$sort&no=$no&file=1'>"; else $a_download1="<Zeroboard ";
+	if(!empty($file_name2)) $a_download2="<a onfocus=blur() href='download.php?$href$sort&no=$no&file=2'>"; else $a_download2="<Zeroboard ";
 
 // 추천버튼
-	if(strpos($_SESSION['zb_vote'],$setup['no']."_".$no) === false) $a_vote="<a onfocus=blur() href='vote.php?$href$sort&no=$no'>";
+	$votechk = isset($_SESSION['zb_vote']) ? $_SESSION['zb_vote'] : '';
+	if(strpos($votechk,$setup['no']."_".$no) === false) $a_vote="<a onfocus=blur() href='vote.php?$href$sort&no=$no'>";
 	else $a_vote = "<Zeroboard ";
 
 // 사이트 링크를 나타나게 하는 변수;;
-	if(!$sitelink1) {$hide_sitelink1_start="<!--";$hide_sitelink1_end="-->";}
-	if(!$sitelink2) {$hide_sitelink2_start="<!--";$hide_sitelink2_end="-->";}
+	if(empty($sitelink1)) {$hide_sitelink1_start="<!--";$hide_sitelink1_end="-->";} else {$hide_sitelink1_start='';$hide_sitelink1_end='';}
+	if(empty($sitelink2)) {$hide_sitelink2_start="<!--";$hide_sitelink2_end="-->";} else {$hide_sitelink2_start='';$hide_sitelink2_end='';}
 
 // 파일 다운로드를 나타나게 하는 변수;;
-	if(!$file_name1) {$hide_download1_start="<!--";$hide_download1_end="-->";}
-	if(!$file_name2) {$hide_download2_start="<!--";$hide_download2_end="-->";}
+	if(empty($file_name1)) {$hide_download1_start="<!--";$hide_download1_end="-->";} else {$hide_download1_start='';$hide_download1_end='';}
+	if(empty($file_name2)) {$hide_download2_start="<!--";$hide_download2_end="-->";} else {$hide_download2_start='';$hide_download2_end='';}
  
 // 홈페이지를 나타나게 하는 변수
-	if(!$data['homepage']) {$hide_homepage_start="<!--";$hide_homepage_end="-->";}
+	if(empty($data['homepage'])) {$hide_homepage_start="<!--";$hide_homepage_end="-->";} else {$hide_homepage_start='';$hide_homepage_end='';}
 
 // E-MAIL 을 나타나게 하는 변수
-	if(!$data['email']) {$hide_email_start="<!--";$hide_email_end="-->";}
+	if(empty($data['email'])) {$hide_email_start="<!--";$hide_email_end="-->";} else {$hide_email_start='';$hide_email_end='';}
  
 // 코멘트를 안 보이게 하는 변수;;
-	if(!$setup['use_comment'])
-	{$hide_comment_start="<!--"; $hide_comment_end="-->";}
+	if(empty($setup['use_comment']))
+	{$hide_comment_start='<!--'; $hide_comment_end='-->';}
+	else {$hide_comment_start=''; $hide_comment_end='';}
 
 // 회원로그인이 되어 있으면 코멘트 비밀번호를 안 나타나게;;
+	$_SESSION['zb_writer_name'] = isset($_SESSION['zb_writer_name']) ? $_SESSION['zb_writer_name'] : '';
 	if($member['no']) {
 		$c_name=$member['name']; $hide_c_password_start="<!--"; $hide_c_password_end="-->"; 
 		$temp_name = get_private_icon($member['no'], "2");
 		if($temp_name) $c_name="<img src='$temp_name' border=0 align=absmiddle>";
 		$temp_name = get_private_icon($member['no'], "1");
 		if($temp_name) $c_name="<img src='$temp_name' border=0 align=absmiddle>".$c_name;
-	} else $c_name="<input type=text name=name size=8 maxlength=10 class=input value=\"".$HTTP_SESSION_VARS['zb_writer_name']."\">";
+	} else $c_name="<input type=text name=name size=8 maxlength=10 class=input value=\"".$_SESSION['zb_writer_name']."\">";
 
 
 /****************************************************************************************
@@ -254,7 +262,7 @@
 	if(!isset($_view_included)) {
 		$_skinTimeStart = getmicrotime();
 		include "$dir/setup.php";
-		$_skinTime += getmicrotime()-$_skinTimeStart;
+		$_skinTime = isset($_skinTime) ? $_skinTime+(getmicrotime()-$_skinTimeStart) : getmicrotime()-$_skinTimeStart;
 	}
 
 
@@ -294,6 +302,9 @@
 			flush();
 		}
 		if($member['level']<=$setup['grant_comment']) {
+			if(!isset($hide_c_password_start)) $hide_c_password_start = '';
+			if(!isset($hide_c_password_end)) $hide_c_password_end = '';
+			if(!isset($mode)) $mode = '';
 			$_skinTimeStart = getmicrotime();
 			include "$dir/view_write_comment.php";
 			$_skinTime += getmicrotime()-$_skinTimeStart;
@@ -306,29 +317,30 @@
 	$_skinTime += getmicrotime()-$_skinTimeStart;
 
 // 관련글을 출력
-	if($check_ref[0]>1) {
+	if(isset($check_ref)) {
+		if($check_ref[0]>1) {
 
-		$_skinTimeStart = getmicrotime();
-		include "$dir/view_list_head.php";
-		$_skinTime += getmicrotime()-$_skinTimeStart;
-
-		while($data=mysql_fetch_array($view_result)) {
-			// 데이타 정렬
-			list_check($data);
-
-			if($data['no']==$no) $number="<img src=$dir/arrow.gif border=0>"; else $number="&nbsp;";
-	
-			// 목록을 출력하는 부분
 			$_skinTimeStart = getmicrotime();
-			include $dir."/view_list_main.php";
+			include "$dir/view_list_head.php";
+			$_skinTime += getmicrotime()-$_skinTimeStart;
+
+			while($data=mysql_fetch_array($view_result)) {
+				// 데이타 정렬
+				list_check($data);
+
+				if($data['no']==$no) $number="<img src=$dir/arrow.gif border=0>"; else $number="&nbsp;";
+	
+				// 목록을 출력하는 부분
+				$_skinTimeStart = getmicrotime();
+				include $dir."/view_list_main.php";
+				$_skinTime += getmicrotime()-$_skinTimeStart;
+			}
+
+			$_skinTimeStart = getmicrotime();
+			include "$dir/view_list_foot.php";
 			$_skinTime += getmicrotime()-$_skinTimeStart;
 		}
-
-		$_skinTimeStart = getmicrotime();
-		include "$dir/view_list_foot.php";
-		$_skinTime += getmicrotime()-$_skinTimeStart;
 	}
-
 	
 
 // layer 출력

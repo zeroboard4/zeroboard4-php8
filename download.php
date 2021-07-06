@@ -15,12 +15,12 @@
 
 // 현재글의 Download 수를 올림;;
     if($filenum==1) {
-        mysql_query("update `$t_board"."_$id` set download1=download1+1 where no='$no'");
+        zb_query("update `$t_board"."_$id` set download1=download1+1 where no='$no'");
     } else {
-        mysql_query("update `$t_board"."_$id` set download2=download2+1 where no='$no'");
+        zb_query("update `$t_board"."_$id` set download2=download2+1 where no='$no'");
     }
 
-	$data=mysql_fetch_array(mysql_query("select * from  `$t_board"."_$id` where no='$no'"));
+	$data=mysql_fetch_array(zb_query("select * from  `$t_board"."_$id` where no='$no'"));
   
 // 다운로드;;
 	$filename="file_name".$filenum;
@@ -28,7 +28,7 @@
 	download_file($data[$filename], $data[$sfilename]);
 	
 	if($connect) {
-		@mysql_close($connect);
+		mysql_close($connect);
 		unset($connect);
 	}
 ?>

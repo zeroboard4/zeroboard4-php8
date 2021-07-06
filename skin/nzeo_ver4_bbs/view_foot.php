@@ -24,7 +24,7 @@ if(!preg_match("/Zeroboard/i",$a_vote)) $a_vote = str_replace(">","><font class=
 
 </table>
 
-<img src=/images/t.gif border=0 height=8><br>
+<img src=<?=$dir?>/t.gif border=0 height=8><br>
 
 
 

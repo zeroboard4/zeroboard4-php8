@@ -4,7 +4,7 @@
  **************************************************************************/
 	include_once "_head.php";
 
-	if(!$id) die("<Script>\nalert('게시판 이름을 입력하셔야 합니다');\nwindow.close();\n</Script>");
+	if(!isset($id)) die("<Script>\nalert('게시판 이름을 입력하셔야 합니다');\nwindow.close();\n</Script>");
 
 	$setup['header']="";
 	$setup['footer']="";
@@ -66,7 +66,7 @@
 	}
 
 // 입력된 이미지가 있으면 upload 시킴
-	if($exec=="upload") {
+	if(isset($exec) && $exec=="upload") {
 		if(!eregi($HTTP_HOST,$HTTP_REFERER)) Error("정상적으로 업로드를 하여 주시기 바랍니다.","window.close");
 		if(!eregi("image_box.php",$HTTP_REFERER)) Error("정상적으로 업로드를 하여 주시기 바랍니다.","window.close");
 		if(getenv("REQUEST_METHOD") == 'GET' ) Error("정상적으로 업로드를 하여 주시기 바랍니다","window.close");
@@ -89,7 +89,7 @@
 
 				if($filesize) {
 					if(!is_uploaded_file($upload[$i])) Error("정상적인 방법으로 업로드 해주세요","window.close");
-					if(!eregi("\.gif\$",$upload_name[$i])&&!eregi("\.jpg\$",$upload_name[$i])) Error("이미지는 gif 또는 jpg 파일을 올려주세요");
+					if(!eregi("\.gif\$",$upload_name[$i])&&!eregi("\.jpg\$",$upload_name[$i])&&!eregi("\.jpeg\$",$upload_name[$i])&&!eregi("\.png\$",$upload_name[$i])) Error("이미지는 gif, png 또는 jpg 파일을 올려주세요");
 					$size=GetImageSize($upload[$i]);
 					if(!$size[2]) Error("이미지 파일을 올려주시기 바랍니다");
 					if(!@move_uploaded_file($upload[$i] , $path."/".$upload_name[$i])) Error("이미지 업로드가 제대로 되지 않았습니다");
@@ -104,7 +104,7 @@
 	}
 
 // 삭제 명령 실행시
-	if($exec=="delete"&&strlen($no)&&$id) {
+	if(isset($exec) && $exec=="delete"&&strlen($no)&&$id) {
 		if(!z_unlink($path."/".$image_list[$no])) die("에러"); 
 		movepage("$PHP_SELF?id=$id&image_page=$image_page");
 		exit();
@@ -118,7 +118,7 @@
 	$total_page=(int)(($total-1)/$listnum)+1; // 전체 페이지 구함
 
 // 페이지 지정
-	if(!$image_page) $image_page = 1;
+	if(empty($image_page)) $image_page = 1;
 
 // 페이지가 전체 페이지보다 크면 페이지 번호 바꿈
 	if($image_page>$total_page) $image_page=$total_page; 

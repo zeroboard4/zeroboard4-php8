@@ -1,10 +1,11 @@
 <?php
-  $data=mysql_fetch_array(mysql_query("select * from $group_table where no='$group_no'"));
+  $data=mysql_fetch_array(zb_query("select * from $group_table where no='$group_no'"));
   $check_open[$data['is_open']]="checked";
   $check_join[$data['use_join']]="checked";
 
   // 현재 그룹데이타 뽑아옴;;;
-  $temp=mysql_query("select no,name from $group_table where no!='$group_no'");
+  $temp=zb_query("select no,name from $group_table where no!='$group_no'");
+  $group_option='';
   while($temp2=mysql_fetch_array($temp))
   {
    $group_option.="<option value='$temp2[no]'>$temp2[name]</option>";
@@ -17,6 +18,7 @@
 <form name=write method=post action=<?=$PHP_SELF?> enctype=multipart/form-data onsubmit="return confirm('삭제하시겠습니까?')">
 <input type=hidden name=exec value=del_group_ok>
 <input type=hidden name=group_no value=<?=$group_no?>>
+<input type=hidden name=csrf_token value=<?=generate_csrf_token()?>>
 
   <tr align=center><td bgcolor=bbbbbb colspan=2 height=25 style=font-family:Tahoma;font-size:8pt;>Group Name : <b><?=$data['name']?></b></td></tr>
   <tr align=center><td colspan=2 style=line-height:180%; bgcolor=#e0e0e0><br>

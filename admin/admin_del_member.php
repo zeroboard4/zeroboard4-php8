@@ -1,5 +1,5 @@
 <?php
-  $data=mysql_fetch_array(mysql_query("select * from $member_table where no='$no'"));
+  $data=mysql_fetch_array(zb_query("select * from $member_table where no='$no'"));
 ?>
 <table border=0 cellspacing=1 cellpadding=0 width=100% bgcolor=#b0b0b0>
   <tr height=30><td bgcolor=#3d3d3d colspan=2></td></tr>
@@ -10,9 +10,10 @@
 <input type=hidden name=group_no value=<?=$group_no?>>
 <input type=hidden name=exec2 value="del">
 <input type=hidden name=page value=<?=$page?>>
-   <input type=hidden name=href value=<?=$href?>>
+   <input type=hidden name=href value=<?=isset($href)?$href:''?>>
    <input type=hidden name=no value=<?=$no?>>
    <input type=hidden name=keyword value=<?=$keyword?>>
+   <input type=hidden name=csrf_token value=<?=generate_csrf_token()?>>
    
   <tr align=center><td bgcolor=bbbbbb colspan=2 height=25 style=font-family:Tahoma;font-size:8pt;></td></tr>
   <tr align=center><td colspan=2 style=line-height:180%; bgcolor=#e0e0e0><br>

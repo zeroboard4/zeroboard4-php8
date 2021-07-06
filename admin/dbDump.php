@@ -1,8 +1,9 @@
 <?php
 	function zbDB_getFields($tableName) {
 		global $connect;
-		$result = mysql_query("show fields from $tableName",$connect) or die(mysql_error());
+		$result = zb_query("show fields from $tableName",$connect) or die(mysql_error());
 		unset($query);
+		$query = '';
 		while($data=mysql_fetch_array($result)) {
 			$field = $data['Field'];
 			$type = " ".$data['Type'];
@@ -17,10 +18,11 @@
 
 	function zbDB_getKeys($tableName) {
 		global $connect;
-		$result = mysql_query("show keys from $tableName",$connect) or die(mysql_error());
+		$result = zb_query("show keys from $tableName",$connect) or die(mysql_error());
 		unset($query);
 		$i=0;
-		$toggle_name = "";
+		$toggle_name = '';
+		$query = '';
 		while($data=mysql_fetch_array($result)) {
 			if($data['Key_name']!="PRIMARY") {
 				$key_name = $data['Key_name'];
@@ -52,7 +54,8 @@
 
 	function zbDB_getDataList($tableName) {
 		global $connect;
-		$result = mysql_query("show fields from $tableName", $connect) or die(mysql_error());
+		$result = zb_query("show fields from $tableName", $connect) or die(mysql_error());
+		$field = '';
 		while($data=mysql_fetch_array($result)) {
 			$field .= $data['Field'].",";
 		}
@@ -61,9 +64,10 @@
 		$field_count = count($field_array);
 
 		$query = "\n";
-		$result = mysql_query("select $field from $tableName") or die(mysql_error());
+		$result = zb_query("select $field from $tableName") or die(mysql_error());
 		while($data=mysql_fetch_array($result)) {
 			unset($str);
+			$str = '';
 			for($i=0;$i<$field_count;$i++) {
 				$str .= " '".addslashes(stripslashes($data[$field_array[$i]]))."',";
 			}
@@ -85,7 +89,7 @@
 
 	function zbDB_All_down($dbname) {
 		global $connect;
-		$result = mysql_query("show table status from $dbname like 'zetyx%'",$connect) or die(mysql_error());
+		$result = zb_query("show table status from $dbname like 'zetyx%'",$connect) or die(mysql_error());
 		$i=0;
 		while($dbData=mysql_fetch_array($result)) {
 			$tableName = $dbData['Name'];
@@ -95,14 +99,14 @@
 	}
 
 	function zbDB_Header($filename) {
-@ini_set('zlib.output_compression','Off');
-@ini_set('output_buffering','Off');
-header("Content-Type: application/force-download");
-header("Pragma: public");
-header("Expires: 0");
-header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
-header("Cache-Control: private",false);
-header("Content-Disposition: attachment; filename=\"".$filename."\"");
-header("Content-Transfer-Encoding: binary");
+		@ini_set('zlib.output_compression','Off');
+		@ini_set('output_buffering','Off');
+		header("Content-Type: application/force-download");
+		header("Pragma: public");
+		header("Expires: 0");
+		header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+		header("Cache-Control: private",false);
+		header("Content-Disposition: attachment; filename=\"".$filename."\"");
+		header("Content-Transfer-Encoding: binary");
 	}
 ?>

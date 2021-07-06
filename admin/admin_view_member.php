@@ -4,25 +4,27 @@
  *************************************************************************/
 
 // 전체 그룹수와 현재 그룹의 정보를 추출
-	$tmpResult = mysql_fetch_array(mysql_query("select count(*) from $group_table"));
+	$tmpResult = mysql_fetch_array(zb_query("select count(*) from $group_table"));
 	$total_group_num = $tmpResult[0];
-	$group_data = mysql_fetch_array(mysql_query("select * from $group_table where no='$group_no'"));
+	$group_data = mysql_fetch_array(zb_query("select * from $group_table where no='$group_no'"));
 
-	$temp=mysql_fetch_array(mysql_query("select count(*) from $member_table where group_no='$group_no'"));
+	$temp=mysql_fetch_array(zb_query("select count(*) from $member_table where group_no='$group_no'"));
 	$total_member=$temp[0];
 
 // 검색어에 대해서 처리
 	$s_que="";
+	if(!isset($keykind)) $keykind='';
+	if(!isset($like)) $like='';
 	$href="&keykind=$keykind&like=$like";
 
 	if($total_group_num>1) $s_que = " where group_no = '$group_no' ";
 	
-	if(intval($level_search)>0) {
+	if(isset($level_search) && intval($level_search)>0) {
 		if($s_que) $s_que.=" and "; else $s_que=" where ";
 		$s_que.=" level='$level_search' ";
 		$href.="&level_search=$level_search";
 	}
-	if($keyword&&$keykind) {
+	if(!empty($keyword)&&!empty($keykind)) {
 		if($s_que) $s_que.=" and "; else $s_que=" where ";
 		if($keykind!="jumin") {
 			if($like) $s_que .= " $keykind like '%".$keyword."%' ";
@@ -34,23 +36,32 @@
 		$href.="&keyword=$keyword&keykind=$keykind&like=$like";
 	}
 
-	$temp=mysql_fetch_array(mysql_query("select count(*) from $member_table $s_que"));
+	$temp=mysql_fetch_array(zb_query("select count(*) from $member_table $s_que"));
 	$total=$temp[0];
   
 //페이지 구하는 부분
-	if(!$page_num)$page_num=10;
+	if(empty($page_num))$page_num=10;
 	$href.="&page_num=$page_num";
-	if(!$page) $page=1;
+	if(empty($page)) $page=1;
 	$start_num=($page-1)*$page_num;
 	$total_page=(int)(($total-1)/$page_num)+1;
 
 
 // 멤버정보를 구해옴
-	$result=@mysql_query("select * from $member_table $s_que order by no desc limit $start_num,$page_num",$connect) or Error(mysql_error(),"");
+	$result=zb_query("select * from $member_table $s_que order by no desc limit $start_num,$page_num",$connect) or Error(mysql_error(),"");
 
 //  앞에 붙는 가상번호
 	$number=$total-($page-1)*$page_num;
-
+	
+	if(!isset($page)) $page = '';
+	if(!isset($keykind)) $keykind = '';
+	if(!isset($keyword)) $keyword = '';
+	if(!isset($like)) $like = '';
+	if(!isset($group_no)) $group_no = '';
+	if(!isset($exec)) $exec = '';
+	if(!isset($page_num)) $page_num = '';
+	if(!isset($exec2)) $exec2 = '';
+	$csrftkn_member = generate_csrf_token();
 ?>
 
 <table border=0 cellspacing=1 cellpadding=0 width=100% bgcolor=#b0b0b0>
@@ -189,6 +200,7 @@
    <input type=hidden name=exec value=<?=$exec?>>
    <input type=hidden name=page_num value=<?=$page_num?>>
    <input type=hidden name=exec2 value="">
+   <input type=hidden name=csrf_token value=<?=$csrftkn_member?>>
 
 <?php
   while($data=mysql_fetch_array($result))
@@ -224,9 +236,9 @@
     <tr>
        <td width=20>&nbsp;</td>
        <td><img src=images/t.gif height=1><br><select name=movelevel><?php
-  $select[0]=" selected ";
+  //$select[0]=" selected ";
   for($i=1;$i<=10;$i++)
-  echo "<option value=$i $select[$i]>$i Level</option>";?></select></td><td><input type=button value='레벨변경' style=border-color:#b0b0b0;background-color:#3d3d3d;color:#ffffff;font-size:8pt;font-family:Tahoma;height:20px; onclick=move_all()>
+  echo "<option value=$i >$i Level</option>";?></select></td><td><input type=button value='레벨변경' style=border-color:#b0b0b0;background-color:#3d3d3d;color:#ffffff;font-size:8pt;font-family:Tahoma;height:20px; onclick=move_all()>
        </td><td><input type=button value='선택된 회원 삭제' style=border-color:#b0b0b0;background-color:#3d3d3d;color:#ffffff;font-size:8pt;font-family:Tahoma;height:20px; onclick=delete_all()></td>
 <?php
   if($member['is_admin']==1)
@@ -234,7 +246,7 @@
 ?>
        <td width=20>&nbsp;</td>
        <td><img src=images/t.gif height=1><br><select name=movegroup><?php
-  $temp_group=mysql_query("select * from $group_table where no!='$group_no'");
+  $temp_group=zb_query("select * from $group_table where no!='$group_no'");
   $i=0;
   $select[0]=" selected ";
   while($temp_data=mysql_fetch_array($temp_group))
@@ -265,6 +277,7 @@
 <input type=hidden name=group_no value=<?=$group_no?>>
 <input type=hidden name=exec value=<?=$exec?>>
 <input type=hidden name=cart value=''>
+<input type=hidden name=csrf_token value=<?=$csrftkn_member?>>
 <tr>
 	<td rowspan=2 align=left>
 		<input type=button value="메일링 리스트 발송" style=line-height:150%;border-color:#b0b0b0;background-color:#3d3d3d;color:#ffffff;font-size:8pt;font-family:Tahoma;height:50px; onclick="sendmail();">&nbsp;
@@ -275,6 +288,7 @@
   		<select name=level_search>
   			<option>레벨검색</option>
 <?php
+	for($i=1;$i<=10;$i++) $check[$i]='';
 	$check[$level_search]="selected";
 	for($i=1;$i<=10;$i++) echo "<option value=$i $check[$i]>$i Level</option>";
 ?>

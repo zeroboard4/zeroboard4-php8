@@ -40,9 +40,11 @@
 	}
 
 // 패스워드를 암호화
-	if($password) {
-		$temp=mysql_fetch_array(mysql_query("select password('$password')"));
+	if(isset($password)) {
+		$temp=mysql_fetch_array(zb_query("select password('$password')"));
 		$password=$temp[0];   
+	} else {
+		$password = '';
 	}
 
 // 관리자이거나 HTML허용레벨이 낮을때 태그의 금지유무를 체크
@@ -65,11 +67,11 @@
 	$memo=addslashes($memo);
 
 // 코멘트의 최고 Number 값을 구함 (중복 체크를 위해서)
-	$max_no=mysql_fetch_array(mysql_query("select max(no) from $t_comment"."_$id where parent='$no'"));
+	$max_no=mysql_fetch_array(zb_query("select max(no) from $t_comment"."_$id where parent='$no'"));
 
 // 같은 내용이 있는지 검사;;
 	if(!$is_admin) {
-		$temp=mysql_fetch_array(mysql_query("select count(*) from $t_comment"."_$id where memo='$memo' and no='$max_no[0]'"));
+		$temp=mysql_fetch_array(zb_query("select count(*) from $t_comment"."_$id where memo='$memo' and no='$max_no[0]'"));
 		if($temp[0]>0) Error("같은 내용의 글은 등록할수가 없습니다");
 	}
 
@@ -90,23 +92,21 @@
 	$parent=$no;
 
 // 해당글이 있는 지를 검사
-	$check = mysql_fetch_array(mysql_query("select count(*) from $t_board"."_$id where no = '$no'", $connect));
+	$check = mysql_fetch_array(zb_query("select count(*) from $t_board"."_$id where no = '$no'", $connect));
 	if(!$check[0]) Error("원본 글이 존재하지 않습니다.");
 
 // 코멘트 입력
-	mysql_query("insert into $t_comment"."_$id (parent,ismember,name,password,memo,reg_date,ip) values ('$parent','$member[no]','$name','$password','$memo','$reg_date','$REMOTE_ADDR')") or error(mysql_error());
+	zb_query("insert into $t_comment"."_$id (parent,ismember,name,password,memo,reg_date,ip) values ('$parent','$member[no]','$name','$password','$memo','$reg_date','$REMOTE_ADDR')") or error(mysql_error());
 
 
 // 코멘트 갯수를 구해서 정리
-	$total=mysql_fetch_array(mysql_query("select count(*) from $t_comment"."_$id where parent='$no'"));
-	mysql_query("update $t_board"."_$id set total_comment='$total[0]' where no='$no'") or error(mysql_error());
-
+	$total=mysql_fetch_array(zb_query("select count(*) from $t_comment"."_$id where parent='$no'"));
+	zb_query("update $t_board"."_$id set total_comment='$total[0]' where no='$no'") or error(mysql_error());
 
 // 회원일 경우 해당 해원의 점수 주기
-	@mysql_query("update $member_table set point2=point2+1 where no='$member[no]'",$connect) or error(mysql_error());
-
-	@mysql_close($connect);
-
+	zb_query("update $member_table set point2=point2+1 where no='$member[no]'",$connect) or error(mysql_error());
+	
+	if(!isset($des)) $des='';
 // 페이지 이동
 	movepage("$view_file_link?id=$id&page=$page&page_num=$page_num&select_arrange=$select_arrange&desc=$des&sn=$sn&ss=$ss&sc=$sc&keyword=$keyword&no=$no&category=$category");
 ?>

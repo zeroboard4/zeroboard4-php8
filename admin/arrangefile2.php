@@ -36,7 +36,7 @@
 	DB Checking
 		<?php
 	// DB 내의 파일 목록을 구함
-	$result = mysql_query("select name from $admin_table order by name desc") or die(mysql_error());
+	$result = zb_query("select name from $admin_table order by name desc") or die(mysql_error());
 	unset($dblist);
 
 	while($bbs=mysql_fetch_array($result)) {
@@ -44,8 +44,8 @@
 
 		echo ".";
 		flush();
-		$nfiles1 = mysql_query("select file_name1 from $t_board"."_$id where file_name1 !=''") or die(mysql_error());
-		$nfiles2 = mysql_query("select file_name2 from $t_board"."_$id where file_name2 !=''") or die(mysql_error());
+		$nfiles1 = zb_query("select file_name1 from $t_board"."_$id where file_name1 !=''") or die(mysql_error());
+		$nfiles2 = zb_query("select file_name2 from $t_board"."_$id where file_name2 !=''") or die(mysql_error());
 
 		while($data=mysql_fetch_array($nfiles1)) {
 			$filename = $data['file_name1'];

@@ -1,9 +1,9 @@
 <?php
-	$group_data=mysql_fetch_array(mysql_query("select * from $group_table where no='$group_no'"));
+	$group_data=mysql_fetch_array(zb_query("select * from $group_table where no='$group_no'"));
 
 	if($member['is_admin']>2&&!eregi($no.",",$member['board_name'])) error("사용 권한이 없습니다");
 
-	$board_data=mysql_fetch_array(mysql_query("select * from $admin_table where no='$no'")); 
+	$board_data=mysql_fetch_array(zb_query("select * from $admin_table where no='$no'")); 
 ?>
 <table border=0 cellspacing=1 cellpadding=0 width=100% bgcolor=#b0b0b0>
   <tr height=30><td bgcolor=#3d3d3d colspan=10><img src=images/admin_webboard.gif></td></tr>
@@ -20,6 +20,7 @@
 <input type=hidden name=page value=<?=$page?>>
 <input type=hidden name=page_num value=<?=$page_num?>>
 <input type=hidden name=no value=<?=$no?>>
+<input type=hidden name=csrf_token value=<?=generate_csrf_token()?>>
 <tr height=25 bgcolor=#e0e0e0>
   <td  align=right style=font-family:Tahoma;font-size:8pt;font-weight:bold;width=30%><b>목록 보기 권한 &nbsp;</td>
   <td >&nbsp;&nbsp;

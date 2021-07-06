@@ -7,6 +7,7 @@ head(" bgcolor=444444 ");
 <form name=write method=post action=<?=$PHP_SELF?> enctype=multipart/form-data onsubmit="return confirm('백업 하시겠습니까?')">
 <input type=hidden name=exec value="db_dump">
 <input type=hidden name=act value="db_dump_ok">
+<input type=hidden name=csrf_token value=<?=generate_csrf_token()?>>
 
   <tr align=center><td bgcolor=bbbbbb colspan=2 height=25 style=font-family:Tahoma;font-size:8pt;></td></tr>
   <tr align=center><td colspan=2 style=line-height:180%; bgcolor=#e0e0e0><br>

@@ -16,7 +16,7 @@
  	if(isblank($jumin1)||!isnum($jumin1)) Error("주민등록번호를 제대로 입력하여 주세요");
 	if(isblank($jumin2)||!isnum($jumin2)) Error("주민등록번호를 제대로 입력하여 주세요");
 
-	$result=mysql_query("select * from zetyx_member_table where email='$email' and jumin=password('$jumin1"."$jumin2')",$connect) or Error(mysql_error());
+	$result=zb_query("select * from ".$member_table." where email='$email' and jumin=password('$jumin1"."$jumin2')",$connect) or Error(mysql_error());
 
 	if(!mysql_num_rows($result)) Error("입력하신 정보에 해당하는 회원이 없습니다.<br><br>다시 한번확인하여 주시기 바랍니다");
  	else {
@@ -24,7 +24,7 @@
 
 		$data=mysql_fetch_array($result);
 
-		mysql_query("update $member_table set password=password('$temp') where no='$data[no]'",$connect) or Error(mysql_error());
+		zb_query("update $member_table set password=password('$temp') where no='$data[no]'",$connect) or Error(mysql_error());
 
 		$name=stripslashes($data['name']);
 		$to=$data['email'];
@@ -37,7 +37,7 @@
 		if(!zb_sendmail(0, $to, $name, $_from, "", $subject, $comment)) Error("메일 발송 에러");
 	}
 
-	@mysql_close($connect);
+	mysql_close($connect);
 ?>
 <script>
 	alert('변경된 비밀번호가 <?=$email?>로 발송되었습니다.\n\n메일을 확인하신후 곧 바로 로그인하여\n\n비밀번호를 변경하여 주시기 바라겠습니다');

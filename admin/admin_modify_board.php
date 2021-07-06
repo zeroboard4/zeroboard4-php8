@@ -3,20 +3,23 @@
  * 게시판 기본 기능 수정 페이지
  **************************************************************************/
 
-	$group_data=mysql_fetch_array(mysql_query("select * from $group_table where no='$group_no'"));
+	$group_data=mysql_fetch_array(zb_query("select * from $group_table where no='$group_no'"));
 
-	if($exec2=="add") $data=mysql_fetch_array(mysql_query("select * from $admin_table where no='$no'"));
+	if($exec2=="add") $data=mysql_fetch_array(zb_query("select * from $admin_table where no='$no'"));
 	if($member['is_admin']>=3 && !eregi($no.",",$member['board_name'])) error("게시판 설정을 변경할 권한이 없습니다");
 
-	$data = mysql_fetch_array(mysql_query("select * from $admin_table where no='$no'"));
+	$data = mysql_fetch_array(zb_query("select * from $admin_table where no='$no'"));
 
-	if(!$data['bg_color']) $data['bg_color']="white";
-	if(!$data['table_width']) $data['table_width']="95";
-	if(!$data['cut_length']) $data['cut_length']="0";
-	if(!$data['page_num']) $data['page_num']="10";
-	if(!$data['header']) $data['header']="<div align=center>";
-	if(!$data['footer']) $data['footer']="</div>";
-	if(!$data['memo_num']) $data['memo_num']=20;
+	if(empty($data['bg_color'])) $data['bg_color']="white";
+	if(empty($data['table_width'])) $data['table_width']="95";
+	if(empty($data['cut_length'])) $data['cut_length']="0";
+	if(empty($data['page_num'])) $data['page_num']="10";
+	if(empty($data['header'])) $data['header']="<div align=center>";
+	if(empty($data['footer'])) $data['footer']="</div>";
+	if(empty($data['memo_num'])) $data['memo_num']=20;
+	if(empty($no)) $no='';
+	if(empty($page)) $page='';
+	if(empty($page_num)) $page_num='';
 ?>
 
 <script>
@@ -44,10 +47,11 @@
 <input type=hidden name=no value=<?php echo $data['no'];?>>
 <input type=hidden name=exec value=view_board>
 <input type=hidden name=exec2 value=<?php if($no) echo"modify_ok"; else echo"add_ok";?>>
-<input type=hidden name=page value=<?=$page?>>
-<input type=hidden name=s_page_num value=<?=$page_num?>>
+<input type=hidden name=page value=<?=isset($page)?$page:''?>>
+<input type=hidden name=s_page_num value=<?=isset($page_num)?$page_num:''?>>
 <input type=hidden name=group_no value=<?=$group_no?>>
 <input type=hidden name=name value=<?=$data['name']?>>
+<input type=hidden name=csrf_token value=<?=generate_csrf_token()?>>
 </tr>
 <!-- 기본설정 -->
 <tr height=25 bgcolor=#e0e0e0>
@@ -199,7 +203,7 @@ function check2()
 
 <tr height=25 bgcolor=#bbbbbb><td colspan=2  align=center  style=font-family:Tahoma;font-size:8pt;><b>추가 기능 설정</b></td></tr>
 
-<?php unset($check);$check[$data['use_alllist']]="checked";?>
+<?php unset($check);$check[0]='';$check[1]='';$check[$data['use_alllist']]="checked";?>
 <tr height=25 bgcolor=#e0e0e0>
   <td align=right style=font-family:Tahoma;font-size:8pt;><b>전체 목록 출력&nbsp;<br>(글내용 보기)&nbsp;</td>
   <td >&nbsp;&nbsp;
@@ -207,7 +211,7 @@ function check2()
   </td>
 </tr>
 
-<?php unset($check);$check[$data['use_category']]="checked";?>
+<?php unset($check);$check[0]='';$check[1]='';$check[$data['use_category']]="checked";?>
 <tr height=25 bgcolor=#e0e0e0>
   <td align=right style=font-family:Tahoma;font-size:8pt;><b>카테고리 사용&nbsp;</td>
   <td >&nbsp;&nbsp;
@@ -215,7 +219,7 @@ function check2()
   </td>
 </tr>
 
-<?php unset($check);$check[$data['use_html']]="checked";?>
+<?php unset($check);$check[0]='';$check[1]='';$check[2]='';$check[$data['use_html']]="checked";?>
 <tr height=25 bgcolor=#e0e0e0>
   <td align=right style=font-family:Tahoma;font-size:8pt;><b>HTML 사용여부&nbsp;</td>
   <td >&nbsp;&nbsp;

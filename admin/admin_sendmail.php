@@ -1,4 +1,5 @@
 <?php
+	if(!isset($s_que)) $s_que='';
 	if($cart) {
 		$temp=explode("||",$cart);
 		$s_que=" and ( no='$temp[1]' ";
@@ -12,7 +13,7 @@
 		$s_que = str_replace("where","and", $s_que);
 	}
 
-	$temp=@mysql_fetch_array(@mysql_query("select count(*) from $member_table where group_no='$group_no' $s_que",$connect));
+	$temp=mysql_fetch_array(zb_query("select count(*) from $member_table where group_no='$group_no' $s_que",$connect));
 	$total_member=$temp[0];
 
 	if($total_member==0) Error("선택된 회원이 없습니다");

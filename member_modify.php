@@ -3,10 +3,10 @@
 	include "lib.php";
 
 // DB 연결
-	if(!$connect) $connect=dbConn();
+	if(!isset($connect)) $connect=dbConn();
 
 // 현재 게시판 설정 읽어 오기
-	if($id) {
+	if(isset($id)) {
 		$setup=get_table_attrib($id);
 
 		// 설정되지 않은 게시판일때 에러 표시
@@ -35,9 +35,9 @@
 
 
 // 그룹데이타 읽어오기;;
-	$group_data=mysql_fetch_array(mysql_query("select * from $group_table where no='$member[group_no]'"));
+	$group_data=mysql_fetch_array(zb_query("select * from $group_table where no='$member[group_no]'"));
 	$group=$group_data;
-	$group_no=$group['no'];
+	$group_no=isset($group['no']) ? $group['no'] : '';
 
 	$check[1]="checked";
 
@@ -102,18 +102,18 @@
 <table border=0 cellspacing=1 cellpadding=0 width=540>
 <form name=write method=post action=member_modify_ok.php enctype=multipart/form-data onsubmit="return check_submit();">
 <input type=hidden name=one_page value="<?=$HTTP_REFERER?>">
-<input type=hidden name=page value=<?=$page?>>
-<input type=hidden name=id value=<?=$id?>>
-<input type=hidden name=no value=<?=$no?>>
-<input type=hidden name=select_arrange value=<?=$select_arrange?>>
-<input type=hidden name=desc value=<?=$desc?>>
-<input type=hidden name=page_num value=<?=$page_num?>>
-<input type=hidden name=keyword value="<?=$keyword?>">
-<input type=hidden name=category value="<?=$category?>">
-<input type=hidden name=sn value="<?=$sn?>">
-<input type=hidden name=ss value="<?=$ss?>">
-<input type=hidden name=sc value="<?=$sc?>">
-<input type=hidden name=referer value="<?=$referer?>">
+<input type=hidden name=page value=<?=isset($page)?$page:''?>>
+<input type=hidden name=id value=<?=isset($id)?$id:''?>>
+<input type=hidden name=no value=<?=isset($no)?$no:''?>>
+<input type=hidden name=select_arrange value=<?=isset($select_arrange)?$select_arrange:''?>>
+<input type=hidden name=desc value=<?=isset($desc)?$desc:''?>>
+<input type=hidden name=page_num value=<?=isset($page_num)?$page_num:''?>>
+<input type=hidden name=keyword value="<?=isset($keyword)?$keyword:''?>">
+<input type=hidden name=category value="<?=isset($category)?$category:''?>">
+<input type=hidden name=sn value="<?=isset($sn)?$sn:''?>">
+<input type=hidden name=ss value="<?=isset($ss)?$ss:''?>">
+<input type=hidden name=sc value="<?=isset($sc)?$sc:''?>">
+<input type=hidden name=referer value="<?=isset($referer)?$referer:''?>">
 
   <tr><td colspan=2><img src=images/member_modify.gif></td></tr>
         <tr>
@@ -144,12 +144,12 @@
   </tr>        <tr>
           <td colspan="5" bgcolor="#EBD9D9" align="center"><img src="images/t.gif" width="10" height="1"></td>
         </tr>
-<?php if($group_data['use_birth']) { ?>
+<?php if(!empty($group_data['use_birth'])) { ?>
   <tr height=28 align=right>
      <td style=font-family:Tahoma;font-size:8pt;><b>Birthday&nbsp;</td>
-     <td align=left>&nbsp;<input type=text name=birth_1 size=4 maxlength=4 value="<?=date("Y",$member['birth'])?>" style=border-color:#d8b3b3 class=input> 년 
-                    &nbsp;<input type=text name=birth_2 size=2 maxlength=2 value="<?=date("m",$member['birth'])?>" style=border-color:#d8b3b3 class=input> 월
-                    &nbsp;<input type=text name=birth_3 size=2 maxlength=2 value="<?=date("d",$member['birth'])?>" style=border-color:#d8b3b3 class=input> 일 
+     <td align=left>&nbsp;<input type=text name=birth_1 size=4 maxlength=4 value="<?=date("Y",intval($member['birth']))?>" style=border-color:#d8b3b3 class=input> 년 
+                    &nbsp;<input type=text name=birth_2 size=2 maxlength=2 value="<?=date("m",intval($member['birth']))?>" style=border-color:#d8b3b3 class=input> 월
+                    &nbsp;<input type=text name=birth_3 size=2 maxlength=2 value="<?=date("d",intval($member['birth']))?>" style=border-color:#d8b3b3 class=input> 일 
           <input type=checkbox value=1 name=open_birth <?=$check[$member['open_birth']]?>> 공개
   </tr>        <tr>
           <td colspan="5" bgcolor="#EBD9D9" align="center"><img src="images/t.gif" width="10" height="1"></td>
@@ -172,7 +172,7 @@
           <td colspan="5" bgcolor="#EBD9D9" align="center"><img src="images/t.gif" width="10" height="1"></td>
         </tr>
 
-<?php if($group_data['use_icq']) { ?>
+<?php if(!empty($group_data['use_icq'])) { ?>
   <tr height=28 align=right>
      <td style=font-family:Tahoma;font-size:8pt;>ICQ&nbsp;</td>
      <td align=left>&nbsp;<input type=text name=icq size=20 maxlength=20 value="<?=$member['icq']?>" style=border-color:#d8b3b3 class=input>
@@ -182,7 +182,7 @@
         </tr>
 <?php } ?>
 
-<?php if($group_data['use_aol']) { ?>
+<?php if(!empty($group_data['use_aol'])) { ?>
   <tr height=28 align=right>
      <td style=font-family:Tahoma;font-size:8pt;>AIM&nbsp;</td>
      <td align=left>&nbsp;<input type=text name=aol size=20 maxlength=30 value="<?=$member['aol']?>" style=border-color:#d8b3b3 class=input>
@@ -192,7 +192,7 @@
         </tr>
 <?php } ?>
 
-<?php if($group_data['use_msn']) { ?>
+<?php if(!empty($group_data['use_msn'])) { ?>
   <tr height=28 align=right>
      <td style=font-family:Tahoma;font-size:8pt;>MSN&nbsp;</td>
      <td align=left>&nbsp;<input type=text name=msn size=20 maxlength=250 value="<?=$member['msn']?>" style=border-color:#d8b3b3 class=input>
@@ -202,7 +202,7 @@
         </tr>
 <?php } ?>
 
-<?php if($group_data['use_hobby']) { ?>
+<?php if(!empty($group_data['use_hobby'])) { ?>
   <tr height=28 align=right>
      <td style=font-family:Tahoma;font-size:8pt;>Hobby&nbsp;</td>
      <td align=left>&nbsp;<input type=text name=hobby size=40 maxlength=40 value="<?=$member['hobby']?>" style=border-color:#d8b3b3 class=input>
@@ -212,7 +212,7 @@
         </tr>
 <?php } ?>
 
-<?php if($group_data['use_job']) { ?>
+<?php if(!empty($group_data['use_job'])) { ?>
   <tr height=28 align=right>
      <td style=font-family:Tahoma;font-size:8pt;>Occupation(Job)&nbsp;</td>
      <td align=left>&nbsp;<input type=text name=job size=20 maxlength=20 value="<?=$member['job']?>" style=border-color:#d8b3b3 class=input>
@@ -222,7 +222,7 @@
         </tr>
 <?php } ?>
 
-<?php if($group_data['use_home_address']) { ?> 
+<?php if(!empty($group_data['use_home_address'])) { ?> 
   <tr height=28 align=right>
      <td style=font-family:Tahoma;font-size:8pt;>Home Address&nbsp;</td>
      <td align=left>&nbsp;<input type=text name=home_address size=40 maxlength=255 value="<?=$member['home_address']?>" style=border-color:#d8b3b3 class=input><input type=button value='검색' class=input style=border-color:#d8b3b3 onclick=address_popup(1)>
@@ -232,7 +232,7 @@
         </tr>
 <?php } ?>
 
-<?php if($group_data['use_home_tel']) { ?>
+<?php if(!empty($group_data['use_home_tel'])) { ?>
   <tr height=28 align=right>
      <td style=font-family:Tahoma;font-size:8pt;>Home Phone&nbsp;</td>
      <td align=left>&nbsp;<input type=text name=home_tel size=20 maxlength=20 value="<?=$member['home_tel']?>" style=border-color:#d8b3b3 class=input>
@@ -242,7 +242,7 @@
         </tr>
 <?php } ?>
 
-<?php if($group_data['use_office_address']) { ?>
+<?php if(!empty($group_data['use_office_address'])) { ?>
   <tr height=28 align=right>
      <td style=font-family:Tahoma;font-size:8pt;>Office Address&nbsp;</td>
      <td align=left>&nbsp;<input type=text name=office_address size=40 maxlength=255 value="<?=$member['office_address']?>" style=border-color:#d8b3b3 class=input><input type=button value='검색' class=input style=border-color:#d8b3b3 onclick=address_popup(2)>
@@ -252,7 +252,7 @@
         </tr>
 <?php } ?>
 
-<?php if($group_data['use_office_tel']) { ?>
+<?php if(!empty($group_data['use_office_tel'])) { ?>
   <tr height=28 align=right>
      <td style=font-family:Tahoma;font-size:8pt;>Office Phone&nbsp;</td>
      <td align=left>&nbsp;<input type=text name=office_tel size=20 maxlength=20 value="<?=$member['office_tel']?>" style=border-color:#d8b3b3 class=input>
@@ -262,7 +262,7 @@
         </tr>
 <?php } ?>
 
-<?php if($group_data['use_handphone']) { ?>
+<?php if(!empty($group_data['use_handphone'])) { ?>
   <tr height=28 align=right>
      <td style=font-family:Tahoma;font-size:8pt;>Cellular&nbsp;</td>
      <td align=left>&nbsp;<input type=text name=handphone size=20 maxlength=20 value="<?=$member['handphone']?>" style=border-color:#d8b3b3 class=input>
@@ -272,7 +272,7 @@
         </tr>
 <?php } ?>
 
-<?php if($group_data['use_mailing']) { ?>
+<?php if(!empty($group_data['use_mailing'])) { ?>
   <tr height=28 align=right>
      <td style=font-family:Tahoma;font-size:8pt;><b>Mailling List</td>
      <td align=left>&nbsp;<input type=checkbox name=mailing value=1 <?=$check[$member['mailing']]?>> 메일링 가입</td>
@@ -288,7 +288,7 @@
           <td colspan="5" bgcolor="#EBD9D9" align="center"><img src="images/t.gif" width="10" height="1"></td>
         </tr>
 
-<?php if($group_data['use_picture']) { ?>
+<?php if(!empty($group_data['use_picture'])) { ?>
   <tr height=28 align=right>
      <td style=font-family:Tahoma;font-size:8pt;>Photo</td>
      <td align=left>&nbsp;<input type=file name=picture size=34 maxlength=255 style=border-color:#d8b3b3 class=input>
@@ -301,7 +301,7 @@
         </tr>
 <?php } ?>
 
-<?php if($group_data['use_comment']) { ?>
+<?php if(!empty($group_data['use_comment'])) { ?>
   <tr height=28 align=right>
      <td style=font-family:Tahoma;font-size:8pt;>Comments</td>
      <td align=left>&nbsp;<textarea cols=40 rows=4 name=comment style=border-color:#d8b3b3 class=textarea><?=$member['comment']?></textarea><br>&nbsp;
@@ -328,6 +328,6 @@
 </table>
 
 <?php
-	@mysql_close($connect);
+	mysql_close($connect);
 	foot();
 ?>

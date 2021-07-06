@@ -35,7 +35,7 @@
 <?php flush()?>
 <pre>
 <?php
-	$result = mysql_query("select * from $admin_table order by name") or die(mysql_error());
+	$result = zb_query("select * from $admin_table order by name") or die(mysql_error());
 
 	$totalfilesnum = 0;
 	$ntotalfilesnum = 0;
@@ -46,14 +46,14 @@
 		
 		$id = $bbs['name'];		
 
-		$files1 = mysql_fetch_array(mysql_query("select count(*) from $t_board"."_$id where file_name1 != ''"));
-		$files2 = mysql_fetch_array(mysql_query("select count(*) from $t_board"."_$id where file_name2 != ''"));
+		$files1 = mysql_fetch_array(zb_query("select count(*) from $t_board"."_$id where file_name1 != ''"));
+		$files2 = mysql_fetch_array(zb_query("select count(*) from $t_board"."_$id where file_name2 != ''"));
 
 		$filesnum1 = $files1[0];
 		$filesnum2 = $files1[0];
 
-		$nfiles1 = mysql_query("select no, file_name1 , s_file_name1 from $t_board"."_$id where file_name1 !='' and file_name1 not like 'data/$id/%'");
-		$nfiles2 = mysql_query("select no, file_name2 , s_file_name2 from $t_board"."_$id where file_name2 !='' and file_name2 not like 'data/$id/%'");
+		$nfiles1 = zb_query("select no, file_name1 , s_file_name1 from $t_board"."_$id where file_name1 !='' and file_name1 not like 'data/$id/%'");
+		$nfiles2 = zb_query("select no, file_name2 , s_file_name2 from $t_board"."_$id where file_name2 !='' and file_name2 not like 'data/$id/%'");
 
 		$nfilesnum1 = mysql_num_rows($nfiles1);
 		$nfilesnum2 = mysql_num_rows($nfiles2);
@@ -104,7 +104,7 @@
 				z_unlink($source);
 				@rmdir($path);
 
-				mysql_query($sql) or die(mysql_error());
+				zb_query($sql) or die(mysql_error());
 
 			} else {
 
@@ -142,7 +142,7 @@
 				z_unlink($source);
 				@rmdir($path);
 
-				mysql_query($sql) or die(mysql_error());
+				zb_query($sql) or die(mysql_error());
 
 			} else {
 

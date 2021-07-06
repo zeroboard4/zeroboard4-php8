@@ -38,7 +38,7 @@
 
 <?php
 
-	if(!$member['no']) {
+	if(!isset($member['no'])) {
 
 ?>
 

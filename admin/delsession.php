@@ -9,17 +9,16 @@
 
 	$member=member_info();
 
-	if(!$member['no']||$member['is_admin']>1||$member['level']>1) Error("최고 관리자만이 사용할수 있습니다");
+	if(!isset($member['no'])||$member['is_admin']>1||$member['level']>1) Error("최고 관리자만이 사용할수 있습니다");
 
 	// 세션 삭제
-	if($exec=="delete") {
-
+	if(isset($exec)&&$exec=="delete") {
 		$i=0;
 		$path = "../".$_zbDefaultSetup['session_path'];
 		$directory = dir($path);
 		while($entry = $directory->read()) {
-			if ($entry != "." && $entry != "..") {
-				if(!eregi(session_id(), $entry)&&!eregi($_COOKIE['ZBSESSIONID'], $entry)) {
+			if ($entry !== "." && $entry !== "..") {
+				if(!eregi(session_id(), $entry)) {
 					z_unlink($path."/".$entry);
 					$i++;
 					if($i%100==0) print(".");

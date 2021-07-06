@@ -3,10 +3,10 @@
 	include "lib.php";
 
 // DB 연결
-	if(!$connect) $connect=dbConn();
+	if(!isset($connect)) $connect=dbConn();
 
 // 글쓴이의 정보를 갖고옴;;
-	$data=mysql_fetch_array(mysql_query("select * from $member_table where no='$member_no'"));
+	$data=mysql_fetch_array(zb_query("select * from $member_table where no='$member_no'"));
 	$data['name'] = stripslashes($data['name']);
 	$data['job'] = stripslashes($data['job']);
 	$data['email'] = stripslashes($data['email']);
@@ -23,6 +23,7 @@
 	$data['comment'] = stripslashes($data['comment']);
 
 	$temp_name = get_private_icon($data['no'], "2");
+	$i_name='';
 	if($temp_name) $i_name="<img src='$temp_name' border=0 align=absmiddle>";
 	$temp_name = get_private_icon($data['no'], "1");
 	if($temp_name) $i_name="<img src='$temp_name' border=0 align=absmiddle>&nbsp;".$i_name;
@@ -35,7 +36,7 @@
 	$member=member_info();
 
 // 그룹데이타 읽어오기;;
-	$group_data=mysql_fetch_array(mysql_query("select * from $group_table where no='$data[group_no]'"));
+	$group_data=mysql_fetch_array(zb_query("select * from $group_table where no='$data[group_no]'"));
 
 	mysql_close($connect);
 

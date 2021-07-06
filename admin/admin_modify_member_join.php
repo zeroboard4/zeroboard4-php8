@@ -1,6 +1,8 @@
 <?php
-  $data=mysql_fetch_array(mysql_query("select * from $group_table where no='$group_no'"));
-  $check[1]="checked";
+  $data=mysql_fetch_array(zb_query("select * from $group_table where no='$group_no'"));
+  $check['']='';
+  $check[0]='';
+  $check[1]='checked';
 ?>
 <table border=0 cellspacing=1 cellpadding=3 width=100% bgcolor=#b0b0b0>
   <tr height=30><td bgcolor=#3d3d3d colspan=2><img src=images/admin_memberjoin.gif></td></tr>
@@ -8,6 +10,7 @@
 <form name=write method=post action=<?=$PHP_SELF?>>
 <input type=hidden name=exec value=modify_member_join_ok>
 <input type=hidden name=group_no value=<?=$group_no?>>
+<input type=hidden name=csrf_token value=<?=generate_csrf_token()?>>
   <tr align=center bgcolor=#e0e0e0>
      <td colspan=2 bgcolor=#e0e0e0 style=line-height:180%>
          이 그룹의 회원가입시 나타나는 가입양식을 조절할수 있습니다.<br>

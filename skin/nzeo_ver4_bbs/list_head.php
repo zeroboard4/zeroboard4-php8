@@ -15,7 +15,7 @@
 <col width=50></col><?=$hide_category_start?><col width=80></col><?=$hide_category_end?><col width=></col><col width=100></col><col width=70></col><col width=50></col><col width=50></col>
 <tr align=center class=title>
 	<td class=title_han height=30>번호</td>
-	<?=$hide_category_start?><td class=title_han nowrap>분류</td><?=$hide_category_end?>
+	<?=$hide_category_start?><td class=title_han nowrap><?=$a_category?></td><?=$hide_category_end?>
 	<td class=title_han>제목</td>
 	<td class=title_han>작성자</td>
 	<td class=title_han>작성일</td>

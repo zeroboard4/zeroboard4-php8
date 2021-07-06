@@ -4,7 +4,7 @@
   /////////////////////////////////////////////////////
  
   // 그룹의 정보를 뽑아옴
-  $result=@mysql_query("select * from $group_table where no='$group_no'") or Error("그룹선택시 에러가 발생하였습니다");
+  $result=zb_query("select * from $group_table where no='$group_no'") or Error("그룹선택시 에러가 발생하였습니다");
   $data=mysql_fetch_array($result);
 ?>
 

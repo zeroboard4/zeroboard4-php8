@@ -33,13 +33,13 @@
 
 		$reg_date = time();
 
-		mysql_query("insert into $get_memo_table (member_no,member_from,subject,memo,readed,reg_date) 
+		zb_query("insert into $get_memo_table (member_no,member_from,subject,memo,readed,reg_date) 
 					values ('$to','$from','$subject','$memo',1,'$reg_date')") or error(mysql_error());
 
-		mysql_query("insert into $send_memo_table (member_to,member_no,subject,memo,readed,reg_date) 
+		zb_query("insert into $send_memo_table (member_to,member_no,subject,memo,readed,reg_date) 
 					values ('$to','$from','$subject','$memo',1,'$reg_date')") or error(mysql_error());
 
-		mysql_query("update $member_table set new_memo=1 where no='$to'") or error(mysql_error());
+		zb_query("update $member_table set new_memo=1 where no='$to'") or error(mysql_error());
 	}
 
 
@@ -82,16 +82,16 @@
 
 		for ($i=0;$i<count($selected)-1;$i++) {
 
-			$temp=mysql_fetch_array(mysql_query("select * from $t_board"."_$id where no='$selected[$i]'"));
+			$temp=mysql_fetch_array(zb_query("select * from $t_board"."_$id where no='$selected[$i]'"));
 
 			// 답글이 없을때 
 			if(!$temp['child']) {
 
 				// 글삭제
-				mysql_query("delete from $t_board"."_$id where no='$selected[$i]'") or Error(mysql_error()); 
+				zb_query("delete from $t_board"."_$id where no='$selected[$i]'") or Error(mysql_error()); 
 
 				// 카테고리에서 숫자 하나 뺌
-				mysql_query("update $t_category"."_$id set num=num-1 where no='$temp[category]'",$connect);
+				zb_query("update $t_category"."_$id set num=num-1 where no='$temp[category]'",$connect);
 
 				// 파일삭제
 				@z_unlink("./".$temp["file_name1"]);
@@ -103,15 +103,15 @@
 				// 이전, 다음글에 대한 정리
 				if($temp['depth']==0) {
 					// 이전글이 있으면 빈자리 메꿈;;;
-					if($temp['prev_no']) mysql_query("update $t_board"."_$id set next_no='$temp[next_no]' where next_no='$temp[no]'"); 
+					if($temp['prev_no']) zb_query("update $t_board"."_$id set next_no='$temp[next_no]' where next_no='$temp[no]'"); 
 					// 다음글이 있으면 빈자리 메꿈;;;
-					if($temp['next_no']) mysql_query("update $t_board"."_$id set prev_no='$temp[prev_no]' where prev_no='$temp[no]'"); 
+					if($temp['next_no']) zb_query("update $t_board"."_$id set prev_no='$temp[prev_no]' where prev_no='$temp[no]'"); 
 				} else {
-					$temp2=mysql_fetch_array(mysql_query("select count(*) from $t_board"."_$id where father='$temp[father]'"));
+					$temp2=mysql_fetch_array(zb_query("select count(*) from $t_board"."_$id where father='$temp[father]'"));
 					// 원본글이 있으면 원본글의 자식 글을 없앰;;;
-					if(!$temp2[0]) mysql_query("update $t_board"."_$id set child='0' where no='$temp[father]'"); 
+					if(!$temp2[0]) zb_query("update $t_board"."_$id set child='0' where no='$temp[father]'"); 
 				}
-				mysql_query("delete from $t_comment"."_$id where parent='$selected[$i]'") or Error(mysql_error()); // 코멘트삭제
+				zb_query("delete from $t_comment"."_$id where parent='$selected[$i]'") or Error(mysql_error()); // 코멘트삭제
 
 				// 메시지 보내는 부분
 				if($notice_user) {
@@ -126,8 +126,8 @@
 
 			}  
 		}
-		$temp=mysql_fetch_array(mysql_query("select count(*) from  $t_board"."_$id",$connect));
-		@mysql_query("update $admin_table set total_article='$temp[0]' where name='$id'") or Error(mysql_error());
+		$temp=mysql_fetch_array(zb_query("select count(*) from  $t_board"."_$id",$connect));
+		zb_query("update $admin_table set total_article='$temp[0]' where name='$id'") or Error(mysql_error());
 		echo"<script>opener.window.history.go(0);window.close();</script>";
 	}
 
@@ -138,31 +138,31 @@
 	elseif($exec=="copy_all"||$exec=="move_all") {
 
 		for($i=0;$i<count($selected)-1;$i++) {
-			$s_data=mysql_fetch_array(mysql_query("select * from $t_board"."_$id where no='$selected[$i]'"));
+			$s_data=mysql_fetch_array(zb_query("select * from $t_board"."_$id where no='$selected[$i]'"));
 
 			
 			// 답글이 없을때;; 
 			if($s_data['arrangenum']==0) {
 
 				// 원본글을 모두 구함
-				$result=mysql_query("select * from $t_board"."_$id where headnum='$s_data[headnum]' order by arrangenum",$connect) or error(mysql_error());
+				$result=zb_query("select * from $t_board"."_$id where headnum='$s_data[headnum]' order by arrangenum",$connect) or error(mysql_error());
 
-				$temp=mysql_fetch_array(mysql_query("select max(division) from $t_division"."_$board_name",$connect));
+				$temp=mysql_fetch_array(zb_query("select max(division) from $t_division"."_$board_name",$connect));
 				$max_division=$temp[0];
-				$temp=mysql_fetch_array(mysql_query("select max(division) from $t_division"."_$board_name where num>0 and division!='$max_division'",$connect));
+				$temp=mysql_fetch_array(zb_query("select max(division) from $t_division"."_$board_name where num>0 and division!='$max_division'",$connect));
 				if(!$temp[0]) $second_division=0; else $second_division=$temp[0];
 
      			// 이동할 게시판의 최고 headnum을 구함
-				$max_headnum=mysql_fetch_array(mysql_query("select min(headnum) from $t_board"."_$board_name where (division='$max_division' or division='$second_division') and headnum>-2000000000",$connect));
+				$max_headnum=mysql_fetch_array(zb_query("select min(headnum) from $t_board"."_$board_name where (division='$max_division' or division='$second_division') and headnum>-2000000000",$connect));
 				if(!$max_headnum[0]) $max_headnum[0]=0;
 				$headnum=$max_headnum[0]-1;
 				
 				// 이동할 게시판의 이전, 이후글을 구함
-				$next_data=mysql_fetch_array(mysql_query("select division,headnum,arrangenum from $t_board"."_$board_name where (division='$max_division' or division='$second_division') and headnum>-2000000000 order by headnum limit 1"));
+				$next_data=mysql_fetch_array(zb_query("select division,headnum,arrangenum from $t_board"."_$board_name where (division='$max_division' or division='$second_division') and headnum>-2000000000 order by headnum limit 1"));
 				if(!$next_data[0]) $next_data[0]="0";
-				else $next_data=mysql_fetch_array(mysql_query("select no,headnum,division from $t_board"."_$board_name where division='$next_data[division]' and headnum='$next_data[headnum]' and arrangenum='$next_data[arrangenum]'"));
+				else $next_data=mysql_fetch_array(zb_query("select no,headnum,division from $t_board"."_$board_name where division='$next_data[division]' and headnum='$next_data[headnum]' and arrangenum='$next_data[arrangenum]'"));
 
-				$a_category=mysql_fetch_array(mysql_query("select min(no) from $t_category"."_$board_name",$connect));
+				$a_category=mysql_fetch_array(zb_query("select min(no) from $t_category"."_$board_name",$connect));
 				$category=$a_category[0];
 
 				$next_no=$next_data['no'];
@@ -217,7 +217,7 @@
 						$data['memo'] .= "\n* $member[name]님에 의해서 게시물 ".$_kind."되었습니다 (".date("Y-m-d H:i").")";
 					}
 
-					mysql_query("insert into $t_board"."_$board_name (division,headnum,arrangenum,depth,prev_no,next_no,father,child,ismember,memo,ip,password,name,homepage,email,subject,use_html,reply_mail,category,is_secret,sitelink1,sitelink2,file_name1,file_name2,s_file_name1,s_file_name2,x,y,reg_date,islevel,hit,vote,download1,download2,total_comment) values ('$data[division]','$data[headnum]','$data[arrangenum]','$data[depth]','$data[prev_no]','$data[next_no]','$data[father]','$data[child]','$data[ismember]','$data[memo]','$data[ip]','$data[password]','$data[name]','$data[homepage]','$data[email]','$data[subject]','$data[use_html]','$data[reply_mail]','$data[category]','$data[is_secret]','$data[sitelink1]','$data[sitelink2]','$data[file_name1]','$data[file_name2]','$data[s_file_name1]','$data[s_file_name2]','$data[x]','$data[y]','$data[reg_date]','$data[islevel]','$data[hit]','$data[vote]','$data[download1]','$data[download2]','$data[total_comment]')") or error(mysql_error());
+					zb_query("insert into $t_board"."_$board_name (division,headnum,arrangenum,depth,prev_no,next_no,father,child,ismember,memo,ip,password,name,homepage,email,subject,use_html,reply_mail,category,is_secret,sitelink1,sitelink2,file_name1,file_name2,s_file_name1,s_file_name2,x,y,reg_date,islevel,hit,vote,download1,download2,total_comment) values ('$data[division]','$data[headnum]','$data[arrangenum]','$data[depth]','$data[prev_no]','$data[next_no]','$data[father]','$data[child]','$data[ismember]','$data[memo]','$data[ip]','$data[password]','$data[name]','$data[homepage]','$data[email]','$data[subject]','$data[use_html]','$data[reply_mail]','$data[category]','$data[is_secret]','$data[sitelink1]','$data[sitelink2]','$data[file_name1]','$data[file_name2]','$data[s_file_name1]','$data[s_file_name2]','$data[x]','$data[y]','$data[reg_date]','$data[islevel]','$data[hit]','$data[vote]','$data[download1]','$data[download2]','$data[total_comment]')") or error(mysql_error());
 
 					$no=mysql_insert_id();
 					if(!$father) {
@@ -227,17 +227,17 @@
 					}
 
 					// Comment 정리
-					$comment_result=mysql_query("select * from $t_comment"."_$id where parent='$data[no]' order by reg_date",$connect) or error(mysql_error());
+					$comment_result=zb_query("select * from $t_comment"."_$id where parent='$data[no]' order by reg_date",$connect) or error(mysql_error());
 					while($comment_data=mysql_fetch_array($comment_result)) {
 						$comment_data['memo']=addslashes($comment_data['memo']);
 						$comment_data['name']=addslashes($comment_data['name']);
-						mysql_query("insert into $t_comment"."_$board_name (parent,ismember,name,password,memo,reg_date,ip) values ('$no','$comment_data[ismember]','$comment_data[name]','$comment_data[password]','$comment_data[memo]','$comment_data[reg_date]','$comment_data[ip]')") or error(mysql_error());
+						zb_query("insert into $t_comment"."_$board_name (parent,ismember,name,password,memo,reg_date,ip) values ('$no','$comment_data[ismember]','$comment_data[name]','$comment_data[password]','$comment_data[memo]','$comment_data[reg_date]','$comment_data[ip]')") or error(mysql_error());
 					}
 
-					mysql_query("update $t_category"."_$board_name set num=num+1 where no='$category'",$connect);
+					zb_query("update $t_category"."_$board_name set num=num+1 where no='$category'",$connect);
 				}
-				$prev_data=mysql_fetch_array(mysql_query("select headnum from $t_board"."_$board_name where headnum>'$headnum' order by headnum limit 1"));
-				mysql_query("update $t_board"."_$board_name set prev_no='$root_no' where headnum='$prev_data[0]'",$connect) or Error(mysql_error());
+				$prev_data=mysql_fetch_array(zb_query("select headnum from $t_board"."_$board_name where headnum>'$headnum' order by headnum limit 1"));
+				zb_query("update $t_board"."_$board_name set prev_no='$root_no' where headnum='$prev_data[0]'",$connect) or Error(mysql_error());
 
 
 				// 메시지 보내는 부분
@@ -253,8 +253,8 @@
 				}
 			}
 		}
-		$total=mysql_fetch_array(mysql_query("select count(*) from $t_board"."_$board_name",$connect));
-		mysql_query("update $admin_table set total_article='$total[0]' where name='$board_name'");
+		$total=mysql_fetch_array(zb_query("select count(*) from $t_board"."_$board_name",$connect));
+		zb_query("update $admin_table set total_article='$total[0]' where name='$board_name'");
 
 
 		if($exec=="copy_all") {

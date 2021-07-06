@@ -197,11 +197,11 @@
 			return;
 		}
 
-		$setup = mysql_fetch_array(mysql_query("select use_alllist from $admin_table where name='$id'"));
+		$setup = mysql_fetch_array(zb_query("select use_alllist from $admin_table where name='$id'"));
 		if($setup['use_alllist']) $target = "zboard.php?id=".$id;
 		else $target = "view.php?id=".$id;
 
-		$result = mysql_query("select * from $t_board"."_$id where is_secret=0 order by no desc limit $num", $connect) or die(mysql_error());
+		$result = zb_query("select * from $t_board"."_$id where is_secret=0 order by no desc limit $num", $connect) or die(mysql_error());
 
 
 		$tmpStr = explode("[loop]",$str);
@@ -265,19 +265,19 @@
 			return;
 		}
 
-		$tmpResult = mysql_query("select use_alllist from $admin_table where name='$id'") or die(mysql_error());
+		$tmpResult = zb_query("select use_alllist from $admin_table where name='$id'") or die(mysql_error());
 		$setup = mysql_fetch_array($tmpResult);
 		if($setup['use_alllist']) $target = "zboard.php?id=".$id;
 		else $target = "view.php?id=".$id;
 
-		$result = mysql_query("select * from $t_board"."_$id order by headnum limit 1", $connect) or die(mysql_error());
+		$result = zb_query("select * from $t_board"."_$id order by headnum limit 1", $connect) or die(mysql_error());
 		$tmpData = mysql_fetch_array($result);
 		$no = $tmpData['no'];
 		$headnum = $tmpData['headnum'];
 		$main_subject="<a href='".$_zb_url.$target."&no=$no'>".stripslashes($tmpData['subject'])."</a>";
 		if($tmpData['vote']) $main_vote = "[".$tmpData['vote']."]"; else $main_vote="";
 
-		$result = mysql_query("select * from $t_board"."_$id where headnum='$headnum' and arrangenum > 0 order by arrangenum", $connect) or die(mysql_error());
+		$result = zb_query("select * from $t_board"."_$id where headnum='$headnum' and arrangenum > 0 order by arrangenum", $connect) or die(mysql_error());
 
 		$tmpStr = explode("[loop]",$str);
 		$header = $tmpStr[0];
@@ -315,12 +315,12 @@
 			return;
 		}
 
-		$tmpResult = mysql_query("select use_alllist from $admin_table where name='$id'") or die(mysql_error());
+		$tmpResult = zb_query("select use_alllist from $admin_table where name='$id'") or die(mysql_error());
 		$setup = mysql_fetch_array($tmpResult);
 		if($setup['use_alllist']) $target = "zboard.php?id=".$id;
 		else $target = "view.php?id=".$id;
 
-		$result = mysql_query("select * from $t_board"."_$id order by no desc limit $num", $connect) or die(mysql_error());
+		$result = zb_query("select * from $t_board"."_$id order by no desc limit $num", $connect) or die(mysql_error());
 
 		$i = 0;
 		while($data=mysql_fetch_array($result)) {
