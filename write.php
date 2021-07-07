@@ -154,6 +154,7 @@
 	if($setup['use_pds']) $upload_limit=GetFileSize($setup['max_upload_size']);
 
 // 이미지 창고 버튼
+	if(empty($member['no'])) $member['no'] = '0';
 	if(isset($member['no'])&&$setup['grant_imagebox']>=$member['level']) $a_imagebox="<a onfocus=blur() href='javascript:showImageBox(\"$id\")'>"; else $a_imagebox="<Zeroboard ";
 	if($mode=="modify"&&$data['ismember']!=$member['no']) $a_imagebox = "<Zeroboard";
 

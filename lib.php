@@ -29,7 +29,7 @@
                   	'HTTP_ENV_VARS', 'HTTP_GET_VARS', 'HTTP_POST_VARS', 'HTTP_POST_FILES', 'HTTP_SERVER_VARS',
                	    'HTTP_COOKIE_VARS', 'HTTP_SESSION_VARS', 'GLOBALS');
 	$filterxssval = array('name', 'email', 'homepage', 'subject', 'memo', 'keyword', 'user_id',
-					'birth_1', 'birth_2', 'birth_3', 'icq', 'aol', 'msn', 'hobby', 'job',
+					'birth_1', 'birth_2', 'birth_3', 'sitelink1', 'sitelink2', 'icq', 'aol', 'msn', 'hobby', 'job',
 					'home_address', 'home_tel', 'office_address', 'office_tel', 'handphone', 'comment');
  	$ext_cnt = count($ext_arr);
  	for($i=0; $i<$ext_cnt; $i++) {
@@ -869,8 +869,8 @@
 		$str=str_replace("<","&lt;",$str);
 		$source = array();
 		$target = array();
-    $list = explode(",", trim($list).',iframe');
-		while (list ($key, $val) = each ($list)) {
+                $list = explode(",", trim($list).',iframe');
+                foreach($list as $key => $val) {
 			$val = trim($val);
 			if (!$val) continue;
 			$source[] = "/&lt;{$val}/i";
@@ -878,7 +878,7 @@
 			$source[] = "/&lt;\/{$val}/i";
 			$target[] = "</{$val}";
 		}
-    return preg_replace($source, $target, $str);
+                return preg_replace($source, $target, $str);
 	}
 
 
@@ -1338,7 +1338,13 @@
 	//////////////////////////////////////
 	////////////////////////////////////// 레거시 함수 끝
 	//////////////////////////////////////
-	
+	function zb_escape_string($param) {
+    		if(!empty($param) && is_string($param)) {
+        		return str_replace(array("%", '\\', "\0", "\n", "\r", "'", '"', "\x1a"), array ("\%", '\\\\', '\\0', '\\n', '\\r', "\\'", '\\"', '\\Z'), $param);
+    		}
+    		return $param;
+	}
+
 	function Request_Var($str) {
 		if(is_array($str)) return $str;
 		else return htmlspecialchars(str_replace(array("\r\n", "\r", "\0"), array("\n", "\n", ''), $str));
@@ -1424,25 +1430,24 @@
  		return $message;
 	}
 	
-    function xss2($data) {
-        $data = str_replace(array('&amp;','&lt;','&gt;'), array('&amp;amp;','&amp;lt;','&amp;gt;'), $data);
-        $data = preg_replace('/(&#*\w+)[\x00-\x20]+;/u', '$1;', $data);
-        $data = preg_replace('/(&#x*[0-9A-F]+);*/iu', '$1;', $data);
-        $data = html_entity_decode($data, ENT_COMPAT, 'UTF-8');
-        $data = preg_replace('#(<[^>]+?[\x00-\x20"\'])(?:on|xmlns)[^>]*+>#iu', '$1>', $data);
-        $data = preg_replace('#([a-z]*)[\x00-\x20]*=[\x00-\x20]*([`\'"]*)[\x00-\x20]*j[\x00-\x20]*a[\x00-\x20]*v[\x00-\x20]*a[\x00-\x20]*s[\x00-\x20]*c[\x00-\x20]*r[\x00-\x20]*i[\x00-\x20]*p[\x00-\x20]*t[\x00-\x20]*:#iu', '$1=$2nojavascript...', $data);
-        $data = preg_replace('#([a-z]*)[\x00-\x20]*=([\'"]*)[\x00-\x20]*v[\x00-\x20]*b[\x00-\x20]*s[\x00-\x20]*c[\x00-\x20]*r[\x00-\x20]*i[\x00-\x20]*p[\x00-\x20]*t[\x00-\x20]*:#iu', '$1=$2novbscript...', $data);
-        $data = preg_replace('#([a-z]*)[\x00-\x20]*=([\'"]*)[\x00-\x20]*-moz-binding[\x00-\x20]*:#u', '$1=$2nomozbinding...', $data);
-        $data = preg_replace('#(<[^>]+?)style[\x00-\x20]*=[\x00-\x20]*[`\'"]*.*?expression[\x00-\x20]*\([^>]*+>#i', '$1>', $data);
-        $data = preg_replace('#(<[^>]+?)style[\x00-\x20]*=[\x00-\x20]*[`\'"]*.*?behaviour[\x00-\x20]*\([^>]*+>#i', '$1>', $data);
-        $data = preg_replace('#(<[^>]+?)style[\x00-\x20]*=[\x00-\x20]*[`\'"]*.*?s[\x00-\x20]*c[\x00-\x20]*r[\x00-\x20]*i[\x00-\x20]*p[\x00-\x20]*t[\x00-\x20]*:*[^>]*+>#iu', '$1>', $data);
-        $data = preg_replace('#</*\w+:\w[^>]*+>#i', '', $data);
-		$youtube = '<iframe(?:\b|_).*?(?:\b|_)src=\"https?:\/\/(?:www\.)?youtube.com\/(?:\b|_).*?(?:\b|_)iframe>';
-        do {
-            $Temporary = $data;
-			if(!preg_match("/{$youtube}/i", $data))
-                $data = preg_replace('#</*(?:applet|b(?:ase|gsound|link)|embed|frame(?:set)?|i(?:frame|layer)|l(?:ayer|ink)|meta|object|s(?:cript|tyle)|title|xml)[^>]*+>#i', '', $data);
-        } while ($Temporary !== $data);
- 
-        return trim($data);
-    }
+        function xss2($data) {
+            $data = str_replace(array('&amp;','&lt;','&gt;'), array('&amp;amp;','&amp;lt;','&amp;gt;'), $data);
+            $data = preg_replace('/(&#*\w+)[\x00-\x20]+;/u', '$1;', $data);
+            $data = preg_replace('/(&#x*[0-9A-F]+);*/iu', '$1;', $data);
+            $data = html_entity_decode($data, ENT_COMPAT, 'UTF-8');
+            $data = preg_replace('#(<[^>]+?[\x00-\x20"\'])(?:on|xmlns)[^>]*+>#iu', '$1>', $data);
+            $data = preg_replace('#([a-z]*)[\x00-\x20]*=[\x00-\x20]*([`\'"]*)[\x00-\x20]*j[\x00-\x20]*a[\x00-\x20]*v[\x00-\x20]*a[\x00-\x20]*s[\x00-\x20]*c[\x00-\x20]*r[\x00-\x20]*i[\x00-\x20]*p[\x00-\x20]*t[\x00-\x20]*:#iu', '$1=$2nojavascript...', $data);
+            $data = preg_replace('#([a-z]*)[\x00-\x20]*=([\'"]*)[\x00-\x20]*v[\x00-\x20]*b[\x00-\x20]*s[\x00-\x20]*c[\x00-\x20]*r[\x00-\x20]*i[\x00-\x20]*p[\x00-\x20]*t[\x00-\x20]*:#iu', '$1=$2novbscript...', $data);
+            $data = preg_replace('#([a-z]*)[\x00-\x20]*=([\'"]*)[\x00-\x20]*-moz-binding[\x00-\x20]*:#u', '$1=$2nomozbinding...', $data);
+            $data = preg_replace('#(<[^>]+?)style[\x00-\x20]*=[\x00-\x20]*[`\'"]*.*?expression[\x00-\x20]*\([^>]*+>#i', '$1>', $data);
+            $data = preg_replace('#(<[^>]+?)style[\x00-\x20]*=[\x00-\x20]*[`\'"]*.*?behaviour[\x00-\x20]*\([^>]*+>#i', '$1>', $data);
+            $data = preg_replace('#(<[^>]+?)style[\x00-\x20]*=[\x00-\x20]*[`\'"]*.*?s[\x00-\x20]*c[\x00-\x20]*r[\x00-\x20]*i[\x00-\x20]*p[\x00-\x20]*t[\x00-\x20]*:*[^>]*+>#iu', '$1>', $data);
+            $data = preg_replace('#</*\w+:\w[^>]*+>#i', '', $data);
+            $youtube = '<iframe(?:\b|_).*?(?:\b|_)src=\"https?:\/\/(?:www\.)?youtube.com\/(?:\b|_).*?(?:\b|_)iframe>';
+            do {
+                $Temporary = $data;
+		if(!preg_match("/{$youtube}/i", $data))
+                    $data = preg_replace('#</*(?:applet|b(?:ase|gsound|link)|embed|frame(?:set)?|i(?:frame|layer)|l(?:ayer|ink)|meta|object|s(?:cript|tyle)|title|xml)[^>]*+>#i', '', $data);
+            } while ($Temporary !== $data);
+            return trim($data);
+        }
