@@ -12,13 +12,14 @@
 
     // 에러 표시 설정    
     ini_set('display_errors', '0');
-    require_once "fixcloudflare.php";
+    require "fixcloudflare.php";
 
     // W3C P3P 규약설정
     header('P3P: CP="ALL CURa ADMa DEVa TAIa OUR BUS IND PHY ONL UNI PUR FIN COM NAV INT DEM CNT STA POL HEA PRE LOC OTC"');
 
 	// 현재 버젼
-	$zb_version = "4.1 pl8";
+    	$zb_version = "4.1 pl8";
+	$zb_php8_version = 'php8-0.1';
 
 	/*******************************************************************************
  	 * 에러 리포팅 설정과 register_globals_on일때 변수 재 정의
@@ -67,10 +68,9 @@
 	unset($group);
 	unset($setup);
 	unset($s_que);
-    if(isset($select_arrange)) $select_arrange = str_replace(array("'",'"','\\'),'',$select_arrange);
-    if(isset($desc)) {
-        if(!in_array($desc,array('desc','asc'))) unset($desc); 
-    }
+        if(isset($select_arrange)) $select_arrange = str_replace(array("'",'"','\\'),'',$select_arrange);
+        if(!in_array($select_arrange,array('headnum','subject','name','hit','vote','reg_date','download1','download2'))) unset($select_arrange);
+        if(isset($desc)) if(!in_array($desc,array('desc','asc'))) unset($desc);
 
 	/*******************************************************************************
  	 * include 되었는지를 검사

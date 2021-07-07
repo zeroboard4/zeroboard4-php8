@@ -7,13 +7,16 @@
 	$user_id = trim($user_id);
 	$password = trim($password);
 
-        /*if(!get_magic_quotes_gpc()) {
-          $user_id = addslashes($user_id);
-          $password = addslashes($password);
-        }*/
+	if(function_exists('get_magic_quotes_gpc') && get_magic_quotes_gpc()) {
+		$user_id = zb_escape_string($user_id);
+		$password = zb_escape_string($password);
+	} else {
+        	$user_id = addslashes(zb_escape_string($user_id));
+        	$password = addslashes(zb_escape_string($password));
+        }
 
-	if(!$user_id) Error("아이디를 입력하여 주십시요");
-	if(!$password) Error("비밀번호를 입력하여 주십시요");
+	if(empty($user_id)) Error("아이디를 입력하여 주십시요");
+	if(empty($password)) Error("비밀번호를 입력하여 주십시요");
 
 	if(isset($id)) {
 		$setup=get_table_attrib($id);

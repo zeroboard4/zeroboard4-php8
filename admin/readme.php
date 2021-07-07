@@ -1,6 +1,49 @@
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/json2/20160511/json2.min.js"></script>
+<script>
+var myver0 = '<?=$zb_php8_version?>';
+var myver = myver0.split('-')[1];
+var newver;
+var github;
+var request;
+if (window.XMLHttpRequest) {
+    request = new XMLHttpRequest();
+} else {
+    request = new ActiveXObject("Microsoft.XMLHTTP");
+}
+request.onreadystatechange = function() {
+    if (request.readyState === request.DONE) {
+        if (request.status === 200 || request.status === 201) {
+            github = JSON.parse(request.responseText);
+            newver = github[0].name.split('-')[1];
+            if(newver > myver) {
+                document.getElementById("newverspan").innerHTML = github[0].name;
+                document.getElementById("oldverspan").innerHTML = myver0;
+                document.getElementById('updatenotice').setAttribute('style', '');
+                setInterval("blink()", 900);
+            }
+        }
+    }
+};
+request.open('GET', 'https://api.github.com/repos/juckdo/zeroboard4-php8/releases');
+request.send();
+
+function blink() {
+    if(document.getElementById('updatenotice_bg').getAttribute('bgcolor')=="dff0d8") {
+        document.getElementById('updatenotice_bg').setAttribute('bgcolor', 'c4f0b2');
+    } else {
+        document.getElementById('updatenotice_bg').setAttribute('bgcolor', 'dff0d8');
+    }
+}
+</script>
 <table border=0 cellspacing=0 cellpadding=15 bgcolor=#efefef width=100% height=100%>
 <Tr>
 <td valign=top style=line-height:160%>
+<table id="updatenotice" style="display:none;" border="0" cellspacing="1" cellpadding="15" bgcolor="aaaaaa" width="100%">
+<tr>
+<td id="updatenotice_bg" bgcolor="dff0d8" colspan="2"><h2>업데이트가 있습니다.</h2><span id="newverspan">new</span> 버전이 새로 출시되었으며 현재 버전은 <span id="oldverspan">old</span> 입니다.
+&nbsp;<a href="https://github.com/juckdo/zeroboard4-php8" target="_blank" style="text-decoration:underline">github 저장소 방문</a></td>
+</tr>
+</table>
 <pre>
 <b>제로보드 <?=$zb_version?> 관리자 페이지입니다.</b>
 공개형 무료 게시판 제로보드의 전체적인 관리를 할수 있는 관리자 페이지입니다.
