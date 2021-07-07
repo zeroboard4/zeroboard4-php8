@@ -68,6 +68,7 @@
 
 //패스워드를 암호화
 	if(strlen($password)) {
+		$password=zb_escape_string($password);
 		$temp=mysql_fetch_array(zb_query("select password('$password')"));
 		$password=$temp[0];   
 	}
@@ -275,7 +276,7 @@
 		if($s_data['ismember']!=$member['no']&&!$is_admin) {
 			$_POST['password']=isset($_POST['password']) ? zb_escape_string($_POST['password']) : '';
 			if(strlen($s_data['password'])<=16&&strlen(get_password("a"))>=41) $password=mysql_fetch_array(zb_query("select old_password('$_POST[password]')"))[0];
-			if($_POST['password']!=$s_data['password']) Error("비밀번호가 틀렸습니다");
+			if($password!==$s_data['password']) Error("비밀번호가 틀렸습니다");
 		}
 
 		// 파일삭제
